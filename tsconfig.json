@@ -16,7 +16,11 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@js-data/api-interfaces": ["libs/api-interfaces/src/index.ts"]
+      "@js-data/api-interfaces": ["libs/api-interfaces/src/index.ts"],
+      "@js-data/js-data": ["libs/js-data/src/index.ts"],
+      "@js-data/js-data-adapter": ["libs/js-data-adapter/src/index.ts"],
+      "@js-data/js-data-http": ["libs/js-data-http/src/index.ts"],
+      "@js-data/js-data-angularx": ["libs/js-data-angularx/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

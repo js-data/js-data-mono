@@ -23,6 +23,18 @@
     },
     "api-interfaces": {
       "tags": []
+    },
+    "js-data": {
+      "tags": []
+    },
+    "js-data-adapter": {
+      "tags": []
+    },
+    "js-data-http": {
+      "tags": []
+    },
+    "js-data-angularx": {
+      "tags": []
     }
   }
 }
