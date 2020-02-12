@@ -117,6 +117,11 @@ const previousPath = 'previous';
 export default class Record extends Settable {
   static mapper: Mapper;
 
+  static creatingPath = creatingPath;
+  static noValidatePath = noValidatePath;
+  static keepChangeHistoryPath = keepChangeHistoryPath;
+  static previousPath = previousPath;
+
   constructor(props: any = {}, opts: any = {}) {
     super();
     const _set = this._set;
@@ -839,11 +844,6 @@ export default class Record extends Settable {
   validate(opts) {
     return this._mapper().validate(this, opts);
   }
-
-  static creatingPath = creatingPath;
-  static noValidatePath = noValidatePath;
-  static keepChangeHistoryPath = keepChangeHistoryPath;
-  static previousPath = previousPath;
 }
 
 /**

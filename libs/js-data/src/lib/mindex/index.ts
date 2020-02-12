@@ -17,7 +17,7 @@
 // Summary of modifications:
 // Reworked dependencies so as to re-use code already in js-data
 // Removed unused code
-import utils from '../../src/utils';
+import utils from '../utils';
 import { binarySearch, insertAt, removeAt } from './_utils';
 
 export interface IndexOpts {
