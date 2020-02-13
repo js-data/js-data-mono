@@ -2,10 +2,6 @@ import { assert, JSData } from '../../_setup';
 import { productSchema } from './_productSchema';
 
 describe('Schema.pick', () => {
-  it('has the right exports', () => {
-    assert.isFunction(JSData.Schema.prototype.pick);
-  });
-
   it('Copies a value based on the properties defined in the schema', () => {
     const schema = new JSData.Schema(productSchema);
 

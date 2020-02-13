@@ -1,29 +1,23 @@
-import { assert, JSData, objectsEqual } from '../../_setup';
+import { data, JSData, Post } from '../../_setup';
 
 describe('Record#changes', () => {
-  it('should be an instance method', () => {
-    const Record = JSData.Record;
-    const record = new Record();
-    assert.equal(typeof record.changes, 'function');
-    assert.strictEqual(record.changes, Record.prototype.changes);
-  });
   it('should be empty right after an instance is created', function () {
-    const post = new this.Post.recordClass(this.data.p1); // eslint-disable-line
-    objectsEqual(post.changes(), {
+    const post = new Post.recordClass(data.p1); // eslint-disable-line
+    expect(post.changes()).toEqual({
       added: {},
       removed: {},
       changed: {}
     });
   });
   it('should detect tracked field changes', function () {
-    const post = new this.Post.recordClass(this.data.p1); // eslint-disable-line
-    objectsEqual(post.changes(), {
+    const post = new Post.recordClass(data.p1); // eslint-disable-line
+    expect(post.changes()).toEqual({
       added: {},
       removed: {},
       changed: {}
     });
     post.author = 'Jake';
-    objectsEqual(post.changes(), {
+    expect(post.changes()).toEqual({
       added: {},
       removed: {},
       changed: {
@@ -32,14 +26,14 @@ describe('Record#changes', () => {
     });
   });
   it('should detect untracked field changes', function () {
-    const post = new this.Post.recordClass(this.data.p1); // eslint-disable-line
-    objectsEqual(post.changes(), {
+    const post = new Post.recordClass(data.p1); // eslint-disable-line
+    expect(post.changes()).toEqual({
       added: {},
       removed: {},
       changed: {}
     });
     post.foo = 'bar';
-    objectsEqual(post.changes(), {
+    expect(post.changes()).toEqual({
       added: {
         foo: 'bar'
       },
@@ -59,14 +53,14 @@ describe('Record#changes', () => {
         }
       }
     });
-    const post = PostMapper.createRecord(this.data.p1);
-    objectsEqual(post.changes(), {
+    const post = PostMapper.createRecord(data.p1);
+    expect(post.changes()).toEqual({
       added: {},
       removed: {},
       changed: {}
     });
     post.author = 'Jake';
-    objectsEqual(post.changes(), {
+    expect(post.changes()).toEqual({
       added: {},
       removed: {},
       changed: {
@@ -74,7 +68,7 @@ describe('Record#changes', () => {
       }
     });
     post.author = 'John';
-    objectsEqual(post.changes(), {
+    expect(post.changes()).toEqual({
       added: {},
       removed: {},
       changed: {}
@@ -92,14 +86,14 @@ describe('Record#changes', () => {
         }
       }
     });
-    const post = PostMapper.createRecord(this.data.p1);
-    objectsEqual(post.changes(), {
+    const post = PostMapper.createRecord(data.p1);
+    expect(post.changes()).toEqual({
       added: {},
       removed: {},
       changed: {}
     });
     post.author = 'Jake';
-    objectsEqual(post.changes(), {
+    expect(post.changes()).toEqual({
       added: {},
       removed: {},
       changed: {
@@ -107,7 +101,7 @@ describe('Record#changes', () => {
       }
     });
     post.author = 'John';
-    objectsEqual(post.changes(), {
+    expect(post.changes()).toEqual({
       added: {},
       removed: {},
       changed: {}

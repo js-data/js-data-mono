@@ -1,34 +1,28 @@
-import { assert, JSData } from '../../_setup';
+import { JSData } from '../../_setup';
 
 describe('Record#set', () => {
-  it('should be an instance method', () => {
-    const Record = JSData.Record;
-    const record = new Record();
-    assert.equal(typeof record.save, 'function');
-    assert.strictEqual(record.save, Record.prototype.save);
-  });
   it('should set a property', () => {
     const user = new JSData.Record();
-    assert(!user.foo);
+    expect(!user.foo).toBeTruthy();
     user.set('foo', 'bar');
-    assert.equal(user.foo, 'bar');
+    expect(user.foo).toEqual('bar');
   });
   it('should set a nested property', () => {
     const user = new JSData.Record();
-    assert(!user.address);
+    expect(!user.address).toBeTruthy();
     user.set('address.state', 'TX');
-    assert.equal(user.address.state, 'TX');
+    expect(user.address.state).toEqual('TX');
   });
   it('should set multiple properties', () => {
     const user = new JSData.Record();
-    assert(!user.foo);
-    assert(!user.beep);
+    expect(!user.foo).toBeTruthy();
+    expect(!user.beep).toBeTruthy();
     user.set({
       foo: 'bar',
       beep: 'boop'
     });
-    assert.equal(user.foo, 'bar');
-    assert.equal(user.beep, 'boop');
+    expect(user.foo).toEqual('bar');
+    expect(user.beep).toEqual('boop');
   });
   it('should trigger change events', done => {
     const UserMapper = new JSData.Mapper({
@@ -51,16 +45,16 @@ describe('Record#set', () => {
     user.on('change:beep', () => {
       triggers++;
     });
-    assert(!user.foo);
-    assert(!user.beep);
+    expect(!user.foo).toBeTruthy();
+    expect(!user.beep).toBeTruthy();
     user.set({
       foo: 'bar',
       beep: 'boop'
     });
-    assert.equal(user.foo, 'bar');
-    assert.equal(user.beep, 'boop');
+    expect(user.foo).toEqual('bar');
+    expect(user.beep).toEqual('boop');
     setTimeout(() => {
-      assert.equal(triggers, 3, 'three events should have fired');
+      expect(triggers).toEqual(3);
       done();
     }, 10);
   });
@@ -85,8 +79,8 @@ describe('Record#set', () => {
     user.on('change:beep', () => {
       triggers++;
     });
-    assert(!user.foo);
-    assert(!user.beep);
+    expect(!user.foo).toBeTruthy();
+    expect(!user.beep).toBeTruthy();
     user.set(
       {
         foo: 'bar'
@@ -94,10 +88,10 @@ describe('Record#set', () => {
       {silent: true}
     );
     user.set('beep', 'boop', {silent: true});
-    assert.equal(user.foo, 'bar');
-    assert.equal(user.beep, 'boop');
+    expect(user.foo).toEqual('bar');
+    expect(user.beep).toEqual('boop');
     setTimeout(() => {
-      assert.equal(triggers, 0, 'no events should have fired');
+      expect(triggers).toEqual(0);
       done();
     }, 10);
   });

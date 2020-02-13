@@ -1,4 +1,4 @@
-import { assert, JSData } from '../../_setup';
+import { JSData } from '../../_setup';
 import { productSchema } from '../schema/_productSchema';
 
 describe('Record#validate', () => {
@@ -30,8 +30,8 @@ describe('Record#validate', () => {
 
     let errors = product.validate();
 
-    assert(product.isValid());
-    assert(!errors);
+    expect(product.isValid()).toBeTruthy();
+    expect(!errors).toBeTruthy();
 
     product = ProductMapper.createRecord(
       {
@@ -53,8 +53,8 @@ describe('Record#validate', () => {
       }
     );
     errors = product.validate();
-    assert(!product.isValid());
-    assert.deepEqual(errors, [
+    expect(!product.isValid()).toBeTruthy();
+    expect(errors).toEqual([
       {expected: 'a value', actual: 'undefined', path: 'name'},
       {expected: 'one of (number)', actual: 'string', path: 'price'},
       {expected: 'a value', actual: 'undefined', path: 'dimensions.width'},

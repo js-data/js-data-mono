@@ -1,4 +1,4 @@
-import { assert, JSData, sinon } from '../../_setup';
+import { JSData, sinon } from '../../_setup';
 
 const {Record} = JSData;
 
@@ -21,21 +21,21 @@ describe('Record#on("change")', () => {
       foo.name = 'updated foo';
       setTimeout(() => {
         const [record, changes] = listener.args[1];
-        assert.equal(foo, record, "on 'change' listener called with record which was modified");
-        assert.isTrue(listener.calledTwice, "on 'change' listener was called when modifying a property");
-        assert.equal(Object.keys(changes.added).length, 0);
-        assert.equal(Object.keys(changes.removed).length, 0);
-        assert.equal(changes.changed.name, 'updated foo', 'Only the property changed was emitted in the changeSet');
+        expect(foo).toEqual(record);
+        expect(listener.calledTwice).toBe(true);
+        expect(Object.keys(changes.added).length).toEqual(0);
+        expect(Object.keys(changes.removed).length).toEqual(0);
+        expect(changes.changed.name).toEqual('updated foo');
         done();
       }, 5);
     };
     setTimeout(() => {
       const [record, changes] = listener.args[0];
-      assert.equal(foo, record, "on 'change' listener called with record which was modified");
-      assert.isTrue(listener.calledOnce, "on 'change' listener was called when modifying a property");
-      assert.equal(Object.keys(changes.changed).length, 0);
-      assert.equal(Object.keys(changes.removed).length, 0);
-      assert.equal(changes.added.name, 'new foo', 'Only the property changed was emitted in the changeSet');
+      expect(foo).toEqual(record);
+      expect(listener.calledOnce).toBe(true);
+      expect(Object.keys(changes.changed).length).toEqual(0);
+      expect(Object.keys(changes.removed).length).toEqual(0);
+      expect(changes.added.name).toEqual('new foo');
       secondSpec();
     }, 5);
   });
@@ -78,9 +78,9 @@ describe('Record#on("change")', () => {
     foo.name = 'new foo';
     bar.name = 'new bar';
     setTimeout(() => {
-      assert.isTrue(listener.calledTwice, "on 'change' listener was called when modifying properties");
-      assert.deepEqual(foo.changeHistory(), [], 'no changeHistory was stored if keepChangeHistory: false is set');
-      assert.equal(bar.changeHistory().length, 1, 'if keepChangeHistory is true by default changeHistory is present');
+      expect(listener.calledTwice).toBe(true);
+      expect(foo.changeHistory()).toEqual([]);
+      expect(bar.changeHistory().length).toEqual(1);
       done();
     }, 5);
   });

@@ -1,13 +1,6 @@
-import { assert, JSData, objectsEqual } from '../../_setup';
+import { JSData, objectsEqual } from '../../_setup';
 
 describe('Record#save', () => {
-  it('should be an instance method', () => {
-    const Record = JSData.Record;
-    const record = new Record();
-    assert.equal(typeof record.save, 'function');
-    assert.strictEqual(record.save, Record.prototype.save);
-  });
-
   it('can create itself', async () => {
     let id = 1;
     const store = new JSData.DataStore();
@@ -23,16 +16,16 @@ describe('Record#save', () => {
     const foo = store.createRecord('foo', {foo: 'bar'});
     const createdFoo = await foo.save();
     objectsEqual(createdFoo, {id: 1, foo: 'bar'});
-    assert(createdFoo instanceof FooMapper.recordClass);
-    assert.strictEqual(foo, createdFoo);
-    assert.strictEqual(store.get('foo', 1), createdFoo);
+    expect(createdFoo instanceof FooMapper.recordClass).toBeTruthy();
+    expect(foo).toBe(createdFoo);
+    expect(store.get('foo', 1)).toBe(createdFoo);
 
     const BarMapper = new JSData.Mapper({name: 'bar'});
     BarMapper.registerAdapter('mock', mockAdapter, {default: true});
     const bar = BarMapper.createRecord({bar: 'foo'});
     const createdBar = await bar.save();
     objectsEqual(createdBar, {id: 2, bar: 'foo'});
-    assert(createdBar instanceof BarMapper.recordClass);
+    expect(createdBar instanceof BarMapper.recordClass).toBeTruthy();
   });
 
   it('can update itself', async () => {
@@ -49,16 +42,16 @@ describe('Record#save', () => {
     const updateFoo = await foo.save();
     objectsEqual(foo, {id: 1, foo: 'bar', beep: 'boop'});
     objectsEqual(updateFoo, {id: 1, foo: 'bar', beep: 'boop'});
-    assert(updateFoo instanceof FooMapper.recordClass);
-    assert.strictEqual(store.get('foo', 1), updateFoo);
-    assert.strictEqual(foo, updateFoo);
+    expect(updateFoo instanceof FooMapper.recordClass).toBeTruthy();
+    expect(store.get('foo', 1)).toBe(updateFoo);
+    expect(foo).toBe(updateFoo);
 
     const BarMapper = new JSData.Mapper({name: 'bar'});
     BarMapper.registerAdapter('mock', mockAdapter, {default: true});
     const bar = BarMapper.createRecord({id: 1, bar: 'foo'});
     const updatedBar = await bar.save();
     objectsEqual(updatedBar, {id: 1, bar: 'foo', beep: 'boop'});
-    assert(updatedBar instanceof BarMapper.recordClass);
+    expect(updatedBar instanceof BarMapper.recordClass).toBeTruthy();
   });
 
   it('can update itself with changes only', async () => {
@@ -79,6 +72,6 @@ describe('Record#save', () => {
     bar.beep = null;
     const updatedBar = await bar.save({changesOnly: true});
     objectsEqual(updatedBar, {id: 1, bar: 'bar', bing: 'bang', beep: null});
-    assert(updatedBar instanceof BarMapper.recordClass);
+    expect(updatedBar instanceof BarMapper.recordClass).toBeTruthy();
   });
 });
