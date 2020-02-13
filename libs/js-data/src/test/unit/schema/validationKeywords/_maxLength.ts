@@ -1,7 +1,7 @@
 export const maxLengthTests = [
   {
     description: 'maxLength validation',
-    schema: { maxLength: 2 },
+    schema: {maxLength: 2},
     tests: [
       {
         description: 'shorter is valid',
@@ -31,4 +31,4 @@ export const maxLengthTests = [
       // }
     ]
   }
-]
+];

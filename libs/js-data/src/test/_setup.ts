@@ -1,7 +1,7 @@
 import { assert } from 'chai';
 import * as JSData from '../index';
+import { Collection, DataStore, Mapper } from '../index';
 import * as sinon from 'sinon';
-import { DataStore } from '../index';
 
 export function objectsEqual(a, b, msg?) {
   assert.deepEqual(
@@ -103,6 +103,18 @@ function registerInMemoryAdapterFor(storeOrMapper, options = {default: true}) {
 
 export let data;
 export let store: DataStore;
+export let User: Mapper;
+export let Post: Mapper;
+export let Group: Mapper;
+export let Profile: Mapper;
+export let Organization: Mapper;
+export let Comment: Mapper;
+export let PostCollection: Collection;
+export let UserCollection: Collection;
+export let GroupCollection: Collection;
+export let OrganizationCollection: Collection;
+export let ProfileCollection: Collection;
+export let CommentCollection: Collection;
 
 // Clean setup for each test
 beforeEach(function () {
@@ -115,11 +127,11 @@ beforeEach(function () {
   store = new JSData.DataStore({
     linkRelations: true
   });
-  this.Post = store.defineMapper('post', {
+  Post = store.defineMapper('post', {
     endpoint: '/posts'
   });
-  this.PostCollection = store.getCollection('post');
-  this.User = store.defineMapper('user', {
+  PostCollection = store.getCollection('post');
+  User = store.defineMapper('user', {
     relations: {
       belongsTo: {
         organization: {
@@ -151,8 +163,8 @@ beforeEach(function () {
       }
     }
   });
-  this.UserCollection = store.getCollection('user');
-  this.Group = store.defineMapper('group', {
+  UserCollection = store.getCollection('user');
+  Group = store.defineMapper('group', {
     relations: {
       hasMany: {
         user: {
@@ -162,8 +174,8 @@ beforeEach(function () {
       }
     }
   });
-  this.GroupCollection = store.getCollection('group');
-  this.Organization = store.defineMapper('organization', {
+  GroupCollection = store.getCollection('group');
+  Organization = store.defineMapper('organization', {
     relations: {
       hasMany: {
         user: {
@@ -173,8 +185,8 @@ beforeEach(function () {
       }
     }
   });
-  this.OrganizationCollection = store.getCollection('organization');
-  this.Profile = store.defineMapper('profile', {
+  OrganizationCollection = store.getCollection('organization');
+  Profile = store.defineMapper('profile', {
     relations: {
       belongsTo: {
         user: {
@@ -184,8 +196,8 @@ beforeEach(function () {
       }
     }
   });
-  this.ProfileCollection = store.getCollection('profile');
-  this.Comment = store.defineMapper('comment', {
+  ProfileCollection = store.getCollection('profile');
+  Comment = store.defineMapper('comment', {
     relations: {
       belongsTo: {
         user: [
@@ -201,7 +213,7 @@ beforeEach(function () {
       }
     }
   });
-  this.CommentCollection = store.getCollection('comment');
+  CommentCollection = store.getCollection('comment');
   data.user1 = {
     name: 'John Anderson',
     id: 1,
@@ -315,45 +327,4 @@ beforeEach(function () {
     userId: 22,
     user: data.user22
   };
-});
-
-afterAll(function () {
-  // const tests = [];
-  // let duration = 0;
-  // let passed = 0;
-  // let failed = 0;
-  // this.test.parent.suites.forEach(suite => {
-  //   suite.tests.forEach((test: any) => {
-  //     if (test.state !== 'passed' && test.state !== 'failed') {
-  //       return;
-  //     }
-  //     duration += test.duration;
-  //
-  //     const report = {
-  //       name: suite.title + ':' + test.title,
-  //       result: test.state === 'passed',
-  //       message: test.state,
-  //       duration: test.duration
-  //     };
-  //
-  //     if (report.result) {
-  //       passed++;
-  //     } else {
-  //       failed++;
-  //       if (test.$errors && test.$errors.length) {
-  //         report.message = test.$errors[0];
-  //       }
-  //     }
-  //     tests.push(report);
-  //   });
-  // });
-  // try {
-  //   (window as any).global_test_results = {
-  //     passed,
-  //     failed,
-  //     total: passed + failed,
-  //     duration,
-  //     tests
-  //   };
-  // } catch (err) {}
 });

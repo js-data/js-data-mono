@@ -1,3 +1,3 @@
 describe('Collection#createIndex', () => {
-  it('should work')
-})
+  it('should work');
+});

@@ -1,13 +1,13 @@
-import { assert, JSData } from '../../_setup'
-import { productSchema } from './_productSchema'
+import { assert, JSData } from '../../_setup';
+import { productSchema } from './_productSchema';
 
 describe('Schema.pick', () => {
   it('has the right exports', () => {
-    assert.isFunction(JSData.Schema.prototype.pick)
-  })
+    assert.isFunction(JSData.Schema.prototype.pick);
+  });
 
   it('Copies a value based on the properties defined in the schema', () => {
-    const schema = new JSData.Schema(productSchema)
+    const schema = new JSData.Schema(productSchema);
 
     const data = {
       id: 1,
@@ -16,9 +16,9 @@ describe('Schema.pick', () => {
         length: 1234,
         beep: 'boop'
       }
-    }
+    };
 
-    const copy = schema.pick(data)
+    const copy = schema.pick(data);
 
     assert.deepEqual(copy, {
       id: 1,
@@ -31,8 +31,8 @@ describe('Schema.pick', () => {
       price: undefined,
       tags: undefined,
       warehouseLocation: undefined
-    })
-  })
+    });
+  });
 
   it('Copies a value based on the items defined in the schema allowing extra properties', () => {
     const schema = new JSData.Schema({
@@ -58,7 +58,7 @@ describe('Schema.pick', () => {
         }
       },
       additionalProperties: true
-    })
+    });
 
     const data = {
       id: 1,
@@ -69,9 +69,9 @@ describe('Schema.pick', () => {
           beep: 'boop'
         }
       ]
-    }
+    };
 
-    const copy = schema.pick(data)
+    const copy = schema.pick(data);
 
     assert.deepEqual(copy, {
       id: 1,
@@ -83,8 +83,8 @@ describe('Schema.pick', () => {
           beep: 'boop'
         }
       ]
-    })
-  })
+    });
+  });
 
   it('Copies a value based on the items defined in the schema disallowing extra properties', () => {
     const schema = new JSData.Schema({
@@ -108,7 +108,7 @@ describe('Schema.pick', () => {
           }
         }
       }
-    })
+    });
 
     const data = {
       id: 1,
@@ -119,9 +119,9 @@ describe('Schema.pick', () => {
           beep: 'boop'
         }
       ]
-    }
+    };
 
-    const copy = schema.pick(data, { strict: true })
+    const copy = schema.pick(data, {strict: true});
 
     assert.deepEqual(copy, {
       id: 1,
@@ -133,8 +133,8 @@ describe('Schema.pick', () => {
           // beep was stripped
         }
       ]
-    })
-  })
+    });
+  });
 
   it('Copies a value based on the parent schema', () => {
     const schema = new JSData.Schema({
@@ -159,7 +159,7 @@ describe('Schema.pick', () => {
           }
         }
       }
-    })
+    });
 
     const data = {
       id: 1,
@@ -171,9 +171,9 @@ describe('Schema.pick', () => {
         }
       ],
       dimensions: {}
-    }
+    };
 
-    const copy = schema.pick(data)
+    const copy = schema.pick(data);
 
     assert.deepEqual(copy, {
       id: 1,
@@ -192,11 +192,11 @@ describe('Schema.pick', () => {
         }
       ],
       warehouseLocation: undefined
-    })
-  })
+    });
+  });
 
   it('should ignore undefined properties', () => {
-    const store = new JSData.DataStore()
+    const store = new JSData.DataStore();
 
     const countrySchema = new JSData.Schema({
       type: 'object',
@@ -206,11 +206,11 @@ describe('Schema.pick', () => {
           indexed: true
         }
       }
-    })
+    });
 
     store.defineMapper('country', {
       schema: countrySchema
-    })
+    });
 
     store.add('country', [
       {
@@ -219,29 +219,29 @@ describe('Schema.pick', () => {
       {
         code: 'bar'
       }
-    ])
+    ]);
 
     const addressSchema = new JSData.Schema({
       type: 'object',
       properties: {
-        uid: { type: 'string' },
-        tag: { type: ['string', 'null'] },
+        uid: {type: 'string'},
+        tag: {type: ['string', 'null']},
         country: {
           type: 'object',
           extends: countrySchema,
-          get () {
-            return store.getAll('country', this.tag, { index: 'code' })[0]
+          get() {
+            return store.getAll('country', this.tag, {index: 'code'})[0];
           }
         }
       }
-    })
+    });
 
     store.defineMapper('address', {
       schema: addressSchema
-    })
+    });
 
-    const address = store.createRecord('address', { uid: '123', tag: 'foo' })
-    const address2 = store.createRecord('address', { uid: '789', tag: 'beep' })
+    const address = store.createRecord('address', {uid: '123', tag: 'foo'});
+    const address2 = store.createRecord('address', {uid: '789', tag: 'beep'});
 
     assert.deepEqual(address.toJSON(), {
       uid: '123',
@@ -249,12 +249,12 @@ describe('Schema.pick', () => {
       country: {
         code: 'foo'
       }
-    })
+    });
 
     assert.deepEqual(address2.toJSON(), {
       uid: '789',
       tag: 'beep',
       country: undefined
-    })
-  })
-})
+    });
+  });
+});

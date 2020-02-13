@@ -1,7 +1,7 @@
 export const multipleOfTests = [
   {
     description: 'by int',
-    schema: { multipleOf: 2 },
+    schema: {multipleOf: 2},
     tests: [
       {
         description: 'int by int',
@@ -22,7 +22,7 @@ export const multipleOfTests = [
   },
   {
     description: 'by number',
-    schema: { multipleOf: 1.5 },
+    schema: {multipleOf: 1.5},
     tests: [
       {
         description: 'zero is multiple of anything',
@@ -43,7 +43,7 @@ export const multipleOfTests = [
   },
   {
     description: 'by small number',
-    schema: { multipleOf: 0.0001 },
+    schema: {multipleOf: 0.0001},
     tests: [
       {
         description: '0.0075 is multiple of 0.0001',
@@ -57,4 +57,4 @@ export const multipleOfTests = [
       }
     ]
   }
-]
+];

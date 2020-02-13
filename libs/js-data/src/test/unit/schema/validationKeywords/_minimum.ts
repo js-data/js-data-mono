@@ -1,7 +1,7 @@
 export const minimumTests = [
   {
     description: 'minimum validation',
-    schema: { minimum: 1.1 },
+    schema: {minimum: 1.1},
     tests: [
       {
         description: 'above the minimum is valid',
@@ -39,4 +39,4 @@ export const minimumTests = [
       }
     ]
   }
-]
+];

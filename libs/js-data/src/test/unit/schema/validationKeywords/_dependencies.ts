@@ -2,7 +2,7 @@ export const dependenciesTests = [
   {
     description: 'dependencies',
     schema: {
-      dependencies: { bar: ['foo'] }
+      dependencies: {bar: ['foo']}
     },
     tests: [
       {
@@ -12,17 +12,17 @@ export const dependenciesTests = [
       },
       {
         description: 'nondependant',
-        data: { foo: 1 },
+        data: {foo: 1},
         valid: true
       },
       {
         description: 'with dependency',
-        data: { foo: 1, bar: 2 },
+        data: {foo: 1, bar: 2},
         valid: true
       },
       {
         description: 'missing dependency',
-        data: { bar: 2 },
+        data: {bar: 2},
         valid: false
       },
       {
@@ -35,7 +35,7 @@ export const dependenciesTests = [
   {
     description: 'multiple dependencies',
     schema: {
-      dependencies: { quux: ['foo', 'bar'] }
+      dependencies: {quux: ['foo', 'bar']}
     },
     tests: [
       {
@@ -45,27 +45,27 @@ export const dependenciesTests = [
       },
       {
         description: 'nondependants',
-        data: { foo: 1, bar: 2 },
+        data: {foo: 1, bar: 2},
         valid: true
       },
       {
         description: 'with dependencies',
-        data: { foo: 1, bar: 2, quux: 3 },
+        data: {foo: 1, bar: 2, quux: 3},
         valid: true
       },
       {
         description: 'missing dependency',
-        data: { foo: 1, quux: 2 },
+        data: {foo: 1, quux: 2},
         valid: false
       },
       {
         description: 'missing other dependency',
-        data: { bar: 1, quux: 2 },
+        data: {bar: 1, quux: 2},
         valid: false
       },
       {
         description: 'missing both dependencies',
-        data: { quux: 1 },
+        data: {quux: 1},
         valid: false
       }
     ]
@@ -76,8 +76,8 @@ export const dependenciesTests = [
       dependencies: {
         bar: {
           properties: {
-            foo: { type: 'integer' },
-            bar: { type: 'integer' }
+            foo: {type: 'integer'},
+            bar: {type: 'integer'}
           }
         }
       }
@@ -85,29 +85,29 @@ export const dependenciesTests = [
     tests: [
       {
         description: 'valid',
-        data: { foo: 1, bar: 2 },
+        data: {foo: 1, bar: 2},
         valid: true
       },
       {
         description: 'no dependency',
-        data: { foo: 'quux' },
+        data: {foo: 'quux'},
         valid: true
       },
       {
         description: 'wrong type',
-        data: { foo: 'quux', bar: 2 },
+        data: {foo: 'quux', bar: 2},
         valid: false
       },
       {
         description: 'wrong type other',
-        data: { foo: 2, bar: 'quux' },
+        data: {foo: 2, bar: 'quux'},
         valid: false
       },
       {
         description: 'wrong type both',
-        data: { foo: 'quux', bar: 'quux' },
+        data: {foo: 'quux', bar: 'quux'},
         valid: false
       }
     ]
   }
-]
+];

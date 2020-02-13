@@ -1,16 +1,16 @@
 export const minPropertiesTests = [
   {
     description: 'minProperties validation',
-    schema: { minProperties: 1 },
+    schema: {minProperties: 1},
     tests: [
       {
         description: 'longer is valid',
-        data: { foo: 1, bar: 2 },
+        data: {foo: 1, bar: 2},
         valid: true
       },
       {
         description: 'exact length is valid',
-        data: { foo: 1 },
+        data: {foo: 1},
         valid: true
       },
       {
@@ -25,4 +25,4 @@ export const minPropertiesTests = [
       }
     ]
   }
-]
+];

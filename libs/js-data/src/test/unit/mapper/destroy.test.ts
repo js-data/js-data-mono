@@ -1,60 +1,60 @@
-import { assert, JSData } from '../../_setup'
+import { assert, JSData } from '../../_setup';
 
 describe('Mapper#createRecord', () => {
   it('should be an instance method', () => {
-    const Mapper = JSData.Mapper
-    const mapper = new Mapper({ name: 'foo' })
-    assert.equal(typeof mapper.destroy, 'function')
-    assert.strictEqual(mapper.destroy, Mapper.prototype.destroy)
-  })
+    const Mapper = JSData.Mapper;
+    const mapper = new Mapper({name: 'foo'});
+    assert.equal(typeof mapper.destroy, 'function');
+    assert.strictEqual(mapper.destroy, Mapper.prototype.destroy);
+  });
   it('should destroy', async () => {
-    const id = 1
-    let destroyCalled = false
+    const id = 1;
+    let destroyCalled = false;
     const User = new JSData.Mapper({
       name: 'user',
       defaultAdapter: 'mock'
-    })
+    });
     User.registerAdapter('mock', {
-      destroy (mapper, _id, Opts) {
-        destroyCalled = true
+      destroy(mapper, _id, Opts) {
+        destroyCalled = true;
         return new Promise((resolve, reject) => {
-          assert.strictEqual(mapper, User, 'should pass in the Model')
-          assert.deepEqual(_id, id, 'should pass in the id')
-          assert.equal(Opts.raw, false, 'Opts are provided')
-          resolve('foo')
-        })
+          assert.strictEqual(mapper, User, 'should pass in the Model');
+          assert.deepEqual(_id, id, 'should pass in the id');
+          assert.equal(Opts.raw, false, 'Opts are provided');
+          resolve('foo');
+        });
       }
-    })
-    const result = await User.destroy(id)
-    assert(destroyCalled, 'Adapter#destroy should have been called')
-    assert.equal(result, 'foo', 'returned data')
-  })
+    });
+    const result = await User.destroy(id);
+    assert(destroyCalled, 'Adapter#destroy should have been called');
+    assert.equal(result, 'foo', 'returned data');
+  });
   it('should return raw', async () => {
-    const id = 1
-    let destroyCalled = false
+    const id = 1;
+    let destroyCalled = false;
     const User = new JSData.Mapper({
       name: 'user',
       raw: true,
       defaultAdapter: 'mock'
-    })
+    });
     User.registerAdapter('mock', {
-      destroy (mapper, _id, Opts) {
-        destroyCalled = true
+      destroy(mapper, _id, Opts) {
+        destroyCalled = true;
         return new Promise((resolve, reject) => {
-          assert.strictEqual(mapper, User, 'should pass in the Model')
-          assert.deepEqual(_id, id, 'should pass in the id')
-          assert.equal(Opts.raw, true, 'Opts are provided')
+          assert.strictEqual(mapper, User, 'should pass in the Model');
+          assert.deepEqual(_id, id, 'should pass in the id');
+          assert.equal(Opts.raw, true, 'Opts are provided');
           resolve({
             deleted: 1,
             data: 'foo'
-          })
-        })
+          });
+        });
       }
-    })
-    const data = await User.destroy(id)
-    assert(destroyCalled, 'Adapter#destroy should have been called')
-    assert.equal(data.adapter, 'mock', 'should have adapter name in response')
-    assert.equal(data.deleted, 1, 'should have other metadata in response')
-    assert.equal(data.data, 'foo', 'foo should have been returned')
-  })
-})
+    });
+    const data = await User.destroy(id);
+    assert(destroyCalled, 'Adapter#destroy should have been called');
+    assert.equal(data.adapter, 'mock', 'should have adapter name in response');
+    assert.equal(data.deleted, 1, 'should have other metadata in response');
+    assert.equal(data.data, 'foo', 'foo should have been returned');
+  });
+});

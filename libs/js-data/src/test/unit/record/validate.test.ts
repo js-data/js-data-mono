@@ -1,12 +1,12 @@
-import { assert, JSData } from '../../_setup'
-import { productSchema } from '../schema/_productSchema'
+import { assert, JSData } from '../../_setup';
+import { productSchema } from '../schema/_productSchema';
 
 describe('Record#validate', () => {
   it('should validate', () => {
     const ProductMapper = new JSData.Mapper({
       name: 'product',
       schema: productSchema
-    })
+    });
 
     let product = ProductMapper.createRecord(
       {
@@ -26,12 +26,12 @@ describe('Record#validate', () => {
       {
         noValidate: true
       }
-    )
+    );
 
-    let errors = product.validate()
+    let errors = product.validate();
 
-    assert(product.isValid())
-    assert(!errors)
+    assert(product.isValid());
+    assert(!errors);
 
     product = ProductMapper.createRecord(
       {
@@ -51,14 +51,14 @@ describe('Record#validate', () => {
       {
         noValidate: true
       }
-    )
-    errors = product.validate()
-    assert(!product.isValid())
+    );
+    errors = product.validate();
+    assert(!product.isValid());
     assert.deepEqual(errors, [
-      { expected: 'a value', actual: 'undefined', path: 'name' },
-      { expected: 'one of (number)', actual: 'string', path: 'price' },
-      { expected: 'a value', actual: 'undefined', path: 'dimensions.width' },
-      { expected: 'one of (number)', actual: 'string', path: 'dimensions.height' }
-    ])
-  })
-})
+      {expected: 'a value', actual: 'undefined', path: 'name'},
+      {expected: 'one of (number)', actual: 'string', path: 'price'},
+      {expected: 'a value', actual: 'undefined', path: 'dimensions.width'},
+      {expected: 'one of (number)', actual: 'string', path: 'dimensions.height'}
+    ]);
+  });
+});

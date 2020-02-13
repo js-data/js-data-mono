@@ -1,13 +1,12 @@
 import { utils } from '@js-data/js-data';
-import { assert } from 'chai';
 
 describe('utils.set', () => {
   it('can set a value of an object at the provided key or path', () => {
     const john: any = {name: 'John', age: 25, parent: {name: 'Mom', age: 50}};
     utils.set(john, 'spy', true);
     utils.set(john, 'parent.age', 55);
-    assert.equal(true, john.spy);
-    assert.equal(55, john.parent.age);
+    expect(true).toEqual(john.spy);
+    expect(55).toEqual(john.parent.age);
   });
 
   it('can set a values of an object with a path/value map', () => {
@@ -17,15 +16,15 @@ describe('utils.set', () => {
       parent: {age: 55},
       'parent.name': 'Grandma'
     });
-    assert.equal(true, john.spy);
-    assert.equal(55, john.parent.age);
-    assert.equal('Grandma', john.parent.name);
+    expect(true).toEqual(john.spy);
+    expect(55).toEqual(john.parent.age);
+    expect('Grandma').toEqual(john.parent.name);
   });
 });
 
 describe('utils.unset', () => {
   it('should be a static method', () => {
-    assert.equal(typeof utils.unset, 'function', 'has the unset method');
+    expect(typeof utils.unset).toEqual('function');
   });
 
   it('can unSet a value of an object at the provided key or path', () => {
@@ -33,7 +32,7 @@ describe('utils.unset', () => {
     utils.unset(john, 'spy');
     utils.unset(john, 'parent.age');
     utils.unset(john, 'parent.notExist');
-    assert.equal(null, john.spy);
-    assert.equal(null, john.parent.age);
+    expect(null).toEqual(john.spy);
+    expect(null).toEqual(john.parent.age);
   });
 });

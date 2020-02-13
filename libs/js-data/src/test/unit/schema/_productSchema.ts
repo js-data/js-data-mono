@@ -8,7 +8,7 @@ export const productSchema = {
       description: 'The unique identifier for a product',
       type: 'number'
     },
-    name: { type: 'string' },
+    name: {type: 'string'},
     price: {
       type: 'number',
       minimum: 0,
@@ -16,16 +16,16 @@ export const productSchema = {
     },
     tags: {
       type: 'array',
-      items: { type: 'string' },
+      items: {type: 'string'},
       minItems: 1,
       uniqueItems: true
     },
     dimensions: {
       type: 'object',
       properties: {
-        length: { type: 'number' },
-        width: { type: 'number' },
-        height: { type: 'number' }
+        length: {type: 'number'},
+        width: {type: 'number'},
+        height: {type: 'number'}
       },
       required: ['length', 'width', 'height']
     },
@@ -33,10 +33,10 @@ export const productSchema = {
       description: 'Coordinates of the warehouse with the product',
       type: 'object',
       properties: {
-        latitude: { type: 'number' },
-        longitude: { type: 'number' }
+        latitude: {type: 'number'},
+        longitude: {type: 'number'}
       }
     }
   },
   required: ['id', 'name', 'price']
-}
+};

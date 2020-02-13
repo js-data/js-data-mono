@@ -4,28 +4,28 @@ export const patternPropertiesTests = [
     schema: {
       type: 'object',
       patternProperties: {
-        'f.*o': { type: 'integer' }
+        'f.*o': {type: 'integer'}
       }
     },
     tests: [
       {
         description: 'a single valid match is valid',
-        data: { foo: 1 },
+        data: {foo: 1},
         valid: true
       },
       {
         description: 'multiple valid matches is valid',
-        data: { foo: 1, foooooo: 2 },
+        data: {foo: 1, foooooo: 2},
         valid: true
       },
       {
         description: 'a single invalid match is invalid',
-        data: { foo: 'bar', fooooo: 2 },
+        data: {foo: 'bar', fooooo: 2},
         valid: false
       },
       {
         description: 'multiple invalid matches is invalid',
-        data: { foo: 'bar', foooooo: 'baz' },
+        data: {foo: 'bar', foooooo: 'baz'},
         valid: false
       },
       {
@@ -40,39 +40,39 @@ export const patternPropertiesTests = [
     schema: {
       type: 'object',
       patternProperties: {
-        'a*': { type: 'integer' },
-        'aaa*': { type: 'integer', maximum: 20 }
+        'a*': {type: 'integer'},
+        'aaa*': {type: 'integer', maximum: 20}
       }
     },
     tests: [
       {
         description: 'a single valid match is valid',
-        data: { a: 21 },
+        data: {a: 21},
         valid: true
       },
       {
         description: 'a simultaneous match is valid',
-        data: { aaaa: 18 },
+        data: {aaaa: 18},
         valid: true
       },
       {
         description: 'multiple matches is valid',
-        data: { a: 21, aaaa: 18 },
+        data: {a: 21, aaaa: 18},
         valid: true
       },
       {
         description: 'an invalid due to one is invalid',
-        data: { a: 'bar' },
+        data: {a: 'bar'},
         valid: false
       },
       {
         description: 'an invalid due to the other is invalid',
-        data: { aaaa: 31 },
+        data: {aaaa: 31},
         valid: false
       },
       {
         description: 'an invalid due to both is invalid',
-        data: { aaa: 'foo', aaaa: 31 },
+        data: {aaa: 'foo', aaaa: 31},
         valid: false
       }
     ]
@@ -82,31 +82,31 @@ export const patternPropertiesTests = [
     schema: {
       type: 'object',
       patternProperties: {
-        '[0-9]{2,}': { type: 'boolean' },
-        X_: { type: 'string' }
+        '[0-9]{2,}': {type: 'boolean'},
+        X_: {type: 'string'}
       }
     },
     tests: [
       {
         description: 'non recognized members are ignored',
-        data: { 'answer 1': '42' },
+        data: {'answer 1': '42'},
         valid: true
       },
       {
         description: 'recognized members are accounted for',
-        data: { a31b: null },
+        data: {a31b: null},
         valid: false
       },
       {
         description: 'regexes are case sensitive',
-        data: { a_x_3: 3 },
+        data: {a_x_3: 3},
         valid: true
       },
       {
         description: 'regexes are case sensitive, 2',
-        data: { a_X_3: 3 },
+        data: {a_X_3: 3},
         valid: false
       }
     ]
   }
-]
+];

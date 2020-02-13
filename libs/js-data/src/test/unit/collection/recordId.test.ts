@@ -1,3 +1,3 @@
 describe('Collection#recordId', () => {
-  it('should work')
-})
+  it('should work');
+});

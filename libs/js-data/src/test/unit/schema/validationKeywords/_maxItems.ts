@@ -1,7 +1,7 @@
 export const maxItemsTests = [
   {
     description: 'maxItems validation',
-    schema: { maxItems: 2 },
+    schema: {maxItems: 2},
     tests: [
       {
         description: 'shorter is valid',
@@ -25,4 +25,4 @@ export const maxItemsTests = [
       }
     ]
   }
-]
+];

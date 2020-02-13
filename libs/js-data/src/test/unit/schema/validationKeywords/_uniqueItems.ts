@@ -1,7 +1,7 @@
 export const uniqueItemsTests = [
   {
     description: 'uniqueItems validation',
-    schema: { uniqueItems: true },
+    schema: {uniqueItems: true},
     tests: [
       {
         description: 'unique array of integers is valid',
@@ -20,22 +20,22 @@ export const uniqueItemsTests = [
       },
       {
         description: 'unique array of objects is valid',
-        data: [{ foo: 'bar' }, { foo: 'baz' }],
+        data: [{foo: 'bar'}, {foo: 'baz'}],
         valid: true
       },
       {
         description: 'non-unique array of objects is invalid',
-        data: [{ foo: 'bar' }, { foo: 'bar' }],
+        data: [{foo: 'bar'}, {foo: 'bar'}],
         valid: false
       },
       {
         description: 'unique array of nested objects is valid',
-        data: [{ foo: { bar: { baz: true } } }, { foo: { bar: { baz: false } } }],
+        data: [{foo: {bar: {baz: true}}}, {foo: {bar: {baz: false}}}],
         valid: true
       },
       {
         description: 'non-unique array of nested objects is invalid',
-        data: [{ foo: { bar: { baz: true } } }, { foo: { bar: { baz: true } } }],
+        data: [{foo: {bar: {baz: true}}}, {foo: {bar: {baz: true}}}],
         valid: false
       },
       {
@@ -70,4 +70,4 @@ export const uniqueItemsTests = [
       }
     ]
   }
-]
+];

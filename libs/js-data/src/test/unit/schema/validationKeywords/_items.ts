@@ -2,7 +2,7 @@ export const itemsTests = [
   {
     description: 'a schema given for items',
     schema: {
-      items: { type: 'integer' }
+      items: {type: 'integer'}
     },
     tests: [
       {
@@ -17,7 +17,7 @@ export const itemsTests = [
       },
       {
         description: 'ignores non-arrays',
-        data: { foo: 'bar' },
+        data: {foo: 'bar'},
         valid: true
       }
     ]
@@ -25,7 +25,7 @@ export const itemsTests = [
   {
     description: 'an array of schemas for items',
     schema: {
-      items: [{ type: 'integer' }, { type: 'string' }]
+      items: [{type: 'integer'}, {type: 'string'}]
     },
     tests: [
       {
@@ -40,14 +40,14 @@ export const itemsTests = [
       }
     ]
   }
-]
+];
 
 export const additionalItemsTests = [
   {
     description: 'additionalItems as schema',
     schema: {
       items: [{}],
-      additionalItems: { type: 'integer' }
+      additionalItems: {type: 'integer'}
     },
     tests: [
       {
@@ -97,7 +97,7 @@ export const additionalItemsTests = [
   },
   {
     description: 'additionalItems as false without items',
-    schema: { additionalItems: false },
+    schema: {additionalItems: false},
     tests: [
       {
         description: 'items defaults to empty schema so everything is valid',
@@ -106,14 +106,14 @@ export const additionalItemsTests = [
       },
       {
         description: 'ignores non-arrays',
-        data: { foo: 'bar' },
+        data: {foo: 'bar'},
         valid: true
       }
     ]
   },
   {
     description: 'additionalItems are allowed by default',
-    schema: { items: [{ type: 'integer' }] },
+    schema: {items: [{type: 'integer'}]},
     tests: [
       {
         description: 'only the first item is validated',
@@ -122,4 +122,4 @@ export const additionalItemsTests = [
       }
     ]
   }
-]
+];

@@ -11,12 +11,12 @@ export const requiredTests = [
     tests: [
       {
         description: 'present required property is valid',
-        data: { foo: 1 },
+        data: {foo: 1},
         valid: true
       },
       {
         description: 'non-present required property is invalid',
-        data: { bar: 1 },
+        data: {bar: 1},
         valid: false
       }
     ]
@@ -36,4 +36,4 @@ export const requiredTests = [
       }
     ]
   }
-]
+];

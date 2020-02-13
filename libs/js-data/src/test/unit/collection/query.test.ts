@@ -1,3 +1,3 @@
 describe('Collection#query', () => {
-  it('should work')
-})
+  it('should work');
+});

@@ -393,7 +393,7 @@ export default class Record extends Settable {
    * validation.
    * @since 3.0.0
    */
-  isValid(opts) {
+  isValid(opts?) {
     return !this._mapper().validate(this, opts);
   }
 
@@ -841,7 +841,7 @@ export default class Record extends Settable {
    * @returns {*} Array of errors or `undefined` if no errors.
    * @since 3.0.0
    */
-  validate(opts) {
+  validate(opts?) {
     return this._mapper().validate(this, opts);
   }
 }

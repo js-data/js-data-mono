@@ -2,7 +2,7 @@ export const notTests = [
   {
     description: 'not',
     schema: {
-      not: { type: 'integer' }
+      not: {type: 'integer'}
     },
     tests: [
       {
@@ -20,7 +20,7 @@ export const notTests = [
   {
     description: 'not multiple types',
     schema: {
-      not: { type: ['integer', 'boolean'] }
+      not: {type: ['integer', 'boolean']}
     },
     tests: [
       {
@@ -60,12 +60,12 @@ export const notTests = [
       },
       {
         description: 'other match',
-        data: { foo: 1 },
+        data: {foo: 1},
         valid: true
       },
       {
         description: 'mismatch',
-        data: { foo: 'bar' },
+        data: {foo: 'bar'},
         valid: false
       }
     ]
@@ -83,14 +83,14 @@ export const notTests = [
     tests: [
       {
         description: 'property present',
-        data: { foo: 1, bar: 2 },
+        data: {foo: 1, bar: 2},
         valid: false
       },
       {
         description: 'property absent',
-        data: { bar: 1, baz: 2 },
+        data: {bar: 1, baz: 2},
         valid: true
       }
     ]
   }
-]
+];

@@ -6,14 +6,14 @@ export const allOfTests = [
         {
           type: 'object',
           properties: {
-            bar: { type: 'integer' }
+            bar: {type: 'integer'}
           },
           required: ['bar']
         },
         {
           type: 'object',
           properties: {
-            foo: { type: 'string' }
+            foo: {type: 'string'}
           },
           required: ['foo']
         }
@@ -22,22 +22,22 @@ export const allOfTests = [
     tests: [
       {
         description: 'allOf',
-        data: { foo: 'baz', bar: 2 },
+        data: {foo: 'baz', bar: 2},
         valid: true
       },
       {
         description: 'mismatch second',
-        data: { foo: 'baz' },
+        data: {foo: 'baz'},
         valid: false
       },
       {
         description: 'mismatch first',
-        data: { bar: 2 },
+        data: {bar: 2},
         valid: false
       },
       {
         description: 'wrong type',
-        data: { foo: 'baz', bar: 'quux' },
+        data: {foo: 'baz', bar: 'quux'},
         valid: false
       }
     ]
@@ -46,20 +46,20 @@ export const allOfTests = [
     description: 'allOf with base schema',
     schema: {
       type: 'object',
-      properties: { bar: { type: 'integer' } },
+      properties: {bar: {type: 'integer'}},
       required: ['bar'],
       allOf: [
         {
           type: 'object',
           properties: {
-            foo: { type: 'string' }
+            foo: {type: 'string'}
           },
           required: ['foo']
         },
         {
           type: 'object',
           properties: {
-            baz: { type: 'null' }
+            baz: {type: 'null'}
           },
           required: ['baz']
         }
@@ -68,27 +68,27 @@ export const allOfTests = [
     tests: [
       {
         description: 'valid',
-        data: { foo: 'quux', bar: 2, baz: null },
+        data: {foo: 'quux', bar: 2, baz: null},
         valid: true
       },
       {
         description: 'mismatch base schema',
-        data: { foo: 'quux', baz: null },
+        data: {foo: 'quux', baz: null},
         valid: false
       },
       {
         description: 'mismatch first allOf',
-        data: { bar: 2, baz: null },
+        data: {bar: 2, baz: null},
         valid: false
       },
       {
         description: 'mismatch second allOf',
-        data: { foo: 'quux', bar: 2 },
+        data: {foo: 'quux', bar: 2},
         valid: false
       },
       {
         description: 'mismatch both',
-        data: { bar: 2 },
+        data: {bar: 2},
         valid: false
       }
     ]
@@ -97,8 +97,8 @@ export const allOfTests = [
     description: 'allOf simple types',
     schema: {
       allOf: [
-        { type: 'integer', maximum: 30 },
-        { type: 'integer', minimum: 20 }
+        {type: 'integer', maximum: 30},
+        {type: 'integer', minimum: 20}
       ]
     },
     tests: [
@@ -114,4 +114,4 @@ export const allOfTests = [
       }
     ]
   }
-]
+];

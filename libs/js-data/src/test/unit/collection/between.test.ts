@@ -1,3 +1,3 @@
 describe('Collection#between', () => {
-  it('should work')
-})
+  it('should work');
+});

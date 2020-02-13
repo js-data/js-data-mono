@@ -1,12 +1,12 @@
-import { assert, JSData } from '../../_setup'
-import { productSchema } from '../schema/_productSchema'
+import { assert, JSData } from '../../_setup';
+import { productSchema } from '../schema/_productSchema';
 
 describe('Mapper#validate', () => {
   it('should validate a record', () => {
     const ProductMapper = new JSData.Mapper({
       name: 'product',
       schema: productSchema
-    })
+    });
 
     let errors = ProductMapper.validate({
       id: 3,
@@ -21,9 +21,9 @@ describe('Mapper#validate', () => {
         latitude: 54.4,
         longitude: -32.7
       }
-    })
+    });
 
-    assert(!errors)
+    assert(!errors);
 
     errors = ProductMapper.validate([
       {
@@ -40,9 +40,9 @@ describe('Mapper#validate', () => {
           longitude: -32.7
         }
       }
-    ])
+    ]);
 
-    assert(!errors)
+    assert(!errors);
 
     errors = ProductMapper.validate({
       id: 3,
@@ -57,13 +57,13 @@ describe('Mapper#validate', () => {
         latitude: 54.4,
         longitude: -32.7
       }
-    })
+    });
     assert.deepEqual(errors, [
-      { expected: 'a value', actual: 'undefined', path: 'name' },
-      { expected: 'one of (number)', actual: 'string', path: 'price' },
-      { expected: 'a value', actual: 'undefined', path: 'dimensions.width' },
-      { expected: 'one of (number)', actual: 'string', path: 'dimensions.height' }
-    ])
+      {expected: 'a value', actual: 'undefined', path: 'name'},
+      {expected: 'one of (number)', actual: 'string', path: 'price'},
+      {expected: 'a value', actual: 'undefined', path: 'dimensions.width'},
+      {expected: 'one of (number)', actual: 'string', path: 'dimensions.height'}
+    ]);
 
     errors = ProductMapper.validate([
       {
@@ -80,16 +80,16 @@ describe('Mapper#validate', () => {
           longitude: -32.7
         }
       }
-    ])
+    ]);
     assert.deepEqual(errors, [
       [
-        { expected: 'a value', actual: 'undefined', path: 'name' },
-        { expected: 'one of (number)', actual: 'string', path: 'price' },
-        { expected: 'a value', actual: 'undefined', path: 'dimensions.width' },
-        { expected: 'one of (number)', actual: 'string', path: 'dimensions.height' }
+        {expected: 'a value', actual: 'undefined', path: 'name'},
+        {expected: 'one of (number)', actual: 'string', path: 'price'},
+        {expected: 'a value', actual: 'undefined', path: 'dimensions.width'},
+        {expected: 'one of (number)', actual: 'string', path: 'dimensions.height'}
       ]
-    ])
-  })
+    ]);
+  });
   it('should validate based on json-schema.org rules', () => {
     const User = new JSData.Mapper({
       name: 'user',
@@ -104,15 +104,15 @@ describe('Mapper#validate', () => {
           level: {}
         }
       }
-    })
+    });
 
-    const user = User.createRecord({ id: 1, age: 30, title: 'boss', level: 1 })
+    const user = User.createRecord({id: 1, age: 30, title: 'boss', level: 1});
 
     try {
-      user.age = 'foo'
-      assert.fail()
+      user.age = 'foo';
+      assert.fail();
     } catch (err) {
-      assert(err instanceof Error)
+      assert(err instanceof Error);
       assert.deepEqual(
         err.errors,
         [
@@ -123,13 +123,13 @@ describe('Mapper#validate', () => {
           }
         ],
         'should require a number'
-      )
-      assert.equal(err.message, 'validation failed')
+      );
+      assert.equal(err.message, 'validation failed');
     }
     try {
-      user.age = {}
+      user.age = {};
     } catch (err) {
-      assert(err instanceof Error)
+      assert(err instanceof Error);
       assert.deepEqual(
         err.errors,
         [
@@ -140,16 +140,16 @@ describe('Mapper#validate', () => {
           }
         ],
         'should require a number'
-      )
-      assert.equal(err.message, 'validation failed')
+      );
+      assert.equal(err.message, 'validation failed');
     }
     assert.doesNotThrow(() => {
-      user.age = undefined
-    }, 'should accept undefined')
+      user.age = undefined;
+    }, 'should accept undefined');
     try {
-      user.title = 1234
+      user.title = 1234;
     } catch (err) {
-      assert(err instanceof Error)
+      assert(err instanceof Error);
       assert.deepEqual(
         err.errors,
         [
@@ -160,24 +160,24 @@ describe('Mapper#validate', () => {
           }
         ],
         'should require a string or null'
-      )
-      assert.equal(err.message, 'validation failed')
+      );
+      assert.equal(err.message, 'validation failed');
     }
     assert.doesNotThrow(() => {
-      user.title = 'foo'
-    }, 'should accept a string')
+      user.title = 'foo';
+    }, 'should accept a string');
     assert.doesNotThrow(() => {
-      user.title = null
-    }, 'should accept null')
+      user.title = null;
+    }, 'should accept null');
     assert.doesNotThrow(() => {
-      user.title = undefined
-    }, 'should accept undefined')
+      user.title = undefined;
+    }, 'should accept undefined');
 
     try {
-      const user = User.createRecord({ age: 'foo' })
-      user.set('foo', 'bar')
+      const user = User.createRecord({age: 'foo'});
+      user.set('foo', 'bar');
     } catch (err) {
-      assert(err instanceof Error)
+      assert(err instanceof Error);
       assert.deepEqual(
         err.errors,
         [
@@ -188,13 +188,13 @@ describe('Mapper#validate', () => {
           }
         ],
         'should validate on create'
-      )
-      assert.equal(err.message, 'validation failed')
+      );
+      assert.equal(err.message, 'validation failed');
     }
 
     assert.doesNotThrow(() => {
-      const user = User.createRecord({ age: 'foo' }, { noValidate: true })
-      user.set('foo', 'bar')
-    }, 'should NOT validate on create')
-  })
-})
+      const user = User.createRecord({age: 'foo'}, {noValidate: true});
+      user.set('foo', 'bar');
+    }, 'should NOT validate on create');
+  });
+});

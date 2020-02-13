@@ -1,7 +1,7 @@
 export const minLengthTests = [
   {
     description: 'minLength validation',
-    schema: { minLength: 2 },
+    schema: {minLength: 2},
     tests: [
       {
         description: 'longer is valid',
@@ -31,4 +31,4 @@ export const minLengthTests = [
       // }
     ]
   }
-]
+];

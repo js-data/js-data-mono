@@ -1,7 +1,7 @@
 export const patternTests = [
   {
     description: 'pattern validation',
-    schema: { pattern: '^a*$' },
+    schema: {pattern: '^a*$'},
     tests: [
       {
         description: 'a matching pattern is valid',
@@ -22,7 +22,7 @@ export const patternTests = [
   },
   {
     description: 'pattern is not anchored',
-    schema: { pattern: 'a+' },
+    schema: {pattern: 'a+'},
     tests: [
       {
         description: 'matches a substring',
@@ -31,4 +31,4 @@ export const patternTests = [
       }
     ]
   }
-]
+];

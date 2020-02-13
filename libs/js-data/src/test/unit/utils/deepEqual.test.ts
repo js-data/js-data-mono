@@ -1,28 +1,24 @@
-import { assert, JSData } from '../../_setup'
+import { JSData } from '../../_setup';
 
-const utils = JSData.utils
+const utils = JSData.utils;
 
 describe('utils.deepEqual', () => {
-  it('should be a static method', () => {
-    assert.equal(typeof utils.deepEqual, 'function', 'has the deepEqual method')
-  })
-
   it('does deep equal comparison', () => {
-    const objA = { name: 'John', age: 90 }
-    const arrA = ['a', 'b', 'c']
-    const arrB = ['a', 'b', 'c', 'd', 'e']
+    const objA = {name: 'John', age: 90};
+    const arrA = ['a', 'b', 'c'];
+    const arrB = ['a', 'b', 'c', 'd', 'e'];
 
-    assert.isTrue(utils.deepEqual(2, 2), '2 deep equals 2')
-    assert.isTrue(utils.deepEqual('test', 'test'), '"test" deep equals "test"')
-    assert.isTrue(utils.deepEqual({}, {}), '{} deep equals {}')
-    assert.isTrue(utils.deepEqual(objA, objA), objA + ' deep equals ' + objA)
-    assert.isTrue(utils.deepEqual(arrA, arrA), 'arrA deep equals arrA')
+    expect(utils.deepEqual(2, 2)).toBe(true);
+    expect(utils.deepEqual('test', 'test')).toBe(true);
+    expect(utils.deepEqual({}, {})).toBe(true);
+    expect(utils.deepEqual(objA, objA)).toBe(true);
+    expect(utils.deepEqual(arrA, arrA)).toBe(true);
 
-    assert.isFalse(utils.deepEqual(1, 2), '1 does not strict equal 2')
-    assert.isFalse(utils.deepEqual(1, '1'), '1 does not strict equal "1"')
-    assert.isFalse(utils.deepEqual('foo', 'bar'), '"foo" does not equal "bar')
-    assert.isFalse(utils.deepEqual(arrA, arrB), 'arrA does not deep equal arrB')
-  })
+    expect(utils.deepEqual(1, 2)).toBe(false);
+    expect(utils.deepEqual(1, '1')).toBe(false);
+    expect(utils.deepEqual('foo', 'bar')).toBe(false);
+    expect(utils.deepEqual(arrA, arrB)).toBe(false);
+  });
 
   it('compares identical objects', () => {
     const objA = {
@@ -32,7 +28,7 @@ describe('utils.deepEqual', () => {
         item: 'item 1',
         colors: ['red', 'green', 'blue']
       }
-    }
+    };
     const objB = {
       name: 'John',
       id: 27,
@@ -40,11 +36,11 @@ describe('utils.deepEqual', () => {
         item: 'item 1',
         colors: ['red', 'green', 'blue']
       }
-    }
-    assert.isTrue(utils.deepEqual(objA, objB))
-    assert.isTrue(utils.deepEqual([objA, objB], [objA, objB]))
+    };
+    expect(utils.deepEqual(objA, objB)).toBe(true);
+    expect(utils.deepEqual([objA, objB], [objA, objB])).toBe(true);
 
-    objA.nested.colors[0] = 'yellow'
-    assert.isFalse(utils.deepEqual(objA, objB))
-  })
-})
+    objA.nested.colors[0] = 'yellow';
+    expect(utils.deepEqual(objA, objB)).toBe(false);
+  });
+});

@@ -1,22 +1,18 @@
-import { assert, JSData } from '../../_setup'
+import { JSData } from '../../_setup';
 
-const utils = JSData.utils
+const utils = JSData.utils;
 
 describe('utils.equal', () => {
-  it('should be a static method', () => {
-    assert.equal(typeof utils.equal, 'function', 'has the equal method')
-  })
-
   it('returns true for equal values', () => {
-    const objA = { name: 'John', age: 90 }
-    assert.isTrue(utils.equal(1, '1'), '1 equals "1"')
-    assert.isTrue(utils.equal(2, 2), '2 equals 2')
-    assert.isTrue(utils.equal('test', 'test'), '"test" equals "test"')
-    assert.isTrue(utils.equal(objA, objA), objA + ' equals ' + objA)
-  })
+    const objA = {name: 'John', age: 90};
+    expect(utils.equal(1, '1')).toBe(true);
+    expect(utils.equal(2, 2)).toBe(true);
+    expect(utils.equal('test', 'test')).toBe(true);
+    expect(utils.equal(objA, objA)).toBe(true);
+  });
 
   it('returns false for two different values', () => {
-    assert.isFalse(utils.equal(1, 2), '1 does not equal 2')
-    assert.isFalse(utils.equal({}, {}), '{} does not equal {}')
-  })
-})
+    expect(utils.equal(1, 2)).toBe(false);
+    expect(utils.equal({}, {})).toBe(false);
+  });
+});

@@ -1,7 +1,7 @@
 export const typeTests = [
   {
     description: 'integer type matches integers',
-    schema: { type: 'integer' },
+    schema: {type: 'integer'},
     tests: [
       {
         description: 'an integer is an integer',
@@ -47,7 +47,7 @@ export const typeTests = [
   },
   {
     description: 'number type matches numbers',
-    schema: { type: 'number' },
+    schema: {type: 'number'},
     tests: [
       {
         description: 'an integer is a number',
@@ -93,7 +93,7 @@ export const typeTests = [
   },
   {
     description: 'string type matches strings',
-    schema: { type: 'string' },
+    schema: {type: 'string'},
     tests: [
       {
         description: '1 is not a string',
@@ -139,7 +139,7 @@ export const typeTests = [
   },
   {
     description: 'object type matches objects',
-    schema: { type: 'object' },
+    schema: {type: 'object'},
     tests: [
       {
         description: 'an integer is not an object',
@@ -180,7 +180,7 @@ export const typeTests = [
   },
   {
     description: 'array type matches arrays',
-    schema: { type: 'array' },
+    schema: {type: 'array'},
     tests: [
       {
         description: 'an integer is not an array',
@@ -221,7 +221,7 @@ export const typeTests = [
   },
   {
     description: 'boolean type matches booleans',
-    schema: { type: 'boolean' },
+    schema: {type: 'boolean'},
     tests: [
       {
         description: 'an integer is not a boolean',
@@ -262,7 +262,7 @@ export const typeTests = [
   },
   {
     description: 'null type matches only the null object',
-    schema: { type: 'null' },
+    schema: {type: 'null'},
     tests: [
       {
         description: 'an integer is not null',
@@ -303,7 +303,7 @@ export const typeTests = [
   },
   {
     description: 'multiple types can be specified in an array',
-    schema: { type: ['integer', 'string'] },
+    schema: {type: ['integer', 'string']},
     tests: [
       {
         description: 'an integer is valid',
@@ -342,4 +342,4 @@ export const typeTests = [
       }
     ]
   }
-]
+];
