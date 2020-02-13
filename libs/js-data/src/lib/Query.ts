@@ -69,6 +69,213 @@ export interface QueryDefinition {
  * @since 3.0.0
  */
 export default class Query extends Component {
+
+  constructor(public collection?) {
+    super();
+  }
+
+  /**
+   * The filtering operators supported by {@link Query#filter}, and which are
+   * implemented by adapters (for the most part).
+   *
+   * @example <caption>Variant 1</caption>
+   * const JSData = require('js-data');
+   * const { DataStore } = JSData;
+   * console.log('Using JSData v' + JSData.version.full);
+   *
+   * const store = new DataStore();
+   * store.defineMapper('post');
+   * const posts = [
+   *   { author: 'John', age: 30, status: 'published', id: 1 },
+   *   { author: 'Sally', age: 31, status: 'published', id: 2 },
+   *   { author: 'Mike', age: 32, status: 'published', id: 3 },
+   *   { author: 'Adam', age: 33, status: 'deleted', id: 4 },
+   *   { author: 'Adam', age: 33, status: 'published', id: 5 }
+   * ];
+   * store.add('post', posts);
+   * const publishedPosts = store.filter('post', {
+   *   status: 'published',
+   *   limit: 2
+   * });
+   * console.log(publishedPosts);
+   *
+   *
+   * @example <caption>Variant 2</caption>
+   * const JSData = require('js-data');
+   * const { DataStore } = JSData;
+   * console.log('Using JSData v' + JSData.version.full);
+   *
+   * const store = new DataStore();
+   * store.defineMapper('post')
+   * const posts = [
+   *   { author: 'John', age: 30, status: 'published', id: 1 },
+   *   { author: 'Sally', age: 31, status: 'published', id: 2 },
+   *   { author: 'Mike', age: 32, status: 'published', id: 3 },
+   *   { author: 'Adam', age: 33, status: 'deleted', id: 4 },
+   *   { author: 'Adam', age: 33, status: 'published', id: 5 }
+   * ];
+   * store.add('post', posts);
+   * const publishedPosts = store.filter('post', {
+   *   where: {
+   *     status: {
+   *       '==': 'published'
+   *     }
+   *   },
+   *   limit: 2
+   * });
+   * console.log(publishedPosts);
+   *
+   * @example <caption>Variant 3</caption>
+   * const JSData = require('js-data');
+   * const { DataStore } = JSData;
+   * console.log('Using JSData v' + JSData.version.full);
+   *
+   * const store = new DataStore();
+   * store.defineMapper('post');
+   * const posts = [
+   *   { author: 'John', age: 30, status: 'published', id: 1 },
+   *   { author: 'Sally', age: 31, status: 'published', id: 2 },
+   *   { author: 'Mike', age: 32, status: 'published', id: 3 },
+   *   { author: 'Adam', age: 33, status: 'deleted', id: 4 },
+   *   { author: 'Adam', age: 33, status: 'published', id: 5 }
+   * ];
+   * store.add('post', posts);
+   * const publishedPosts = store
+   *   .query('post')
+   *   .filter({ status: 'published' })
+   *   .limit(2)
+   *   .run();
+   * console.log(publishedPosts);
+   *
+   * @example <caption>Variant 4</caption>
+   * const JSData = require('js-data');
+   * const { DataStore } = JSData;
+   * console.log('Using JSData v' + JSData.version.full);
+   *
+   * const store = new DataStore();
+   * store.defineMapper('post');
+   * const posts = [
+   *   { author: 'John', age: 30, status: 'published', id: 1 },
+   *   { author: 'Sally', age: 31, status: 'published', id: 2 },
+   *   { author: 'Mike', age: 32, status: 'published', id: 3 },
+   *   { author: 'Adam', age: 33, status: 'deleted', id: 4 },
+   *   { author: 'Adam', age: 33, status: 'published', id: 5 }
+   * ];
+   * store.add('post', posts);
+   * const publishedPosts = store
+   *   .query('post')
+   *   .filter({
+   *     where: {
+   *       status: {
+   *         '==': 'published'
+   *       }
+   *     }
+   *   })
+   *   .limit(2)
+   *   .run();
+   * console.log(publishedPosts);
+   *
+   * @example <caption>Multiple operators</caption>
+   * const JSData = require('js-data');
+   * const { DataStore } = JSData;
+   * console.log('Using JSData v' + JSData.version.full);
+   *
+   * const store = new DataStore();
+   * store.defineMapper('post');
+   * const posts = [
+   *   { author: 'John', age: 30, status: 'published', id: 1 },
+   *   { author: 'Sally', age: 31, status: 'published', id: 2 },
+   *   { author: 'Mike', age: 32, status: 'published', id: 3 },
+   *   { author: 'Adam', age: 33, status: 'deleted', id: 4 },
+   *   { author: 'Adam', age: 33, status: 'published', id: 5 }
+   * ];
+   * store.add('post', posts);
+   *
+   * const myPublishedPosts = store.filter('post', {
+   *   where: {
+   *     status: {
+   *       '==': 'published'
+   *     },
+   *     user_id: {
+   *       '==': currentUser.id
+   *     }
+   *   }
+   * });
+   *
+   * console.log(myPublishedPosts);
+   *
+   * @name Query.ops
+   * @property {Function} == Equality operator.
+   * @property {Function} != Inequality operator.
+   * @property {Function} > Greater than operator.
+   * @property {Function} >= Greater than (inclusive) operator.
+   * @property {Function} < Less than operator.
+   * @property {Function} <= Less than (inclusive) operator.
+   * @property {Function} isectEmpty Operator that asserts that the intersection
+   * between two arrays is empty.
+   * @property {Function} isectNotEmpty Operator that asserts that the
+   * intersection between two arrays is __not__ empty.
+   * @property {Function} in Operator that asserts whether a value is in an
+   * array.
+   * @property {Function} notIn Operator that asserts whether a value is __not__
+   * in an array.
+   * @property {Function} contains Operator that asserts whether an array
+   * contains a value.
+   * @property {Function} notContains Operator that asserts whether an array
+   * does __not__ contain a value.
+   * @since 3.0.0
+   * @type {Object}
+   */
+  static ops = {
+    '='(value, predicate) {
+      // tslint:disable-next-line:triple-equals
+      return value == predicate; // eslint-disable-line
+    },
+    '=='(value, predicate) {
+      // tslint:disable-next-line:triple-equals
+      return value == predicate; // eslint-disable-line
+    },
+    '==='(value, predicate) {
+      return value === predicate;
+    },
+    '!='(value, predicate) {
+      // tslint:disable-next-line:triple-equals
+      return value != predicate; // eslint-disable-line
+    },
+    '!=='(value, predicate) {
+      return value !== predicate;
+    },
+    '>'(value, predicate) {
+      return value > predicate;
+    },
+    '>='(value, predicate) {
+      return value >= predicate;
+    },
+    '<'(value, predicate) {
+      return value < predicate;
+    },
+    '<='(value, predicate) {
+      return value <= predicate;
+    },
+    isectEmpty(value, predicate) {
+      return !utils.intersection(value || [], predicate || []).length;
+    },
+    isectNotEmpty(value, predicate) {
+      return utils.intersection(value || [], predicate || []).length;
+    },
+    in(value, predicate) {
+      return predicate.indexOf(value) !== -1;
+    },
+    notIn(value, predicate) {
+      return predicate.indexOf(value) === -1;
+    },
+    contains(value, predicate) {
+      return (value || []).indexOf(predicate) !== -1;
+    },
+    notContains(value, predicate) {
+      return (value || []).indexOf(predicate) === -1;
+    }
+  };
   /**
    * The current data result of this query.
    *
@@ -77,10 +284,6 @@ export default class Query extends Component {
    * @type {Array}
    */
   private data = null;
-
-  constructor(public collection?) {
-    super();
-  }
 
   _applyWhereFromObject(where) {
     const fields = [];
@@ -751,7 +954,7 @@ export default class Query extends Component {
    * @returns {Query} A reference to itself for chaining.
    * @since 3.0.0
    */
-  get(keyList = [], opts: any = {}) {
+  get(keyList: string | string[] | number | number[] | any = [], opts: any = {}) {
     if (this.data) {
       throw utils.err(`${DOMAIN}#get`)(500, INDEX_ERR);
     }
@@ -976,207 +1179,4 @@ export default class Query extends Component {
     }
     return this;
   }
-
-  /**
-   * The filtering operators supported by {@link Query#filter}, and which are
-   * implemented by adapters (for the most part).
-   *
-   * @example <caption>Variant 1</caption>
-   * const JSData = require('js-data');
-   * const { DataStore } = JSData;
-   * console.log('Using JSData v' + JSData.version.full);
-   *
-   * const store = new DataStore();
-   * store.defineMapper('post');
-   * const posts = [
-   *   { author: 'John', age: 30, status: 'published', id: 1 },
-   *   { author: 'Sally', age: 31, status: 'published', id: 2 },
-   *   { author: 'Mike', age: 32, status: 'published', id: 3 },
-   *   { author: 'Adam', age: 33, status: 'deleted', id: 4 },
-   *   { author: 'Adam', age: 33, status: 'published', id: 5 }
-   * ];
-   * store.add('post', posts);
-   * const publishedPosts = store.filter('post', {
-   *   status: 'published',
-   *   limit: 2
-   * });
-   * console.log(publishedPosts);
-   *
-   *
-   * @example <caption>Variant 2</caption>
-   * const JSData = require('js-data');
-   * const { DataStore } = JSData;
-   * console.log('Using JSData v' + JSData.version.full);
-   *
-   * const store = new DataStore();
-   * store.defineMapper('post')
-   * const posts = [
-   *   { author: 'John', age: 30, status: 'published', id: 1 },
-   *   { author: 'Sally', age: 31, status: 'published', id: 2 },
-   *   { author: 'Mike', age: 32, status: 'published', id: 3 },
-   *   { author: 'Adam', age: 33, status: 'deleted', id: 4 },
-   *   { author: 'Adam', age: 33, status: 'published', id: 5 }
-   * ];
-   * store.add('post', posts);
-   * const publishedPosts = store.filter('post', {
-   *   where: {
-   *     status: {
-   *       '==': 'published'
-   *     }
-   *   },
-   *   limit: 2
-   * });
-   * console.log(publishedPosts);
-   *
-   * @example <caption>Variant 3</caption>
-   * const JSData = require('js-data');
-   * const { DataStore } = JSData;
-   * console.log('Using JSData v' + JSData.version.full);
-   *
-   * const store = new DataStore();
-   * store.defineMapper('post');
-   * const posts = [
-   *   { author: 'John', age: 30, status: 'published', id: 1 },
-   *   { author: 'Sally', age: 31, status: 'published', id: 2 },
-   *   { author: 'Mike', age: 32, status: 'published', id: 3 },
-   *   { author: 'Adam', age: 33, status: 'deleted', id: 4 },
-   *   { author: 'Adam', age: 33, status: 'published', id: 5 }
-   * ];
-   * store.add('post', posts);
-   * const publishedPosts = store
-   *   .query('post')
-   *   .filter({ status: 'published' })
-   *   .limit(2)
-   *   .run();
-   * console.log(publishedPosts);
-   *
-   * @example <caption>Variant 4</caption>
-   * const JSData = require('js-data');
-   * const { DataStore } = JSData;
-   * console.log('Using JSData v' + JSData.version.full);
-   *
-   * const store = new DataStore();
-   * store.defineMapper('post');
-   * const posts = [
-   *   { author: 'John', age: 30, status: 'published', id: 1 },
-   *   { author: 'Sally', age: 31, status: 'published', id: 2 },
-   *   { author: 'Mike', age: 32, status: 'published', id: 3 },
-   *   { author: 'Adam', age: 33, status: 'deleted', id: 4 },
-   *   { author: 'Adam', age: 33, status: 'published', id: 5 }
-   * ];
-   * store.add('post', posts);
-   * const publishedPosts = store
-   *   .query('post')
-   *   .filter({
-   *     where: {
-   *       status: {
-   *         '==': 'published'
-   *       }
-   *     }
-   *   })
-   *   .limit(2)
-   *   .run();
-   * console.log(publishedPosts);
-   *
-   * @example <caption>Multiple operators</caption>
-   * const JSData = require('js-data');
-   * const { DataStore } = JSData;
-   * console.log('Using JSData v' + JSData.version.full);
-   *
-   * const store = new DataStore();
-   * store.defineMapper('post');
-   * const posts = [
-   *   { author: 'John', age: 30, status: 'published', id: 1 },
-   *   { author: 'Sally', age: 31, status: 'published', id: 2 },
-   *   { author: 'Mike', age: 32, status: 'published', id: 3 },
-   *   { author: 'Adam', age: 33, status: 'deleted', id: 4 },
-   *   { author: 'Adam', age: 33, status: 'published', id: 5 }
-   * ];
-   * store.add('post', posts);
-   *
-   * const myPublishedPosts = store.filter('post', {
-   *   where: {
-   *     status: {
-   *       '==': 'published'
-   *     },
-   *     user_id: {
-   *       '==': currentUser.id
-   *     }
-   *   }
-   * });
-   *
-   * console.log(myPublishedPosts);
-   *
-   * @name Query.ops
-   * @property {Function} == Equality operator.
-   * @property {Function} != Inequality operator.
-   * @property {Function} > Greater than operator.
-   * @property {Function} >= Greater than (inclusive) operator.
-   * @property {Function} < Less than operator.
-   * @property {Function} <= Less than (inclusive) operator.
-   * @property {Function} isectEmpty Operator that asserts that the intersection
-   * between two arrays is empty.
-   * @property {Function} isectNotEmpty Operator that asserts that the
-   * intersection between two arrays is __not__ empty.
-   * @property {Function} in Operator that asserts whether a value is in an
-   * array.
-   * @property {Function} notIn Operator that asserts whether a value is __not__
-   * in an array.
-   * @property {Function} contains Operator that asserts whether an array
-   * contains a value.
-   * @property {Function} notContains Operator that asserts whether an array
-   * does __not__ contain a value.
-   * @since 3.0.0
-   * @type {Object}
-   */
-  static ops = {
-    '='(value, predicate) {
-      // tslint:disable-next-line:triple-equals
-      return value == predicate; // eslint-disable-line
-    },
-    '=='(value, predicate) {
-      // tslint:disable-next-line:triple-equals
-      return value == predicate; // eslint-disable-line
-    },
-    '==='(value, predicate) {
-      return value === predicate;
-    },
-    '!='(value, predicate) {
-      // tslint:disable-next-line:triple-equals
-      return value != predicate; // eslint-disable-line
-    },
-    '!=='(value, predicate) {
-      return value !== predicate;
-    },
-    '>'(value, predicate) {
-      return value > predicate;
-    },
-    '>='(value, predicate) {
-      return value >= predicate;
-    },
-    '<'(value, predicate) {
-      return value < predicate;
-    },
-    '<='(value, predicate) {
-      return value <= predicate;
-    },
-    isectEmpty(value, predicate) {
-      return !utils.intersection(value || [], predicate || []).length;
-    },
-    isectNotEmpty(value, predicate) {
-      return utils.intersection(value || [], predicate || []).length;
-    },
-    in(value, predicate) {
-      return predicate.indexOf(value) !== -1;
-    },
-    notIn(value, predicate) {
-      return predicate.indexOf(value) === -1;
-    },
-    contains(value, predicate) {
-      return (value || []).indexOf(predicate) !== -1;
-    },
-    notContains(value, predicate) {
-      return (value || []).indexOf(predicate) === -1;
-    }
-  };
 }

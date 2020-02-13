@@ -1,13 +1,13 @@
-import { assert, JSData } from '../../_setup';
+import { JSData } from '../../_setup';
 import { productSchema } from './_productSchema';
 
 describe('Schema', () => {
   it('has the right exports', () => {
-    assert.equal(typeof JSData.Schema, 'function');
-    assert.equal(typeof JSData.Schema.validate, 'function');
-    assert(JSData.Schema.types);
-    assert(JSData.Schema.validationKeywords);
-    assert(JSData.Schema.typeGroupValidators);
+    expect(typeof JSData.Schema).toEqual('function');
+    expect(typeof JSData.Schema.validate).toEqual('function');
+    expect(JSData.Schema.types).toBeTruthy();
+    expect(JSData.Schema.validationKeywords).toBeTruthy();
+    expect(JSData.Schema.typeGroupValidators).toBeTruthy();
   });
 
   it('should recursively instantiate schemas', () => {
@@ -28,21 +28,21 @@ describe('Schema', () => {
       oneOf: [{type: 'string'}, {enum: [1, 2, 3]}]
     };
     const ProductSchema = new JSData.Schema(schemaDef);
-    assert(ProductSchema instanceof JSData.Schema);
-    assert(ProductSchema.properties.id instanceof JSData.Schema);
-    assert(ProductSchema.properties.name instanceof JSData.Schema);
-    assert(ProductSchema.properties.price instanceof JSData.Schema);
-    assert(ProductSchema.properties.tags instanceof JSData.Schema);
-    assert(ProductSchema.properties.dimensions instanceof JSData.Schema);
-    assert(ProductSchema.properties.warehouseLocation instanceof JSData.Schema);
-    assert(ProductSchema.properties.things instanceof JSData.Schema);
-    assert(ProductSchema.properties.things.items instanceof JSData.Schema);
-    assert(ProductSchema.properties.anyFoo.anyOf[0] instanceof JSData.Schema);
-    assert(ProductSchema.properties.anyFoo.anyOf[1] instanceof JSData.Schema);
-    assert(ProductSchema.properties.allFoo.allOf[0] instanceof JSData.Schema);
-    assert(ProductSchema.properties.allFoo.allOf[1] instanceof JSData.Schema);
-    assert(ProductSchema.properties.oneFoo.oneOf[0] instanceof JSData.Schema);
-    assert(ProductSchema.properties.oneFoo.oneOf[1] instanceof JSData.Schema);
+    expect(ProductSchema instanceof JSData.Schema).toBeTruthy();
+    expect(ProductSchema.properties.id instanceof JSData.Schema).toBeTruthy();
+    expect(ProductSchema.properties.name instanceof JSData.Schema).toBeTruthy();
+    expect(ProductSchema.properties.price instanceof JSData.Schema).toBeTruthy();
+    expect(ProductSchema.properties.tags instanceof JSData.Schema).toBeTruthy();
+    expect(ProductSchema.properties.dimensions instanceof JSData.Schema).toBeTruthy();
+    expect(ProductSchema.properties.warehouseLocation instanceof JSData.Schema).toBeTruthy();
+    expect(ProductSchema.properties.things instanceof JSData.Schema).toBeTruthy();
+    expect(ProductSchema.properties.things.items instanceof JSData.Schema).toBeTruthy();
+    expect(ProductSchema.properties.anyFoo.anyOf[0] instanceof JSData.Schema).toBeTruthy();
+    expect(ProductSchema.properties.anyFoo.anyOf[1] instanceof JSData.Schema).toBeTruthy();
+    expect(ProductSchema.properties.allFoo.allOf[0] instanceof JSData.Schema).toBeTruthy();
+    expect(ProductSchema.properties.allFoo.allOf[1] instanceof JSData.Schema).toBeTruthy();
+    expect(ProductSchema.properties.oneFoo.oneOf[0] instanceof JSData.Schema).toBeTruthy();
+    expect(ProductSchema.properties.oneFoo.oneOf[1] instanceof JSData.Schema).toBeTruthy();
   });
 
   it('should validate', () => {
@@ -63,19 +63,19 @@ describe('Schema', () => {
       }
     });
 
-    assert(!errors);
+    expect(!errors).toBeTruthy();
 
     errors = ProductSchema.validate('foo');
     // return
-    assert.deepEqual(errors, [{expected: 'one of (object)', actual: 'string', path: ''}]);
+    expect(errors).toEqual([{expected: 'one of (object)', actual: 'string', path: ''}]);
     errors = ProductSchema.validate(45);
-    assert.deepEqual(errors, [{expected: 'one of (object)', actual: 'number', path: ''}]);
+    expect(errors).toEqual([{expected: 'one of (object)', actual: 'number', path: ''}]);
     errors = ProductSchema.validate(null);
-    assert.deepEqual(errors, [{expected: 'one of (object)', actual: 'null', path: ''}]);
+    expect(errors).toEqual([{expected: 'one of (object)', actual: 'null', path: ''}]);
     errors = ProductSchema.validate(true);
-    assert.deepEqual(errors, [{expected: 'one of (object)', actual: 'boolean', path: ''}]);
+    expect(errors).toEqual([{expected: 'one of (object)', actual: 'boolean', path: ''}]);
     errors = ProductSchema.validate(undefined);
-    assert(!errors);
+    expect(!errors).toBeTruthy();
     errors = ProductSchema.validate({
       id: 3,
       // name is missing
@@ -90,7 +90,7 @@ describe('Schema', () => {
         longitude: -32.7
       }
     });
-    assert.deepEqual(errors, [
+    expect(errors).toEqual([
       {expected: 'a value', actual: 'undefined', path: 'name'},
       {expected: 'one of (number)', actual: 'string', path: 'price'},
       {expected: 'a value', actual: 'undefined', path: 'dimensions.width'},

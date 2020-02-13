@@ -136,17 +136,111 @@ const SIMPLESTORE_DEFAULTS = {
  * @tutorial ["http://www.js-data.io/v3.0/docs/jsdata-and-the-browser","Notes on using JSData in the Browser"]
  */
 export default class SimpleStore extends Container {
-  collectionClass: typeof Collection;
-  _collections: { [name: string]: Collection } = {};
-  _completedQueries = {};
-  _pendingQueries = {};
-  usePendingFind: boolean;
-  usePendingFindAll: boolean;
 
   constructor(opts: SimpleStoreOpts = {}) {
     super({...SIMPLESTORE_DEFAULTS, ...opts});
     this.collectionClass = this.collectionClass || Collection;
   }
+
+  collectionClass: typeof Collection;
+  _collections: { [name: string]: Collection } = {};
+  _completedQueries: any = {};
+  _pendingQueries: any = {};
+  usePendingFind: boolean;
+  usePendingFindAll: boolean;
+
+  /**
+   * Retrieve a cached `find` result, if any. This method is called during
+   * {@link SimpleStore#find} to determine if {@link Mapper#find} needs to be
+   * called. If this method returns `undefined` then {@link Mapper#find} will
+   * be called. Otherwise {@link SimpleStore#find} will immediately resolve with
+   * the return value of this method.
+   *
+   * When using {@link SimpleStore} in the browser, you can override this method
+   * to implement your own cache-busting strategy.
+   *
+   * @example
+   * const store = new SimpleStore({
+   *   cachedFind (mapperName, id, opts) {
+   *     // Let's say for a particular Resource, we always want to pull fresh from the server
+   *     if (mapperName === 'schedule') {
+   *       // Return undefined to trigger a Mapper#find call
+   *       return;
+   *     }
+   *     // Otherwise perform default behavior
+   *     return SimpleStore.prototype.cachedFind.call(this, mapperName, id, opts);
+   *   }
+   * });
+   *
+   * @example
+   * // Extend using ES2015 class syntax.
+   * class MyStore extends SimpleStore {
+   *   cachedFind (mapperName, id, opts) {
+   *     // Let's say for a particular Resource, we always want to pull fresh from the server
+   *     if (mapperName === 'schedule') {
+   *       // Return undefined to trigger a Mapper#find call
+   *       return;
+   *     }
+   *     // Otherwise perform default behavior
+   *     return super.cachedFind(mapperName, id, opts);
+   *   }
+   * }
+   * const store = new MyStore();
+   *
+   * @method SimpleStore#cachedFind
+   * @param {string} name The `name` argument passed to {@link SimpleStore#find}.
+   * @param {(string|number)} id The `id` argument passed to {@link SimpleStore#find}.
+   * @param {object} opts The `opts` argument passed to {@link SimpleStore#find}.
+   * @since 3.0.0
+   */
+  cachedFind = cachedFn;
+
+  /**
+   * Retrieve a cached `findAll` result, if any. This method is called during
+   * {@link SimpleStore#findAll} to determine if {@link Mapper#findAll} needs to be
+   * called. If this method returns `undefined` then {@link Mapper#findAll} will
+   * be called. Otherwise {@link SimpleStore#findAll} will immediately resolve with
+   * the return value of this method.
+   *
+   * When using {@link SimpleStore} in the browser, you can override this method
+   * to implement your own cache-busting strategy.
+   *
+   * @example
+   * const store = new SimpleStore({
+   *   cachedFindAll (mapperName, hash, opts) {
+   *     // Let's say for a particular Resource, we always want to pull fresh from the server
+   *     if (mapperName === 'schedule') {
+   *       // Return undefined to trigger a Mapper#findAll call
+   *       return undefined;
+   *     }
+   *     // Otherwise perform default behavior
+   *     return SimpleStore.prototype.cachedFindAll.call(this, mapperName, hash, opts);
+   *   }
+   * });
+   *
+   * @example
+   * // Extend using ES2015 class syntax.
+   * class MyStore extends SimpleStore {
+   *   cachedFindAll (mapperName, hash, opts) {
+   *     // Let's say for a particular Resource, we always want to pull fresh from the server
+   *     if (mapperName === 'schedule') {
+   *       // Return undefined to trigger a Mapper#findAll call
+   *       return undefined;
+   *     }
+   *     // Otherwise perform default behavior
+   *     return super.cachedFindAll(mapperName, hash, opts);
+   *   }
+   * }
+   * const store = new MyStore();
+   *
+   * @method SimpleStore#cachedFindAll
+   * @param {string} name The `name` argument passed to {@link SimpleStore#findAll}.
+   * @param {string} hash The result of calling {@link SimpleStore#hashQuery} on
+   * the `query` argument passed to {@link SimpleStore#findAll}.
+   * @param {object} opts The `opts` argument passed to {@link SimpleStore#findAll}.
+   * @since 3.0.0
+   */
+  cachedFindAll = cachedFn;
 
   /**
    * Internal method used to handle Mapper responses.
@@ -319,99 +413,6 @@ export default class SimpleStore extends Container {
     };
     return Object.create(this, props);
   }
-
-  /**
-   * Retrieve a cached `find` result, if any. This method is called during
-   * {@link SimpleStore#find} to determine if {@link Mapper#find} needs to be
-   * called. If this method returns `undefined` then {@link Mapper#find} will
-   * be called. Otherwise {@link SimpleStore#find} will immediately resolve with
-   * the return value of this method.
-   *
-   * When using {@link SimpleStore} in the browser, you can override this method
-   * to implement your own cache-busting strategy.
-   *
-   * @example
-   * const store = new SimpleStore({
-   *   cachedFind (mapperName, id, opts) {
-   *     // Let's say for a particular Resource, we always want to pull fresh from the server
-   *     if (mapperName === 'schedule') {
-   *       // Return undefined to trigger a Mapper#find call
-   *       return;
-   *     }
-   *     // Otherwise perform default behavior
-   *     return SimpleStore.prototype.cachedFind.call(this, mapperName, id, opts);
-   *   }
-   * });
-   *
-   * @example
-   * // Extend using ES2015 class syntax.
-   * class MyStore extends SimpleStore {
-   *   cachedFind (mapperName, id, opts) {
-   *     // Let's say for a particular Resource, we always want to pull fresh from the server
-   *     if (mapperName === 'schedule') {
-   *       // Return undefined to trigger a Mapper#find call
-   *       return;
-   *     }
-   *     // Otherwise perform default behavior
-   *     return super.cachedFind(mapperName, id, opts);
-   *   }
-   * }
-   * const store = new MyStore();
-   *
-   * @method SimpleStore#cachedFind
-   * @param {string} name The `name` argument passed to {@link SimpleStore#find}.
-   * @param {(string|number)} id The `id` argument passed to {@link SimpleStore#find}.
-   * @param {object} opts The `opts` argument passed to {@link SimpleStore#find}.
-   * @since 3.0.0
-   */
-  cachedFind = cachedFn;
-
-  /**
-   * Retrieve a cached `findAll` result, if any. This method is called during
-   * {@link SimpleStore#findAll} to determine if {@link Mapper#findAll} needs to be
-   * called. If this method returns `undefined` then {@link Mapper#findAll} will
-   * be called. Otherwise {@link SimpleStore#findAll} will immediately resolve with
-   * the return value of this method.
-   *
-   * When using {@link SimpleStore} in the browser, you can override this method
-   * to implement your own cache-busting strategy.
-   *
-   * @example
-   * const store = new SimpleStore({
-   *   cachedFindAll (mapperName, hash, opts) {
-   *     // Let's say for a particular Resource, we always want to pull fresh from the server
-   *     if (mapperName === 'schedule') {
-   *       // Return undefined to trigger a Mapper#findAll call
-   *       return undefined;
-   *     }
-   *     // Otherwise perform default behavior
-   *     return SimpleStore.prototype.cachedFindAll.call(this, mapperName, hash, opts);
-   *   }
-   * });
-   *
-   * @example
-   * // Extend using ES2015 class syntax.
-   * class MyStore extends SimpleStore {
-   *   cachedFindAll (mapperName, hash, opts) {
-   *     // Let's say for a particular Resource, we always want to pull fresh from the server
-   *     if (mapperName === 'schedule') {
-   *       // Return undefined to trigger a Mapper#findAll call
-   *       return undefined;
-   *     }
-   *     // Otherwise perform default behavior
-   *     return super.cachedFindAll(mapperName, hash, opts);
-   *   }
-   * }
-   * const store = new MyStore();
-   *
-   * @method SimpleStore#cachedFindAll
-   * @param {string} name The `name` argument passed to {@link SimpleStore#findAll}.
-   * @param {string} hash The result of calling {@link SimpleStore#hashQuery} on
-   * the `query` argument passed to {@link SimpleStore#findAll}.
-   * @param {object} opts The `opts` argument passed to {@link SimpleStore#findAll}.
-   * @since 3.0.0
-   */
-  cachedFindAll = cachedFn;
 
   /**
    * Mark a {@link Mapper#find} result as cached by adding an entry to
@@ -1320,7 +1321,7 @@ export default class SimpleStore extends Container {
    * @see Collection#add
    * @since 3.0.0
    */
-  removeAll(name, query, opts) {
+  removeAll(name, query?, opts?: any) {
     if (!query || !Object.keys(query).length) {
       this._completedQueries[name] = {};
     } else {

@@ -1,11 +1,10 @@
-import { assert, JSData } from '../../_setup';
+import { JSData } from '../../_setup';
 
-describe('Container#find', () => {
+describe('Container#updateMany', () => {
   it('should be an instance method', () => {
     const Container = JSData.Container;
     const store = new Container();
-    assert.equal(typeof store.updateMany, 'function');
-    assert.strictEqual(store.updateMany, Container.prototype.updateMany);
+    expect(typeof store.updateMany).toEqual('function');
+    expect(store.updateMany).toBe(Container.prototype.updateMany);
   });
-  it('should work');
 });

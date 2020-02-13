@@ -1,19 +1,19 @@
-import { assert, JSData, objectsEqual } from '../../_setup';
+import { JSData, store } from '../../_setup';
 
 describe('DataStore#destroyAll', () => {
   it('should be an instance method', () => {
     const DataStore = JSData.DataStore;
     const store = new DataStore();
-    assert.equal(typeof store.destroyAll, 'function');
-    assert.strictEqual(store.destroyAll, DataStore.prototype.destroyAll);
+    expect(typeof store.destroyAll).toEqual('function');
+    expect(store.destroyAll).toBe(DataStore.prototype.destroyAll);
   });
   it('should destroyAll', async function () {
     const query = {name: 'John'};
     let destroyCalled;
-    this.store._pendingQueries.user[this.store.hashQuery('user', query)] = new Date().getTime();
-    this.store._completedQueries.user[this.store.hashQuery('user', query)] = new Date().getTime();
-    const users = this.store.add('user', [{id: 1, name: 'John'}]);
-    this.store.registerAdapter(
+    store._pendingQueries.user[store.hashQuery('user', query)] = new Date().getTime();
+    store._completedQueries.user[store.hashQuery('user', query)] = new Date().getTime();
+    const users = store.add('user', [{id: 1, name: 'John'}]);
+    store.registerAdapter(
       'mock',
       {
         destroyAll() {
@@ -23,17 +23,17 @@ describe('DataStore#destroyAll', () => {
       },
       {default: true}
     );
-    const result = await this.store.destroyAll('user', query);
-    assert(destroyCalled, 'Adapter#destroyAll should have been called');
-    objectsEqual(result, users, 'returned data');
+    const result = await store.destroyAll('user', query);
+    expect(destroyCalled).toBeTruthy();
+    expect(result).toEqual(users);
   });
   it('should return raw', async function () {
     const query = {name: 'John'};
     let destroyCalled;
-    this.store._pendingQueries.user[this.store.hashQuery('user', query)] = new Date().getTime();
-    this.store._completedQueries.user[this.store.hashQuery('user', query)] = new Date().getTime();
-    const users = this.store.add('user', [{id: 1, name: 'John'}]);
-    this.store.registerAdapter(
+    store._pendingQueries.user[store.hashQuery('user', query)] = new Date().getTime();
+    store._completedQueries.user[store.hashQuery('user', query)] = new Date().getTime();
+    const users = store.add('user', [{id: 1, name: 'John'}]);
+    store.registerAdapter(
       'mock',
       {
         destroyAll() {
@@ -45,13 +45,13 @@ describe('DataStore#destroyAll', () => {
       },
       {default: true}
     );
-    const result = await this.store.destroyAll('user', query, {raw: true});
-    assert(destroyCalled, 'Adapter#destroyAll should have been called');
-    assert(!this.store._pendingQueries.user[this.store.hashQuery('user', query)]);
-    assert(!this.store._completedQueries.user[this.store.hashQuery('user', query)]);
-    assert(!this.store.get('user', 1));
-    assert.equal(result.adapter, 'mock', 'should have adapter name in response');
-    assert.equal(result.deleted, 1, 'should have other metadata in response');
-    objectsEqual(result.data, users, 'ejected users should have been returned');
+    const result = await store.destroyAll('user', query, {raw: true});
+    expect(destroyCalled).toBeTruthy();
+    expect(!store._pendingQueries.user[store.hashQuery('user', query)]).toBeTruthy();
+    expect(!store._completedQueries.user[store.hashQuery('user', query)]).toBeTruthy();
+    expect(!store.get('user', 1)).toBeTruthy();
+    expect(result.adapter).toEqual('mock');
+    expect(result.deleted).toEqual(1);
+    expect(result.data).toEqual(users);
   });
 });

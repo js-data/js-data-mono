@@ -1,84 +1,39 @@
-import { JSData, objectsEqual } from '../../_setup';
+import { data, PostCollection, store } from '../../_setup';
 
 describe('Query#orderBy', () => {
   it('should work', function () {
-    const collection = this.PostCollection;
-    const p1 = this.data.p1;
-    const p2 = this.data.p2;
-    const p3 = this.data.p3;
-    const p4 = this.data.p4;
-    this.store.add('post', [p1, p2, p3, p4]);
+    const collection = PostCollection;
+    const p1 = data.p1;
+    const p2 = data.p2;
+    const p3 = data.p3;
+    const p4 = data.p4;
+    store.add('post', [p1, p2, p3, p4]);
 
-    const params: any = {
-      orderBy: 'age'
-    };
+    const params: any = {orderBy: 'age'};
 
-    objectsEqual(
-      collection
-        .query()
-        .filter(params)
-        .run(),
-      [p1, p2, p3, p4],
-      'should accept a single string and sort in ascending order for numbers'
-    );
+    expect(collection.query().filter(params).run()).toEqual([p1, p2, p3, p4]);
 
     params.orderBy = 'author';
 
-    objectsEqual(
-      collection
-        .query()
-        .filter(params)
-        .run(),
-      [p4, p1, p3, p2],
-      'should accept a single string and sort in ascending for strings'
-    );
+    expect(collection.query().filter(params).run()).toEqual([p4, p1, p3, p2]);
 
     params.orderBy = [['age', 'DESC']];
 
-    objectsEqual(
-      collection
-        .query()
-        .filter(params)
-        .run(),
-      [p4, p3, p2, p1],
-      'should accept an array of an array and sort in descending for numbers'
-    );
+    expect(collection.query().filter(params).run()).toEqual([p4, p3, p2, p1]);
 
     params.orderBy = [['author', 'DESC']];
 
-    objectsEqual(
-      collection
-        .query()
-        .filter(params)
-        .run(),
-      [p2, p3, p1, p4],
-      'should accept an array of an array and sort in descending for strings'
-    );
+    expect(collection.query().filter(params).run()).toEqual([p2, p3, p1, p4]);
 
     params.orderBy = ['age'];
 
-    objectsEqual(
-      collection
-        .query()
-        .filter(params)
-        .run(),
-      [p1, p2, p3, p4],
-      'should accept an array of a string and sort in ascending for numbers'
-    );
+    expect(collection.query().filter(params).run()).toEqual([p1, p2, p3, p4]);
 
     params.orderBy = ['author'];
 
-    objectsEqual(
-      collection
-        .query()
-        .filter(params)
-        .run(),
-      [p4, p1, p3, p2],
-      'should accept an array of a string and sort in ascending for strings'
-    );
+    expect(collection.query().filter(params).run()).toEqual([p4, p1, p3, p2]);
   });
   it('should work with multiple orderBy', () => {
-    const store = new JSData.DataStore();
     store.defineMapper('item');
     const items = [
       {id: 1, test: 1, test2: 1},
@@ -103,11 +58,11 @@ describe('Query#orderBy', () => {
       ['id', 'ASC']
     ];
 
-    objectsEqual(
+    expect(
       store
         .query('item')
         .filter(params)
-        .run(),
+        .run()).toEqual(
       [
         items[2],
         items[8],
@@ -130,11 +85,11 @@ describe('Query#orderBy', () => {
       ['id', 'DESC']
     ];
 
-    objectsEqual(
+    expect(
       store
         .query('item')
         .filter(params)
-        .run(),
+        .run()).toEqual(
       [
         items[8],
         items[2],
@@ -152,7 +107,6 @@ describe('Query#orderBy', () => {
     );
   });
   it('should work with sorting de locality', function () {
-    const store = new JSData.DataStore();
     store.defineMapper('item');
     const items = [
       {test: 'a'},
@@ -165,14 +119,14 @@ describe('Query#orderBy', () => {
       ['test', 'ASC']
     ];
     // should work without locale param with best fit criteria
-    objectsEqual(store.query('item').filter(params).run(), [
+    expect(store.query('item').filter(params).run()).toEqual([
       items[0],
       items[2],
       items[1]
     ]);
     // should work with locale param
     params.locale = 'de';
-    objectsEqual(store.query('item').filter(params).run(), [
+    expect(store.query('item').filter(params).run()).toEqual([
       items[0],
       items[2],
       items[1]
@@ -192,14 +146,13 @@ describe('Query#orderBy', () => {
   //     ['test', 'ASC']
   //   ]
   //   params.locale = 'sv'
-  //   objectsEqual(store.query('item').filter(params).run(), [
+  //  expect(store.query('item').filter(params).run()).toEqual([
   //     items[0],
   //     items[1],
   //     items[2]
   //   ])
   // })
   it('should work with sorting thai locality', function () {
-    const store = new JSData.DataStore();
     store.defineMapper('item');
     const items = [
       {test: 'คลอน'},
@@ -219,7 +172,7 @@ describe('Query#orderBy', () => {
       ['test', 'ASC']
     ];
     // should work without locale param with best fit criteria
-    objectsEqual(store.query('item').filter(params).run(), [
+    expect(store.query('item').filter(params).run()).toEqual([
       items[1],
       items[8],
       items[9],
@@ -233,7 +186,7 @@ describe('Query#orderBy', () => {
     ]);
     // should work with locale param
     params.locale = 'th';
-    objectsEqual(store.query('item').filter(params).run(), [
+    expect(store.query('item').filter(params).run()).toEqual([
       items[1],
       items[8],
       items[9],
@@ -247,7 +200,6 @@ describe('Query#orderBy', () => {
     ]);
   });
   it('should order by nested keys', () => {
-    const store = new JSData.DataStore();
     store.defineMapper('thing');
     const things = [
       {
@@ -282,30 +234,14 @@ describe('Query#orderBy', () => {
       orderBy: [['foo.bar', 'ASC']]
     };
 
-    objectsEqual(
-      store
-        .query('thing')
-        .filter(params)
-        .run(),
-      [things[1], things[3], things[2], things[0]],
-      'should order by a nested key'
-    );
+    expect(store.query('thing').filter(params).run()).toEqual([things[1], things[3], things[2], things[0]]);
 
     params = {
       orderBy: [['foo.bar', 'DESC']]
     };
-    objectsEqual(
-      store
-        .query('thing')
-        .filter(params)
-        .run(),
-      [things[0], things[2], things[3], things[1]],
-      'should order by a nested key'
-    );
+    expect(store.query('thing').filter(params).run()).toEqual([things[0], things[2], things[3], things[1]]);
   });
   it('puts null and undefined values at the end of result', () => {
-    const store = new JSData.DataStore();
-
     store.defineMapper('nilOrderBy');
 
     const items = [
@@ -349,26 +285,14 @@ describe('Query#orderBy', () => {
       orderBy: [['count', 'ASC']]
     };
 
-    objectsEqual(
-      store
-        .query('nilOrderBy')
-        .filter(paramsAsc)
-        .run(),
-      [items[2], items[0], items[4], items[7], items[1], items[6], items[3], items[5]],
-      'should order by a key ASC'
-    );
+    expect(store.query('nilOrderBy').filter(paramsAsc).run())
+      .toEqual([items[2], items[0], items[4], items[7], items[1], items[6], items[3], items[5]]);
 
     const paramsDesc = {
       orderBy: [['count', 'DESC']]
     };
 
-    objectsEqual(
-      store
-        .query('nilOrderBy')
-        .filter(paramsDesc)
-        .run(),
-      [items[3], items[5], items[1], items[6], items[7], items[4], items[0], items[2]],
-      'should order by a key DESC'
-    );
+    expect(store.query('nilOrderBy').filter(paramsDesc).run())
+      .toEqual([items[3], items[5], items[1], items[6], items[7], items[4], items[0], items[2]]);
   });
 });

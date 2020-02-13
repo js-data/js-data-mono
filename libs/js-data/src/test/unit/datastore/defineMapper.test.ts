@@ -1,11 +1,11 @@
-import { assert, JSData, objectsEqual } from '../../_setup';
+import { JSData } from '../../_setup';
 
 describe('DataStore#defineMapper', () => {
   it('should be an instance method', () => {
     const DataStore = JSData.DataStore;
     const store = new DataStore();
-    assert.equal(typeof store.defineMapper, 'function');
-    assert.strictEqual(store.defineMapper, DataStore.prototype.defineMapper);
+    expect(typeof store.defineMapper).toEqual('function');
+    expect(store.defineMapper).toBe(DataStore.prototype.defineMapper);
   });
   it('should create indexes for indexed properties', () => {
     const store = new JSData.DataStore();
@@ -27,17 +27,13 @@ describe('DataStore#defineMapper', () => {
       {id: 1, age: 23, role: 'owner'}
     ]);
 
-    objectsEqual(
-      store.getAll('user', 19, {index: 'age'}).map(user => {
-        return user.toJSON();
-      }),
-      [
-        {id: 3, age: 19, role: 'dev'},
-        {id: 6, age: 19, role: 'owner'},
-        {id: 9, age: 19, role: 'admin'}
-      ],
-      'should have found all of age:19 using 1 keyList'
-    );
+    expect(store.getAll('user', 19, {index: 'age'}).map(user => {
+      return user.toJSON();
+    })).toEqual([
+      {id: 3, age: 19, role: 'dev'},
+      {id: 6, age: 19, role: 'owner'},
+      {id: 9, age: 19, role: 'admin'}
+    ]);
   });
   it('can get a scoped reference', () => {
     const DataStore = JSData.DataStore;
@@ -45,14 +41,14 @@ describe('DataStore#defineMapper', () => {
     const fooMapper = store.defineMapper('foo');
     const fooStore = store.as('foo');
 
-    assert.strictEqual(fooStore._adapters, store._adapters);
-    assert.strictEqual(fooStore._mappers, store._mappers);
-    assert.strictEqual(fooStore._collections, store._collections);
-    assert.strictEqual(fooStore._listeners, store._listeners);
-    assert.strictEqual(fooStore.getMapper(), store.getMapper('foo'));
-    assert.strictEqual(fooStore.getCollection(), store.getCollection('foo'));
-    assert.deepEqual(fooStore.createRecord({foo: 'bar'}), store.createRecord('foo', {foo: 'bar'}));
-    assert.strictEqual(fooMapper, store.getMapper('foo'));
-    assert.strictEqual(fooStore.getMapper(), store.getMapper('foo'));
+    expect(fooStore._adapters).toBe(store._adapters);
+    expect(fooStore._mappers).toBe(store._mappers);
+    expect(fooStore._collections).toBe(store._collections);
+    expect(fooStore._listeners).toBe(store._listeners);
+    expect(fooStore.getMapper()).toBe(store.getMapper('foo'));
+    expect(fooStore.getCollection()).toBe(store.getCollection('foo'));
+    expect(fooStore.createRecord({foo: 'bar'})).toEqual(store.createRecord('foo', {foo: 'bar'}));
+    expect(fooMapper).toBe(store.getMapper('foo'));
+    expect(fooStore.getMapper()).toBe(store.getMapper('foo'));
   });
 });

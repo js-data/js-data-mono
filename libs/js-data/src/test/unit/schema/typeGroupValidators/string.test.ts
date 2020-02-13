@@ -1,4 +1,4 @@
-import { assert, JSData, sinon } from '../../../_setup';
+import { JSData, sinon } from '../../../_setup';
 
 describe('Schema.typeGroupValidators.string', () => {
   it('executes correct validation keywords', () => {
@@ -13,7 +13,7 @@ describe('Schema.typeGroupValidators.string', () => {
     const string = JSData.Schema.typeGroupValidators.string;
 
     forOwn(validationKeywords, (func, key) => {
-      assert.equal(func.callCount, 0, `${key} should not have been called yet`);
+      expect(func.callCount).toEqual(0);
     });
 
     // execute all 3
@@ -23,36 +23,36 @@ describe('Schema.typeGroupValidators.string', () => {
       minLength: 1
     });
 
-    assert.equal(validationKeywords.pattern.callCount, 1);
-    assert.equal(validationKeywords.maxLength.callCount, 1);
-    assert.equal(validationKeywords.minLength.callCount, 1);
+    expect(validationKeywords.pattern.callCount).toEqual(1);
+    expect(validationKeywords.maxLength.callCount).toEqual(1);
+    expect(validationKeywords.minLength.callCount).toEqual(1);
 
     // execute pattern only
     string('foo', {
       pattern: /.*/
     });
 
-    assert.equal(validationKeywords.pattern.callCount, 2);
-    assert.equal(validationKeywords.maxLength.callCount, 1);
-    assert.equal(validationKeywords.minLength.callCount, 1);
+    expect(validationKeywords.pattern.callCount).toEqual(2);
+    expect(validationKeywords.maxLength.callCount).toEqual(1);
+    expect(validationKeywords.minLength.callCount).toEqual(1);
 
     // execute maxLength only
     string('foo', {
       maxLength: 4
     });
 
-    assert.equal(validationKeywords.pattern.callCount, 2);
-    assert.equal(validationKeywords.maxLength.callCount, 2);
-    assert.equal(validationKeywords.minLength.callCount, 1);
+    expect(validationKeywords.pattern.callCount).toEqual(2);
+    expect(validationKeywords.maxLength.callCount).toEqual(2);
+    expect(validationKeywords.minLength.callCount).toEqual(1);
 
     // execute minLength only
     string('foo', {
       minLength: 1
     });
 
-    assert.equal(validationKeywords.pattern.callCount, 2);
-    assert.equal(validationKeywords.maxLength.callCount, 2);
-    assert.equal(validationKeywords.minLength.callCount, 2);
+    expect(validationKeywords.pattern.callCount).toEqual(2);
+    expect(validationKeywords.maxLength.callCount).toEqual(2);
+    expect(validationKeywords.minLength.callCount).toEqual(2);
 
     // execute maxLength and minLength
     string('foo', {
@@ -60,13 +60,13 @@ describe('Schema.typeGroupValidators.string', () => {
       minLength: 1
     });
 
-    assert.equal(validationKeywords.pattern.callCount, 2);
-    assert.equal(validationKeywords.maxLength.callCount, 3);
-    assert.equal(validationKeywords.minLength.callCount, 3);
+    expect(validationKeywords.pattern.callCount).toEqual(2);
+    expect(validationKeywords.maxLength.callCount).toEqual(3);
+    expect(validationKeywords.minLength.callCount).toEqual(3);
 
     forOwn(validationKeywords, (func, key) => {
       if (TARGET_KEYWORDS.indexOf(key) === -1) {
-        assert.equal(func.callCount, 0, `${key} should not have been called`);
+        expect(func.callCount).toEqual(0);
       }
       validationKeywords[key].restore();
     });

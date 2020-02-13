@@ -12,16 +12,6 @@ export interface RelationOpts {
 }
 
 export abstract class Relation {
-  protected TYPE_NAME = DOMAIN;
-  protected add;
-  protected mapper;
-  protected relation;
-  name: string;
-  private readonly localField;
-  private readonly localKey;
-  protected foreignKey;
-  protected relatedMapper;
-  protected inverse;
 
   constructor(relatedMapper, options: RelationOpts = {}) {
     options.type = (this.constructor as any).TYPE_NAME;
@@ -41,6 +31,20 @@ export abstract class Relation {
   get relatedCollection() {
     return this.mapper.datastore.getCollection(this.relation);
   }
+
+  static belongsTo;
+  static hasMany;
+  static hasOne;
+  protected TYPE_NAME = DOMAIN;
+  protected add;
+  protected mapper;
+  protected relation;
+  name: string;
+  private readonly localField;
+  private readonly localKey;
+  protected foreignKey;
+  protected relatedMapper;
+  protected inverse;
 
   validateOptions(related, opts) {
     const DOMAIN_ERR = `new ${DOMAIN}`;
@@ -239,8 +243,4 @@ export abstract class Relation {
 
   abstract findExistingLinksFor(relatedMapper, record);
   abstract findExistingLinksFor(...record);
-
-  static belongsTo;
-  static hasMany;
-  static hasOne;
 }

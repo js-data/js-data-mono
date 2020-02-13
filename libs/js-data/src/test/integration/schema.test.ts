@@ -1,4 +1,4 @@
-import { assert, JSData, objectsEqual } from '../_setup';
+import { JSData } from '../_setup';
 
 describe('Mapper#update', () => {
   it('should update', async () => {
@@ -22,10 +22,10 @@ describe('Mapper#update', () => {
         update(mapper, _id, _props, Opts) {
           updateCalled = true;
           return new Promise((resolve, reject) => {
-            assert.strictEqual(mapper, User, 'should pass in the Mapper');
-            assert.deepEqual(_id, id, 'should pass in the id');
-            assert.deepEqual(_props, propsUpdate, 'should pass in the props');
-            assert.equal(Opts.raw, false, 'Opts are provided');
+            expect(mapper).toBe(User);
+            expect(_id).toEqual(id);
+            expect(_props).toEqual(propsUpdate);
+            expect(Opts.raw).toEqual(false);
             _props.foo = 'bar';
             _props.id = id;
             resolve(_props);
@@ -34,9 +34,9 @@ describe('Mapper#update', () => {
         create(mapper, _props, Opts) {
           createCalled = true;
           return new Promise((resolve, reject) => {
-            assert.strictEqual(mapper, User, 'should pass in the JSData.Mapper');
-            objectsEqual(_props, props, 'should pass in the props');
-            assert(!Opts.raw, 'Opts are provided');
+            expect(mapper).toBe(User);
+            expect(_props).toEqual(props);
+            expect(!Opts.raw).toBeTruthy();
             _props[mapper.idAttribute] = id;
             resolve(_props);
           });
@@ -47,12 +47,12 @@ describe('Mapper#update', () => {
     const User = store.defineMapper('user', {schema});
     const rec = store.createRecord('user', {name: 'John'});
     const user = await rec.save();
-    assert(createCalled, 'Adapter#create should have been called');
-    assert(user instanceof User.recordClass, 'user is a record');
+    expect(createCalled).toBeTruthy();
+    expect(user instanceof User.recordClass).toBeTruthy();
     user.name = 'Bill';
     const u2 = await user.save();
-    assert(updateCalled, 'Adapter#update should have been called');
-    assert.equal(user.foo, 'bar', 'user has a new field');
-    assert(u2 instanceof User.recordClass, 'user is a record');
+    expect(updateCalled).toBeTruthy();
+    expect(user.foo).toEqual('bar');
+    expect(u2 instanceof User.recordClass).toBeTruthy();
   });
 });

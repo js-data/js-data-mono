@@ -2,6 +2,8 @@ import utils from '../utils';
 import { Relation } from '../Relation';
 
 export class BelongsToRelation extends Relation {
+
+  static TYPE_NAME = 'belongsTo';
   getForeignKey(record) {
     return utils.get(record, this.foreignKey);
   }
@@ -36,6 +38,4 @@ export class BelongsToRelation extends Relation {
   createChildRecord() {
     throw new Error('"BelongsTo" relation does not support child creation as it cannot have children.');
   }
-
-  static TYPE_NAME = 'belongsTo';
 }

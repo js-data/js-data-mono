@@ -1,4 +1,4 @@
-import { assert, JSData } from '../../_setup';
+import { JSData } from '../../_setup';
 
 describe('Collection#forEach', () => {
   it('should visit all data', () => {
@@ -15,17 +15,13 @@ describe('Collection#forEach', () => {
       count++;
       prev = value;
     });
-    assert.deepEqual(
-      collection.getAll(),
-      [
-        {id: 1, visited: true},
-        {id: 2, visited: true},
-        {id: 3, visited: true}
-      ],
-      'data should all have been visited'
-    );
-    assert.equal(count, 3, 'should have taken 3 iterations to visit all data');
-    assert(isInOrder, 'items should have been visited in order');
+    expect(collection.getAll()).toEqual([
+      {id: 1, visited: true},
+      {id: 2, visited: true},
+      {id: 3, visited: true}
+    ]);
+    expect(count).toEqual(3);
+    expect(isInOrder).toBeTruthy();
   });
   it('should forEach', () => {
     const data = [{id: 2}, {id: 3}, {id: 1}];
@@ -35,8 +31,8 @@ describe('Collection#forEach', () => {
     const ctx = {};
     collection.forEach(function (item) {
       sum = sum + item.id;
-      assert(this === ctx, 'should have correct context');
+      expect(this === ctx).toBeTruthy();
     }, ctx);
-    assert.equal(sum, expectedSum, 'should have iterated over all items, producing expectedSum');
+    expect(sum).toEqual(expectedSum);
   });
 });

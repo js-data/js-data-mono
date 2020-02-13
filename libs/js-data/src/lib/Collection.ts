@@ -495,7 +495,7 @@ export default class Collection extends Component {
    * @see query
    * @since 3.0.0
    */
-  filter(queryOrFn, thisArg?) {
+  filter(queryOrFn = {}, thisArg?) {
     return this.query()
       .filter(queryOrFn, thisArg)
       .run();
@@ -527,7 +527,7 @@ export default class Collection extends Component {
    * @param {(string|number)} id The primary key of the record to get.
    * @returns {(Object|Record)} The record with the given id.
    */
-  get(id) {
+  get(id?: string | string[] | number | number[]) {
     const instances =
       id === undefined
         ? []
@@ -649,7 +649,7 @@ export default class Collection extends Component {
    * @since 3.0.0
    * @returns {Array} The removed records, if any.
    */
-  prune(opts) {
+  prune(opts: any = {}) {
     return this.removeAll(this.unsaved(), opts);
   }
 
@@ -757,7 +757,7 @@ export default class Collection extends Component {
    * @param {object} [opts] Configuration options.
    * @returns {(Object[]|Record[])} The removed records, if any.
    */
-  removeAll(queryOrRecords, opts: any = {}) {
+  removeAll(queryOrRecords: any = {}, opts: any = {}) {
     this.beforeRemoveAll(queryOrRecords, opts);
     let records = utils.isArray(queryOrRecords)
       ? queryOrRecords.slice()

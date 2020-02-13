@@ -1,11 +1,11 @@
-import { assert, JSData } from '../../_setup';
+import { JSData } from '../../_setup';
 
 describe('Mapper#count', () => {
   it('should be an instance method', () => {
     const Mapper = JSData.Mapper;
     const mapper = new Mapper({name: 'foo'});
-    assert.equal(typeof mapper.count, 'function');
-    assert.strictEqual(mapper.count, Mapper.prototype.count);
+    expect(typeof mapper.count).toEqual('function');
+    expect(mapper.count).toBe(Mapper.prototype.count);
   });
   it('should count', async () => {
     const query = {id: 1};
@@ -18,16 +18,16 @@ describe('Mapper#count', () => {
       count(mapper, _query, Opts) {
         countCalled = true;
         return new Promise((resolve, reject) => {
-          assert.strictEqual(mapper, User, 'should pass in the Model');
-          assert.deepEqual(_query, query, 'should pass in the query');
-          assert.equal(Opts.raw, false, 'Opts are provided');
+          expect(mapper).toBe(User);
+          expect(_query).toEqual(query);
+          expect(Opts.raw).toEqual(false);
           resolve(1);
         });
       }
     });
     const count = await User.count(query);
-    assert(countCalled, 'Adapter#count should have been called');
-    assert.equal(count, 1, 'count should be 1');
+    expect(countCalled).toBeTruthy();
+    expect(count).toEqual(1);
   });
   it('should return raw', async () => {
     const query = {id: 1};
@@ -41,9 +41,9 @@ describe('Mapper#count', () => {
       count(mapper, _query, Opts) {
         countCalled = true;
         return new Promise((resolve, reject) => {
-          assert.strictEqual(mapper, User, 'should pass in the Model');
-          assert.deepEqual(_query, query, 'should pass in the query');
-          assert(Opts.raw, 'Opts are provided');
+          expect(mapper).toBe(User);
+          expect(_query).toEqual(query);
+          expect(Opts.raw).toBeTruthy();
           resolve({
             data: 1
           });
@@ -51,8 +51,8 @@ describe('Mapper#count', () => {
       }
     });
     const data = await User.count(query);
-    assert(countCalled, 'Adapter#count should have been called');
-    assert.equal(data.data, 1, 'count should be 1');
-    assert.equal(data.adapter, 'mock', 'should have adapter name in response');
+    expect(countCalled).toBeTruthy();
+    expect(data.data).toEqual(1);
+    expect(data.adapter).toEqual('mock');
   });
 });

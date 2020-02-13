@@ -1,4 +1,4 @@
-import { assert, JSData, objectsEqual } from '../../_setup';
+import { JSData } from '../../_setup';
 
 describe('Index#insertRecord', () => {
   it('should insert records', () => {
@@ -28,9 +28,9 @@ describe('Index#insertRecord', () => {
     index.insertRecord(record9);
     index.insertRecord(record10);
 
-    objectsEqual(index.get(), [record5, record3]);
-    assert.deepEqual(index.keys, [undefined, 1, 2, 3, 5, 6, 7, 8, 10]);
-    assert.deepEqual(index.values, [
+    expect(index.get()).toEqual([record5, record3]);
+    expect(index.keys).toEqual([undefined, 1, 2, 3, 5, 6, 7, 8, 10]);
+    expect(index.values).toEqual([
       [record5, record3],
       [record1],
       [record6],
@@ -58,8 +58,8 @@ describe('Index#insertRecord', () => {
     index2.insertRecord(record9);
     index2.insertRecord(record10);
 
-    assert.deepEqual(index2.keys, [undefined, 18, 27, 30, 45, 55, 97]);
-    assert.deepEqual(index2.values, [
+    expect(index2.keys).toEqual([undefined, 18, 27, 30, 45, 55, 97]);
+    expect(index2.values).toEqual([
       [record10],
       [record3],
       [record2],
@@ -70,6 +70,6 @@ describe('Index#insertRecord', () => {
     ]);
     const records = index2.between([44], [98]);
 
-    assert.deepEqual(records, [record4, record6, record5, record7, record9, record8]);
+    expect(records).toEqual([record4, record6, record5, record7, record9, record8]);
   });
 });

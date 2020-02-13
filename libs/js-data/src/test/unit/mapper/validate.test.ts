@@ -1,4 +1,4 @@
-import { assert, JSData } from '../../_setup';
+import { JSData } from '../../_setup';
 import { productSchema } from '../schema/_productSchema';
 
 describe('Mapper#validate', () => {
@@ -23,7 +23,7 @@ describe('Mapper#validate', () => {
       }
     });
 
-    assert(!errors);
+    expect(!errors).toBeTruthy();
 
     errors = ProductMapper.validate([
       {
@@ -42,7 +42,7 @@ describe('Mapper#validate', () => {
       }
     ]);
 
-    assert(!errors);
+    expect(!errors).toBeTruthy();
 
     errors = ProductMapper.validate({
       id: 3,
@@ -58,7 +58,7 @@ describe('Mapper#validate', () => {
         longitude: -32.7
       }
     });
-    assert.deepEqual(errors, [
+    expect(errors).toEqual([
       {expected: 'a value', actual: 'undefined', path: 'name'},
       {expected: 'one of (number)', actual: 'string', path: 'price'},
       {expected: 'a value', actual: 'undefined', path: 'dimensions.width'},
@@ -81,7 +81,7 @@ describe('Mapper#validate', () => {
         }
       }
     ]);
-    assert.deepEqual(errors, [
+    expect(errors).toEqual([
       [
         {expected: 'a value', actual: 'undefined', path: 'name'},
         {expected: 'one of (number)', actual: 'string', path: 'price'},
@@ -110,91 +110,75 @@ describe('Mapper#validate', () => {
 
     try {
       user.age = 'foo';
-      assert.fail();
+      expect(false).toBe(true);
     } catch (err) {
-      assert(err instanceof Error);
-      assert.deepEqual(
-        err.errors,
-        [
-          {
-            actual: 'string',
-            expected: 'one of (number)',
-            path: 'age'
-          }
-        ],
-        'should require a number'
-      );
-      assert.equal(err.message, 'validation failed');
+      expect(err instanceof Error).toBeTruthy();
+      expect(err.errors).toEqual([
+        {
+          actual: 'string',
+          expected: 'one of (number)',
+          path: 'age'
+        }
+      ]);
+      expect(err.message).toEqual('validation failed');
     }
     try {
       user.age = {};
     } catch (err) {
-      assert(err instanceof Error);
-      assert.deepEqual(
-        err.errors,
-        [
-          {
-            actual: 'object',
-            expected: 'one of (number)',
-            path: 'age'
-          }
-        ],
-        'should require a number'
-      );
-      assert.equal(err.message, 'validation failed');
+      expect(err instanceof Error).toBeTruthy();
+      expect(err.errors).toEqual([
+        {
+          actual: 'object',
+          expected: 'one of (number)',
+          path: 'age'
+        }
+      ]);
+      expect(err.message).toEqual('validation failed');
     }
-    assert.doesNotThrow(() => {
+    expect(() => {
       user.age = undefined;
-    }, 'should accept undefined');
+    }).not.toThrow();
     try {
       user.title = 1234;
     } catch (err) {
-      assert(err instanceof Error);
-      assert.deepEqual(
-        err.errors,
-        [
-          {
-            actual: 'number',
-            expected: 'one of (string, null)',
-            path: 'title'
-          }
-        ],
-        'should require a string or null'
-      );
-      assert.equal(err.message, 'validation failed');
+      expect(err instanceof Error).toBeTruthy();
+      expect(err.errors).toEqual([
+        {
+          actual: 'number',
+          expected: 'one of (string, null)',
+          path: 'title'
+        }
+      ]);
+      expect(err.message).toEqual('validation failed');
     }
-    assert.doesNotThrow(() => {
+    expect(() => {
       user.title = 'foo';
-    }, 'should accept a string');
-    assert.doesNotThrow(() => {
+    }).not.toThrow();
+    expect(() => {
       user.title = null;
-    }, 'should accept null');
-    assert.doesNotThrow(() => {
+    }).not.toThrow();
+    expect(() => {
       user.title = undefined;
-    }, 'should accept undefined');
+    }).not.toThrow();
 
     try {
       const user = User.createRecord({age: 'foo'});
       user.set('foo', 'bar');
     } catch (err) {
-      assert(err instanceof Error);
-      assert.deepEqual(
-        err.errors,
-        [
-          {
-            actual: 'string',
-            expected: 'one of (number)',
-            path: 'age'
-          }
-        ],
-        'should validate on create'
-      );
-      assert.equal(err.message, 'validation failed');
+      expect(err instanceof Error).toBeTruthy();
+      expect(err.errors).toEqual([
+        {
+          actual: 'string',
+          expected: 'one of (number)',
+          path: 'age'
+        }
+      ]);
+      expect(err.message).toEqual('validation failed');
     }
 
-    assert.doesNotThrow(() => {
+    expect(() => {
       const user = User.createRecord({age: 'foo'}, {noValidate: true});
       user.set('foo', 'bar');
-    }, 'should NOT validate on create');
+    }).not.toThrow();
   });
 });

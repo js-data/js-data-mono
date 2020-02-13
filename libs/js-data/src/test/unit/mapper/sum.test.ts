@@ -1,11 +1,11 @@
-import { assert, JSData, objectsEqual } from '../../_setup';
+import { JSData } from '../../_setup';
 
 describe('Mapper#sum', () => {
   it('should be an instance method', () => {
     const Mapper = JSData.Mapper;
     const mapper = new Mapper({name: 'foo'});
-    assert.equal(typeof mapper.sum, 'function');
-    assert.strictEqual(mapper.sum, Mapper.prototype.sum);
+    expect(typeof mapper.sum).toEqual('function');
+    expect(mapper.sum).toBe(Mapper.prototype.sum);
   });
   it('should sum', async () => {
     const query = {id: 1};
@@ -19,17 +19,17 @@ describe('Mapper#sum', () => {
       sum(mapper, _field, _query, Opts) {
         sumCalled = true;
         return new Promise((resolve, reject) => {
-          assert.strictEqual(mapper, User, 'should pass in the Model');
-          assert.equal(_field, 'age', 'should pass in the field');
-          assert.deepEqual(_query, query, 'should pass in the query');
-          assert.equal(Opts.raw, false, 'Opts are provided');
+          expect(mapper).toBe(User);
+          expect(_field).toEqual('age');
+          expect(_query).toEqual(query);
+          expect(Opts.raw).toEqual(false);
           resolve(30);
         });
       }
     });
     const sum = await User.sum('age', query);
-    assert(sumCalled, 'Adapter#sum should have been called');
-    assert.deepEqual(sum, 30, 'sum should be 30');
+    expect(sumCalled).toBeTruthy();
+    expect(sum).toEqual(30);
   });
   it('should return raw', async () => {
     const query = {id: 1};
@@ -43,10 +43,10 @@ describe('Mapper#sum', () => {
       sum(mapper, _field, _query, Opts) {
         sumCalled = true;
         return new Promise((resolve, reject) => {
-          assert.strictEqual(mapper, User, 'should pass in the Model');
-          assert.equal(_field, 'age', 'should pass in the field');
-          assert.deepEqual(_query, query, 'should pass in the query');
-          assert.equal(Opts.raw, true, 'Opts are provided');
+          expect(mapper).toBe(User);
+          expect(_field).toEqual('age');
+          expect(_query).toEqual(query);
+          expect(Opts.raw).toEqual(true);
           resolve({
             data: 30
           });
@@ -54,8 +54,8 @@ describe('Mapper#sum', () => {
       }
     });
     const data = await User.sum('age', query);
-    assert(sumCalled, 'Adapter#sum should have been called');
-    objectsEqual(data.data, 30, 'sum should be 30');
-    assert.equal(data.adapter, 'mock', 'should have adapter name in response');
+    expect(sumCalled).toBeTruthy();
+    expect(data.data).toEqual(30);
+    expect(data.adapter).toEqual('mock');
   });
 });

@@ -1,9 +1,9 @@
-import { assert, JSData } from '../../_setup';
+import { JSData } from '../../_setup';
 import { productSchema } from './_productSchema';
 
 describe('Schema.apply', () => {
   it('has the right exports', () => {
-    assert.isFunction(JSData.Schema.prototype.apply);
+    expect(typeof JSData.Schema.prototype.apply).toBe('function');
   });
 
   it('applies a property descriptor to the specified property', () => {
@@ -14,11 +14,11 @@ describe('Schema.apply', () => {
 
     JSData.utils.forOwn(productSchema.properties, (_schema, prop) => {
       const descriptor = Object.getOwnPropertyDescriptor(Thing.prototype, prop);
-      assert.equal(!!descriptor.writable, false);
-      assert.equal(descriptor.enumerable, true);
-      assert.equal(descriptor.configurable, true);
-      assert.equal(typeof descriptor.get, 'function');
-      assert.equal(typeof descriptor.set, 'function');
+      expect(!!descriptor.writable).toEqual(false);
+      expect(descriptor.enumerable).toEqual(true);
+      expect(descriptor.configurable).toEqual(true);
+      expect(typeof descriptor.get).toEqual('function');
+      expect(typeof descriptor.set).toEqual('function');
     });
   });
 });

@@ -1,15 +1,15 @@
-import { assert } from '../../_setup';
+import { PostCollection } from '../../_setup';
 
 describe('Query#getAll', () => {
   it('should not allow index access after operation', function () {
-    const collection = this.PostCollection;
+    const collection = PostCollection;
 
-    assert.throws(() => {
+    expect(() => {
       collection
         .query()
         .filter()
         .getAll()
         .run();
-    }, Error);
+    }).toThrow();
   });
 });

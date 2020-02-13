@@ -1,10 +1,10 @@
-import { assert, JSData } from '../../../_setup';
+import { JSData } from '../../../_setup';
 
 describe('Schema.typeGroupValidators', () => {
   it('has the right default validators', () => {
     const typeGroupValidators = JSData.Schema.typeGroupValidators;
     const EXPECTED_KEYS = ['array', 'integer', 'number', 'numeric', 'object', 'string'];
-    assert.deepEqual(Object.keys(typeGroupValidators), EXPECTED_KEYS, 'has the expected keys');
+    expect(Object.keys(typeGroupValidators)).toEqual(EXPECTED_KEYS);
   });
 
   it('allows custom validation keywords', () => {
@@ -33,7 +33,7 @@ describe('Schema.typeGroupValidators', () => {
       name: 1234
     });
 
-    assert.deepEqual(errors, [
+    expect(errors).toEqual([
       {
         expected: 'a value',
         actual: 'undefined',
@@ -50,7 +50,7 @@ describe('Schema.typeGroupValidators', () => {
       name: 'john',
       thing: 'baz'
     });
-    assert.deepEqual(errors, [
+    expect(errors).toEqual([
       {
         expected: 'bar',
         actual: 'baz',
@@ -62,7 +62,7 @@ describe('Schema.typeGroupValidators', () => {
       name: 'john',
       thing: 'bar'
     });
-    assert.equal(errors, undefined);
+    expect(errors).toEqual(undefined);
 
     delete validationKeywords.foo;
     STRING_OPS.pop();

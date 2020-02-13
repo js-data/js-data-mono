@@ -1,16 +1,10 @@
-import { assert, JSData } from '../../_setup';
+import { JSData, store } from '../../_setup';
 
 describe('DataStore#update', () => {
-  it('should be an instance method', () => {
-    const DataStore = JSData.DataStore;
-    const store = new DataStore();
-    assert.equal(typeof store.update, 'function');
-    assert.strictEqual(store.update, DataStore.prototype.update);
-  });
   it('should update', async function () {
     const id = 1;
     const props: any = {id, name: 'John'};
-    this.store.registerAdapter(
+    store.registerAdapter(
       'mock',
       {
         update() {
@@ -20,8 +14,8 @@ describe('DataStore#update', () => {
       },
       {default: true}
     );
-    const user = await this.store.update('user', id, props);
-    assert.equal(user.foo, 'bar', 'user was updated');
-    assert(user instanceof this.store.getMapper('user').recordClass, 'user is a record');
+    const user = await store.update('user', id, props);
+    expect(user.foo).toEqual('bar');
+    expect(user instanceof store.getMapper('user').recordClass).toBeTruthy();
   });
 });

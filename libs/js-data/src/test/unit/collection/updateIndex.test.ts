@@ -1,4 +1,4 @@
-import { assert, JSData } from '../../_setup';
+import { JSData } from '../../_setup';
 
 describe('Collection#updateIndex', () => {
   it('should update record in a single index', () => {
@@ -8,16 +8,16 @@ describe('Collection#updateIndex', () => {
     ];
     const collection = new JSData.Collection(data);
     collection.createIndex('age');
-    assert.equal(collection.getAll(3).length, 0, 'should have no items with id 3');
-    assert.equal(collection.getAll(27, {index: 'age'}).length, 1, 'should have one item with age 27');
+    expect(collection.getAll(3).length).toEqual(0);
+    expect(collection.getAll(27, {index: 'age'}).length).toEqual(1);
     data[1].age = 26;
     data[1].id = 3;
     collection.updateIndex(data[1], {index: 'age'});
-    assert.equal(collection.getAll(3).length, 0, 'should have no items with id 3');
-    assert.equal(collection.getAll(26, {index: 'age'}).length, 1, 'should have one item with age 26');
-    assert.equal(collection.getAll(27, {index: 'age'}).length, 0, 'should have no items with age 27');
+    expect(collection.getAll(3).length).toEqual(0);
+    expect(collection.getAll(26, {index: 'age'}).length).toEqual(1);
+    expect(collection.getAll(27, {index: 'age'}).length).toEqual(0);
     collection.updateIndex(data[1]);
-    assert.equal(collection.getAll(1).length, 0, 'should have no items with id 1');
-    assert.equal(collection.getAll(3).length, 1, 'should have one item with id 3');
+    expect(collection.getAll(1).length).toEqual(0);
+    expect(collection.getAll(3).length).toEqual(1);
   });
 });

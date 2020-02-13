@@ -1,15 +1,15 @@
-import { assert, JSData, objectsEqual } from '../../_setup';
+import { JSData, objectsEqual, store, User } from '../../_setup';
 
 describe('Mapper#toJSON', () => {
   it('should be an instance method', () => {
     const Mapper = JSData.Mapper;
     const mapper = new Mapper({name: 'user'});
-    assert.equal(typeof mapper.toJSON, 'function');
-    assert.strictEqual(mapper.toJSON, Mapper.prototype.toJSON);
+    expect(typeof mapper.toJSON).toEqual('function');
+    expect(mapper.toJSON).toBe(Mapper.prototype.toJSON);
   });
   it('should make json when not an instance', function () {
     const props = {name: 'John'};
-    objectsEqual(this.User.toJSON(props), props, 'should return passed in data');
+    expect(User.toJSON(props)).toEqual(props);
 
     const UserMapper = new JSData.Mapper({
       name: 'user',
@@ -32,21 +32,18 @@ describe('Mapper#toJSON', () => {
       foreignKey: 'userId'
     })(UserMapper);
 
-    objectsEqual(
-      UserMapper.toJSON(
-        {
-          name: 'John',
-          id: 1,
-          comments: [{userId: 1}]
-        },
-        {with: 'comments'}
-      ),
+    expect(UserMapper.toJSON(
       {
         name: 'John',
         id: 1,
         comments: [{userId: 1}]
-      }
-    );
+      },
+      {with: 'comments'}
+    )).toEqual({
+      name: 'John',
+      id: 1,
+      comments: [{userId: 1}]
+    });
   });
   it('should strictly keep schema props', () => {
     const UserMapper = new JSData.Mapper({
@@ -66,7 +63,7 @@ describe('Mapper#toJSON', () => {
       },
       {strict: true}
     );
-    objectsEqual(json, {
+    expect(json).toEqual({
       name: 'John',
       age: 30
     });
@@ -97,24 +94,24 @@ describe('Mapper#toJSON', () => {
       first: 'John',
       last: 'Anderson'
     });
-    assert.equal(user.name, 'John Anderson');
+    expect(user.name).toEqual('John Anderson');
   });
   it('should make json when the record class does not have a mapper', () => {
     const props = {name: 'John'};
     const record = new JSData.Record(props);
-    assert.notStrictEqual(record.toJSON(), props, 'should not return passed in data');
-    objectsEqual(record.toJSON(), props, 'should be deeply equal');
+    expect(record.toJSON()).not.toBe(props);
+    expect(record.toJSON()).toEqual(props);
   });
   it('should make json when an instance', function () {
     const props = {name: 'John', organizationId: 5};
-    const user = this.User.createRecord(props);
-    assert(this.User.toJSON(user) !== props, 'should return copy of data');
-    objectsEqual(this.User.toJSON(user), props, 'copy should equal passed in data');
-    objectsEqual(user.toJSON(), props, 'copy should equal passed in data');
+    const user = User.createRecord(props);
+    expect(User.toJSON(user) !== props).toBeTruthy();
+    expect(User.toJSON(user)).toEqual(props);
+    expect(user.toJSON()).toEqual(props);
   });
   it('should keep only enumerable properties', function () {
     const props = {name: 'John'};
-    const user = this.User.createRecord(props);
+    const user = User.createRecord(props);
     Object.defineProperty(user, 'foo', {
       enumerable: true,
       value: 'foo'
@@ -123,13 +120,13 @@ describe('Mapper#toJSON', () => {
       enumerable: false,
       value: 'bar'
     });
-    assert(this.User.toJSON(user) !== props, 'should return copy of data');
+    expect(User.toJSON(user) !== props).toBeTruthy();
     const expected = {
       name: 'John',
       foo: 'foo'
     };
-    objectsEqual(this.User.toJSON(user), expected, 'should return enumerable properties');
-    objectsEqual(user.toJSON(), expected, 'should return enumerable properties');
+    expect(User.toJSON(user)).toEqual(expected);
+    expect(user.toJSON()).toEqual(expected);
   });
   it('should work when not a Record instance', function () {
     const user = {
@@ -146,11 +143,11 @@ describe('Mapper#toJSON', () => {
         }
       ]
     };
-    objectsEqual(this.User.toJSON(user), {name: 'John'}, 'returned data should not have relations');
-    objectsEqual(this.User.toJSON(user, {withAll: true}), user, 'returned data should have all relations');
+    expect(User.toJSON(user)).toEqual({name: 'John'});
+    expect(User.toJSON(user, {withAll: true})).toEqual(user);
   });
-  it('should remove relations when an instance', function () {
-    const user = this.store.add('user', {
+  it('should remove relations when an instance', () => {
+    const user = store.add('user', {
       name: 'John',
       id: 1,
       organization: {
@@ -176,18 +173,17 @@ describe('Mapper#toJSON', () => {
         }
       ]
     });
-    assert(this.User.toJSON(user) !== user, 'should return copy of data');
-    assert(user.toJSON() !== user, 'should return copy of data');
+    expect(User.toJSON(user) !== user).toBeTruthy();
+    expect(user.toJSON() !== user).toBeTruthy();
     const expected = {
       id: 1,
       name: 'John',
       organizationId: 2
     };
-    objectsEqual(this.User.toJSON(user), expected, 'returned data should not have relations');
-    objectsEqual(user.toJSON(), expected, 'returned data should not have relations');
+    expect(User.toJSON(user)).toEqual(expected);
+    expect(user.toJSON()).toEqual(expected);
   });
   it('should keep specified relations when an instance', function () {
-    const store = this.store;
     const user = store.add('user', {
       name: 'John',
       id: 1,
@@ -221,20 +217,12 @@ describe('Mapper#toJSON', () => {
       organization: user.organization.toJSON()
     };
 
-    objectsEqual(
-      this.User.toJSON(user, {
-        with: ['organization']
-      }),
-      expected,
-      'should keep organization'
-    );
-    objectsEqual(
-      user.toJSON({
-        with: ['organization']
-      }),
-      expected,
-      'should keep organization'
-    );
+    expect(User.toJSON(user, {
+      with: ['organization']
+    })).toEqual(expected);
+    expect(user.toJSON({
+      with: ['organization']
+    })).toEqual(expected);
 
     expected = {
       id: 1,
@@ -244,20 +232,12 @@ describe('Mapper#toJSON', () => {
       comments: user.comments.map(comment => comment.toJSON())
     };
 
-    objectsEqual(
-      this.User.toJSON(user, {
-        with: ['organization', 'comments']
-      }),
-      expected,
-      'should keep organization and comments'
-    );
-    objectsEqual(
-      user.toJSON({
-        with: ['organization', 'comments']
-      }),
-      expected,
-      'should keep organization and comments'
-    );
+    expect(User.toJSON(user, {
+      with: ['organization', 'comments']
+    })).toEqual(expected);
+    expect(user.toJSON({
+      with: ['organization', 'comments']
+    })).toEqual(expected);
 
     expected = {
       id: 1,
@@ -277,7 +257,7 @@ describe('Mapper#toJSON', () => {
     };
 
     objectsEqual(
-      this.User.toJSON(user, {
+      User.toJSON(user, {
         with: ['organization', 'comments', 'comments.approvedByUser']
       }),
       expected,
@@ -309,24 +289,16 @@ describe('Mapper#toJSON', () => {
             organization: store.get('organization', 6).toJSON()
           }
         },
-        this.store.get('comment', 4).toJSON()
+        store.get('comment', 4).toJSON()
       ]
     };
 
-    objectsEqual(
-      this.User.toJSON(user, {
-        with: ['organization', 'comments', 'comments.approvedByUser', 'comments.approvedByUser.organization']
-      }),
-      expected,
-      'should keep organization and comments and comments.approvedByUser and comments.approvedByUser.organization'
-    );
+    expect(User.toJSON(user, {
+      with: ['organization', 'comments', 'comments.approvedByUser', 'comments.approvedByUser.organization']
+    })).toEqual(expected);
 
-    objectsEqual(
-      user.toJSON({
-        with: ['organization', 'comments', 'comments.approvedByUser', 'comments.approvedByUser.organization']
-      }),
-      expected,
-      'should keep organization and comments and comments.approvedByUser and comments.approvedByUser.organization'
-    );
+    expect(user.toJSON({
+      with: ['organization', 'comments', 'comments.approvedByUser', 'comments.approvedByUser.organization']
+    })).toEqual(expected);
   });
 });

@@ -1,11 +1,11 @@
-import { assert, JSData } from '../../_setup';
+import { JSData } from '../../_setup';
 
 describe('Mapper#createRecord', () => {
   it('should be an instance method', () => {
     const Mapper = JSData.Mapper;
     const mapper = new Mapper({name: 'foo'});
-    assert.equal(typeof mapper.destroy, 'function');
-    assert.strictEqual(mapper.destroy, Mapper.prototype.destroy);
+    expect(typeof mapper.destroy).toEqual('function');
+    expect(mapper.destroy).toBe(Mapper.prototype.destroy);
   });
   it('should destroy', async () => {
     const id = 1;
@@ -18,16 +18,16 @@ describe('Mapper#createRecord', () => {
       destroy(mapper, _id, Opts) {
         destroyCalled = true;
         return new Promise((resolve, reject) => {
-          assert.strictEqual(mapper, User, 'should pass in the Model');
-          assert.deepEqual(_id, id, 'should pass in the id');
-          assert.equal(Opts.raw, false, 'Opts are provided');
+          expect(mapper).toBe(User);
+          expect(_id).toEqual(id);
+          expect(Opts.raw).toEqual(false);
           resolve('foo');
         });
       }
     });
     const result = await User.destroy(id);
-    assert(destroyCalled, 'Adapter#destroy should have been called');
-    assert.equal(result, 'foo', 'returned data');
+    expect(destroyCalled).toBeTruthy();
+    expect(result).toEqual('foo');
   });
   it('should return raw', async () => {
     const id = 1;
@@ -41,9 +41,9 @@ describe('Mapper#createRecord', () => {
       destroy(mapper, _id, Opts) {
         destroyCalled = true;
         return new Promise((resolve, reject) => {
-          assert.strictEqual(mapper, User, 'should pass in the Model');
-          assert.deepEqual(_id, id, 'should pass in the id');
-          assert.equal(Opts.raw, true, 'Opts are provided');
+          expect(mapper).toBe(User);
+          expect(_id).toEqual(id);
+          expect(Opts.raw).toEqual(true);
           resolve({
             deleted: 1,
             data: 'foo'
@@ -52,9 +52,9 @@ describe('Mapper#createRecord', () => {
       }
     });
     const data = await User.destroy(id);
-    assert(destroyCalled, 'Adapter#destroy should have been called');
-    assert.equal(data.adapter, 'mock', 'should have adapter name in response');
-    assert.equal(data.deleted, 1, 'should have other metadata in response');
-    assert.equal(data.data, 'foo', 'foo should have been returned');
+    expect(destroyCalled).toBeTruthy();
+    expect(data.adapter).toEqual('mock');
+    expect(data.deleted).toEqual(1);
+    expect(data.data).toEqual('foo');
   });
 });

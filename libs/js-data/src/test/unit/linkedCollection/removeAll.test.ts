@@ -1,38 +1,38 @@
-import { assert, objectsEqual } from '../../_setup';
+import { data, PostCollection, User, UserCollection } from '../../_setup';
 
 describe('LinkedCollection#removeAll', () => {
   it('should eject items that meet the criteria from the store', function () {
-    this.User.debug = true;
-    this.UserCollection.add([this.data.p1, this.data.p2, this.data.p3, this.data.p4, this.data.p5]);
-    assert(this.UserCollection.get(5));
-    assert(this.UserCollection.get(6));
-    assert(this.UserCollection.get(7));
-    assert(this.UserCollection.get(8));
-    assert(this.UserCollection.get(9));
-    assert.doesNotThrow(() => {
-      this.UserCollection.removeAll({where: {author: 'Adam'}});
-    });
-    assert(this.UserCollection.get(5));
-    assert(this.UserCollection.get(6));
-    assert(this.UserCollection.get(7));
-    assert(!this.UserCollection.get(8));
-    assert(!this.UserCollection.get(9));
+    User.debug = true;
+    UserCollection.add([data.p1, data.p2, data.p3, data.p4, data.p5]);
+    expect(UserCollection.get(5)).toBeTruthy();
+    expect(UserCollection.get(6)).toBeTruthy();
+    expect(UserCollection.get(7)).toBeTruthy();
+    expect(UserCollection.get(8)).toBeTruthy();
+    expect(UserCollection.get(9)).toBeTruthy();
+    expect(() => {
+      UserCollection.removeAll({where: {author: 'Adam'}});
+    }).not.toThrow();
+    expect(UserCollection.get(5)).toBeTruthy();
+    expect(UserCollection.get(6)).toBeTruthy();
+    expect(UserCollection.get(7)).toBeTruthy();
+    expect(!UserCollection.get(8)).toBeTruthy();
+    expect(!UserCollection.get(9)).toBeTruthy();
   });
   it('should eject all items from the store', function () {
-    this.PostCollection.add([this.data.p1, this.data.p2, this.data.p3, this.data.p4]);
+    PostCollection.add([data.p1, data.p2, data.p3, data.p4]);
 
-    objectsEqual(this.PostCollection.get(5), this.data.p1);
-    objectsEqual(this.PostCollection.get(6), this.data.p2);
-    objectsEqual(this.PostCollection.get(7), this.data.p3);
-    objectsEqual(this.PostCollection.get(8), this.data.p4);
+    expect(PostCollection.get(5)).toEqual(data.p1);
+    expect(PostCollection.get(6)).toEqual(data.p2);
+    expect(PostCollection.get(7)).toEqual(data.p3);
+    expect(PostCollection.get(8)).toEqual(data.p4);
 
-    assert.doesNotThrow(() => {
-      this.PostCollection.removeAll();
-    });
+    expect(() => {
+      PostCollection.removeAll();
+    }).not.toThrow();
 
-    assert(!this.PostCollection.get(5));
-    assert(!this.PostCollection.get(6));
-    assert(!this.PostCollection.get(7));
-    assert(!this.PostCollection.get(8));
+    expect(!PostCollection.get(5)).toBeTruthy();
+    expect(!PostCollection.get(6)).toBeTruthy();
+    expect(!PostCollection.get(7)).toBeTruthy();
+    expect(!PostCollection.get(8)).toBeTruthy();
   });
 });

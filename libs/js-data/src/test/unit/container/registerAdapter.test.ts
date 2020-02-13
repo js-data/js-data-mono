@@ -1,25 +1,25 @@
-import { assert, JSData } from '../../_setup';
+import { JSData } from '../../_setup';
 
 describe('Container#registerAdapter', () => {
   it('should register an adapter', () => {
     const Container = JSData.Container;
     const store = new Container();
-    assert.equal(typeof store.registerAdapter, 'function');
-    assert.strictEqual(store.registerAdapter, Container.prototype.registerAdapter);
+    expect(typeof store.registerAdapter).toEqual('function');
+    expect(store.registerAdapter).toBe(Container.prototype.registerAdapter);
 
     store.defineMapper('user');
 
     store.registerAdapter('foo', {}, {default: true});
     store.registerAdapter('bar', {});
-    assert.deepEqual(store.getAdapters(), {
+    expect(store.getAdapters()).toEqual({
       foo: {},
       bar: {}
     });
     const mapper = store.defineMapper('foo');
-    assert.deepEqual(mapper.getAdapters(), {
+    expect(mapper.getAdapters()).toEqual({
       foo: {},
       bar: {}
     });
-    assert.equal(store.mapperDefaults.defaultAdapter, 'foo');
+    expect(store.mapperDefaults.defaultAdapter).toEqual('foo');
   });
 });

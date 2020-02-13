@@ -1,4 +1,4 @@
-import { assert, createRelation, createStore, JSData, sinon } from '../../_setup';
+import { createRelation, createStore, JSData, sinon } from '../../_setup';
 
 const {Mapper, belongsTo} = JSData;
 
@@ -14,49 +14,33 @@ describe('JSData.belongsTo', () => {
     });
 
     it('should throw error if "localField" is missed', () => {
-      assert.throws(
-        () => {
-          belongsTo(anotherMapper, {foreignKey: 'fooId'})(mapper);
-        },
-        Error,
-        '[new Relation:opts.localField] expected: string, found: undefined\nhttp://www.js-data.io/v3.0/docs/errors#400'
-      );
+      expect(() => {
+        belongsTo(anotherMapper, {foreignKey: 'fooId'})(mapper);
+      }).toThrow();
     });
 
     it('should throw error if "foreignKey" is missed', () => {
-      assert.throws(
-        () => {
-          belongsTo(anotherMapper, {localField: 'bar'})(mapper);
-        },
-        Error,
-        '[new Relation:opts.foreignKey] expected: string, found: undefined\nhttp://www.js-data.io/v3.0/docs/errors#400'
-      );
+      expect(() => {
+        belongsTo(anotherMapper, {localField: 'bar'})(mapper);
+      }).toThrow();
     });
 
     it('should throw error if related mapper is passed as string and "getRelation" option is not a function', () => {
-      assert.throws(
-        () => {
-          belongsTo('anotherMapper', {localField: 'bar', foreignKey: 'fooId'})(mapper);
-        },
-        Error,
-        '[new Relation:opts.getRelation] expected: function, found: undefined\nhttp://www.js-data.io/v3.0/docs/errors#400'
-      );
+      expect(() => {
+        belongsTo('anotherMapper', {localField: 'bar', foreignKey: 'fooId'})(mapper);
+      }).toThrow();
     });
 
     it('should throw error if related mapper is undefined', () => {
-      assert.throws(
-        () => {
-          belongsTo(undefined, {localField: 'bar', foreignKey: 'fooId'})(mapper);
-        },
-        Error,
-        '[new Relation:related] expected: Mapper or string, found: undefined\nhttp://www.js-data.io/v3.0/docs/errors#400'
-      );
+      expect(() => {
+        belongsTo(undefined, {localField: 'bar', foreignKey: 'fooId'})(mapper);
+      }).toThrow();
     });
 
     it('should not throw error if related mapper is a string and "getRelation" option is a function', () => {
-      assert.doesNotThrow(() => {
+      expect(() => {
         belongsTo('another', {localField: 'bar', foreignKey: 'fooId', getRelation: () => anotherMapper})(mapper);
-      });
+      }).not.toThrow();
     });
   });
 
@@ -86,27 +70,27 @@ describe('JSData.belongsTo', () => {
       const Foo = store.getMapper('foo').recordClass;
       const Bar = store.getMapper('bar').recordClass;
 
-      assert.isTrue(Foo.prototype.hasOwnProperty('bars'));
-      assert.isTrue(Bar.prototype.hasOwnProperty('foo'));
+      expect(Foo.prototype.hasOwnProperty('bars')).toBe(true);
+      expect(Bar.prototype.hasOwnProperty('foo')).toBe(true);
     });
 
     it('should automatically map relations when record is added to store', () => {
-      assert.sameMembers(foos[0].bars, bars);
-      assert.isTrue(bars.every(bar => bar.foo === foos[0]));
+      expect(foos[0].bars).toEqual(bars);
+      expect(bars.every(bar => bar.foo === foos[0])).toBe(true);
     });
 
     it('should allow relation re-assignment', () => {
       bars[0].foo = foos[1];
 
-      assert.sameMembers(foos[0].bars, [bars[1]]);
-      assert.sameMembers(foos[1].bars, [bars[0]]);
+      expect(foos[0].bars).toEqual([bars[1]]);
+      expect(foos[1].bars).toEqual([bars[0]]);
     });
 
     it('should allow relation ids re-assignment', () => {
       bars[0].fooId = foos[1].id;
 
-      assert.sameMembers(foos[0].bars, [bars[1]]);
-      assert.sameMembers(foos[1].bars, [bars[0]]);
+      expect(foos[0].bars).toEqual([bars[1]]);
+      expect(foos[1].bars).toEqual([bars[0]]);
     });
   });
 
@@ -125,8 +109,8 @@ describe('JSData.belongsTo', () => {
       const foo = store.add('foo', {id: 1});
       const bar = store.add('bar', {id: 1, fooId: 1});
 
-      assert.strictEqual(bar.foo, foo);
-      assert.isUndefined(foo.bars);
+      expect(bar.foo).toBe(foo);
+      expect(foo.bars).not.toBeDefined();
     });
   });
 
@@ -162,7 +146,7 @@ describe('JSData.belongsTo', () => {
       store.add('foo', {id: 1, name: 'test'});
       store.add('bar', {id: 1, fooId: 1});
 
-      assert.isTrue(getter.called);
+      expect(getter.called).toBe(true);
     });
 
     it('should call custom setter each time relation is changed', () => {
@@ -171,7 +155,7 @@ describe('JSData.belongsTo', () => {
 
       bar.foo = null;
 
-      assert.isTrue(setter.called);
+      expect(setter.called).toBe(true);
     });
   });
 });

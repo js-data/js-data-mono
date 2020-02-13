@@ -2,6 +2,8 @@ import utils from '../utils';
 import { Relation } from '../Relation';
 
 export class HasManyRelation extends Relation {
+
+  static TYPE_NAME = 'hasMany';
   foreignKeys: any;
   localKeys: any;
 
@@ -110,6 +112,4 @@ export class HasManyRelation extends Relation {
   createLinked(props, opts) {
     return this.getRelation().createMany(props, opts);
   }
-
-  static TYPE_NAME = 'hasMany';
 }

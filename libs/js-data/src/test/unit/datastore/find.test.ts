@@ -1,17 +1,17 @@
-import { assert, JSData, objectsEqual } from '../../_setup';
+import { JSData, store, User } from '../../_setup';
 
 describe('DataStore#find', () => {
   it('should be an instance method', () => {
     const DataStore = JSData.DataStore;
     const store = new DataStore();
-    assert.equal(typeof store.find, 'function');
-    assert.strictEqual(store.find, DataStore.prototype.find);
+    expect(typeof store.find).toEqual('function');
+    expect(store.find).toBe(DataStore.prototype.find);
   });
   it('should find', async function () {
     const id = 1;
     const props = {id, name: 'John'};
     let callCount = 0;
-    this.store.registerAdapter(
+    store.registerAdapter(
       'mock',
       {
         find() {
@@ -21,23 +21,23 @@ describe('DataStore#find', () => {
       },
       {default: true}
     );
-    const user = await this.store.find('user', id);
-    assert.equal(callCount, 1, 'find should have been called once');
-    assert.equal(typeof this.store._completedQueries.user[id], 'function');
-    objectsEqual(user, props, 'user should have been found');
-    assert(user instanceof this.User.recordClass, 'user is a record');
-    assert.strictEqual(user, await this.store.find('user', id), 'should return the cached user');
-    assert.equal(callCount, 1, 'find should have been called once');
-    assert.strictEqual(user, await this.store.find('user', id, {force: true}), 'should make a new query');
-    assert.equal(callCount, 2, 'find should have been called twice');
-    assert.strictEqual(user, await this.store.find('user', id), 'should return the cached user');
-    assert.equal(callCount, 2, 'find should have been called twice');
+    const user = await store.find('user', id);
+    expect(callCount).toEqual(1);
+    expect(typeof store._completedQueries.user[id]).toEqual('function');
+    expect(user).toEqual(props);
+    expect(user instanceof User.recordClass).toBeTruthy();
+    expect(user).toBe(await store.find('user', id));
+    expect(callCount).toEqual(1);
+    expect(user).toBe(await store.find('user', id, {force: true}));
+    expect(callCount).toEqual(2);
+    expect(user).toBe(await store.find('user', id));
+    expect(callCount).toEqual(2);
   });
   it('should return pending query', async function () {
     const id = 1;
     const props = {id, name: 'John'};
     let callCount = 0;
-    this.store.registerAdapter(
+    store.registerAdapter(
       'mock',
       {
         find() {
@@ -51,16 +51,16 @@ describe('DataStore#find', () => {
       },
       {default: true}
     );
-    const users = await Promise.all([this.store.find('user', id), this.store.find('user', id)]);
-    assert.equal(callCount, 1, 'find should have been called once');
-    objectsEqual(users[0], props, 'user should have been found');
-    objectsEqual(users[1], props, 'user should have been found');
-    assert.strictEqual(users[0], users[1], 'users are the same object');
+    const users = await Promise.all([store.find('user', id), store.find('user', id)]);
+    expect(callCount).toEqual(1);
+    expect(users[0]).toEqual(props);
+    expect(users[1]).toEqual(props);
+    expect(users[0]).toBe(users[1]);
   });
   it('should delete pending query on error', function () {
     const id = 1;
     let callCount = 0;
-    this.store.registerAdapter(
+    store.registerAdapter(
       'mock',
       {
         find() {
@@ -74,12 +74,12 @@ describe('DataStore#find', () => {
       },
       {default: true}
     );
-    const pendingQuery = this.store.find('user', id);
-    assert(this.store._pendingQueries.user[id]);
+    const pendingQuery = store.find('user', id);
+    expect(store._pendingQueries.user[id]).toBeTruthy();
     return pendingQuery.catch(err => {
-      assert.equal(callCount, 1, 'find should have been called once');
-      assert(!this.store._pendingQueries.user[id]);
-      assert.equal(err.message, 'foo');
+      expect(callCount).toEqual(1);
+      expect(!store._pendingQueries.user[id]).toBeTruthy();
+      expect(err.message).toEqual('foo');
     });
   });
 });

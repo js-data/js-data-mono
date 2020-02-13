@@ -91,6 +91,7 @@ describe('utils.isNull', () => {
   });
 
   it('isNull returns false for non null values', () => {
+    // tslint:disable-next-line:no-unused-expression
     const falseVals = [0, 1, undefined, 'null', void (() => {})];
     falseVals.forEach(val => {
       expect(val).not.toBeNull();
@@ -187,6 +188,7 @@ describe('utils.isString', () => {
 
 describe('utils.isUndefined', () => {
   it('isUndefined returns true for undefined values', () => {
+    // tslint:disable-next-line:no-unused-expression
     const trueVals = [undefined, void (() => {})];
     trueVals.forEach(val => {
       expect(val).not.toBeDefined();

@@ -1,4 +1,4 @@
-import { assert, JSData } from '../../_setup';
+import { JSData } from '../../_setup';
 import { productSchema } from './_productSchema';
 
 describe('Schema.pick', () => {
@@ -16,7 +16,7 @@ describe('Schema.pick', () => {
 
     const copy = schema.pick(data);
 
-    assert.deepEqual(copy, {
+    expect(copy).toEqual({
       id: 1,
       dimensions: {
         height: undefined,
@@ -69,7 +69,7 @@ describe('Schema.pick', () => {
 
     const copy = schema.pick(data);
 
-    assert.deepEqual(copy, {
+    expect(copy).toEqual({
       id: 1,
       foo: 'bar',
       tags: [
@@ -119,7 +119,7 @@ describe('Schema.pick', () => {
 
     const copy = schema.pick(data, {strict: true});
 
-    assert.deepEqual(copy, {
+    expect(copy).toEqual({
       id: 1,
       // foo was stripped
       tags: [
@@ -171,7 +171,7 @@ describe('Schema.pick', () => {
 
     const copy = schema.pick(data);
 
-    assert.deepEqual(copy, {
+    expect(copy).toEqual({
       id: 1,
       dimensions: {
         height: undefined,
@@ -239,7 +239,7 @@ describe('Schema.pick', () => {
     const address = store.createRecord('address', {uid: '123', tag: 'foo'});
     const address2 = store.createRecord('address', {uid: '789', tag: 'beep'});
 
-    assert.deepEqual(address.toJSON(), {
+    expect(address.toJSON()).toEqual({
       uid: '123',
       tag: 'foo',
       country: {
@@ -247,7 +247,7 @@ describe('Schema.pick', () => {
       }
     });
 
-    assert.deepEqual(address2.toJSON(), {
+    expect(address2.toJSON()).toEqual({
       uid: '789',
       tag: 'beep',
       country: undefined

@@ -51,7 +51,7 @@ export default class Component extends Settable {
    * @since 3.0.0
    * @type {boolean}
    */
-  protected debug: boolean;
+  debug: boolean;
 
   /**
    * Event listeners attached to this Component. __Do not modify.__ Use

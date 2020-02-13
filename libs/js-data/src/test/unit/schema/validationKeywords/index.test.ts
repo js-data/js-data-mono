@@ -1,4 +1,4 @@
-import { assert, JSData } from '../../../_setup';
+import { JSData } from '../../../_setup';
 
 import { multipleOfTests } from './_multipleOf';
 import { maximumTests } from './_maximum';
@@ -53,7 +53,7 @@ describe('Schema.validationKeywords', () => {
       'type',
       'uniqueItems'
     ];
-    assert.deepEqual(Object.keys(validationKeywords), EXPECTED_KEYS, 'has the expected keys');
+    expect(Object.keys(validationKeywords)).toEqual(EXPECTED_KEYS);
   });
 });
 
@@ -67,7 +67,7 @@ const validationTestRunner = (suites, group?) => {
             ? JSData.Schema.typeGroupValidators[group](test.data, schema)
             : JSData.Schema.validate(test.data, schema);
 
-          assert.equal(test.valid, !errors, errors);
+          expect(test.valid).toEqual(!errors);
         });
       });
     });
@@ -161,7 +161,7 @@ describe('Schema.validationKeywords.anyOf', () => {
         it(test.description, () => {
           // let errors = JSData.Schema.validationKeywords.anyOf(test.data, Schema, {})
           const errors = Schema.validate(test.data);
-          assert.equal(test.valid, !errors, errors?.[0]);
+          expect(test.valid).toEqual(!errors);
         });
       });
     });

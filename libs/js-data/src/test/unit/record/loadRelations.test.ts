@@ -70,7 +70,7 @@ describe('Record#changes', () => {
 
     await user.loadRelations('organization');
 
-    objectsEqual(user.organization, data.organization2);
+    expect(user.organization).toEqual(data.organization2);
     expect(user.organization).toBe(store.get('organization', user.organizationId));
   });
 

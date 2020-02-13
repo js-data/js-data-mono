@@ -1,38 +1,30 @@
-import { assert, JSData, sinon } from '../../_setup';
+import { JSData, sinon } from '../../_setup';
 
 describe('Mapper', () => {
   it('should be a constructor function', () => {
     const Mapper = JSData.Mapper;
-    assert.equal(typeof Mapper, 'function');
+    expect(typeof Mapper).toEqual('function');
     const mapper = new Mapper({name: 'foo'});
-    assert.equal(mapper instanceof Mapper, true);
+    expect(mapper instanceof Mapper).toEqual(true);
   });
   it('should require a name', () => {
-    assert.throws(
-      () => {
-        // tslint:disable-next-line:no-unused-expression
-        new JSData.Mapper(); // eslint-disable-line
-      },
-      Error,
-      '[new Mapper:opts.name] expected: string, found: undefined\nhttp://www.js-data.io/v3.0/docs/errors#400'
-    );
+    expect(() => {
+      // tslint:disable-next-line:no-unused-expression
+      new JSData.Mapper(); // eslint-disable-line
+    }).toThrow();
   });
   it('should have events', () => {
     const User = new JSData.Mapper({name: 'user'});
     const listener = sinon.stub();
     User.on('bar', listener);
     User.emit('bar');
-    assert.equal(listener.calledOnce, true);
+    expect(listener.calledOnce).toEqual(true);
   });
   it('should only work with known crud methods', () => {
     const User = new JSData.Mapper({name: 'user'});
-    assert.throws(
-      () => {
-        User.crud('foobar');
-      },
-      Error,
-      '[Mapper#crud:foobar] method not found\nhttp://www.js-data.io/v3.0/docs/errors#404'
-    );
+    expect(() => {
+      User.crud('foobar');
+    }).toThrow();
   });
   it('should notify', done => {
     const stub = sinon.stub();
@@ -40,13 +32,13 @@ describe('Mapper', () => {
     User.on('beforeUpdate', stub);
     User.beforeUpdate(1, {name: 'John'}, {op: 'beforeUpdate'});
     setTimeout(() => {
-      assert.equal(stub.calledOnce, true);
+      expect(stub.calledOnce).toEqual(true);
       done();
     }, 10);
   });
   it('should work without a record class', () => {
     const User = new JSData.Mapper({name: 'user', recordClass: false});
-    assert.equal(User.recordClass, false);
+    expect(User.recordClass).toEqual(false);
   });
   it('should add methods to record class', () => {
     const User = new JSData.Mapper({
@@ -58,11 +50,11 @@ describe('Mapper', () => {
       }
     });
     const user = User.createRecord();
-    assert.equal(user.foo(), 'bar');
+    expect(user.foo()).toEqual('bar');
     const descriptor = Object.getOwnPropertyDescriptor(User.recordClass.prototype, 'foo');
-    assert(descriptor.writable);
-    assert(descriptor.configurable);
-    assert.equal(descriptor.enumerable, false);
-    assert.equal(typeof descriptor.value, 'function');
+    expect(descriptor.writable).toBeTruthy();
+    expect(descriptor.configurable).toBeTruthy();
+    expect(descriptor.enumerable).toEqual(false);
+    expect(typeof descriptor.value).toEqual('function');
   });
 });

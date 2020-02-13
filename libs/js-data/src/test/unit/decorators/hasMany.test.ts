@@ -1,4 +1,4 @@
-import { assert, createRelation as relation, JSData, objectsEqual } from '../../_setup';
+import { createRelation as relation, JSData } from '../../_setup';
 
 const {Mapper, hasMany, DataStore} = JSData;
 
@@ -12,39 +12,27 @@ describe('JSData.hasMany', () => {
     });
 
     it('should throw error if passed "foreignKey" and "localField" is omitted', () => {
-      assert.throws(
-        () => {
-          hasMany(anotherMapper, {foreignKey: 'foo_id'})(mapper);
-        },
-        Error,
-        '[new Relation:opts.localField] expected: string, found: undefined\nhttp://www.js-data.io/v3.0/docs/errors#400'
-      );
+      expect(() => {
+        hasMany(anotherMapper, {foreignKey: 'foo_id'})(mapper);
+      }).toThrow();
     });
 
     it('should throw error if passed "localField" and "foreignKey" is omitted', () => {
-      assert.throws(
-        () => {
-          hasMany(anotherMapper, {localField: 'foo'})(mapper);
-        },
-        Error,
-        '[new Relation:opts.<foreignKey|localKeys|foreignKeys>] expected: string, found: undefined\nhttp://www.js-data.io/v3.0/docs/errors#400'
-      );
+      expect(() => {
+        hasMany(anotherMapper, {localField: 'foo'})(mapper);
+      }).toThrow();
     });
 
     it('should throw error if passed relation name and "getRelation" is omitted', () => {
-      assert.throws(
-        () => {
-          hasMany('anotherMapper', {localField: 'foo', foreignKey: 'foo_id'})(mapper);
-        },
-        Error,
-        '[new Relation:opts.getRelation] expected: function, found: undefined\nhttp://www.js-data.io/v3.0/docs/errors#400'
-      );
+      expect(() => {
+        hasMany('anotherMapper', {localField: 'foo', foreignKey: 'foo_id'})(mapper);
+      }).toThrow();
     });
 
     it('should not throw error if passed relation together with "getRelation" option', () => {
-      assert.doesNotThrow(() => {
+      expect(() => {
         hasMany('anotherMapper', {localField: 'foo', foreignKey: 'foo_id', getRelation: () => anotherMapper})(mapper);
-      });
+      }).not.toThrow();
     });
   });
 
@@ -69,14 +57,14 @@ describe('JSData.hasMany', () => {
       const Foo = store.getMapper('foo').recordClass;
       const Bar = store.getMapper('bar').recordClass;
 
-      assert.isTrue(Foo.prototype.hasOwnProperty('bars'));
-      assert.isTrue(Bar.prototype.hasOwnProperty('foo'));
+      expect(Foo.prototype.hasOwnProperty('bars')).toBe(true);
+      expect(Bar.prototype.hasOwnProperty('foo')).toBe(true);
     });
 
     it('should return empty array for association if there is no linked records', () => {
       const foo = store.add('foo', {});
 
-      objectsEqual(foo.bars, []);
+      expect(foo.bars).toEqual([]);
     });
 
     it('should create association when related record is added to the store', () => {
@@ -86,7 +74,7 @@ describe('JSData.hasMany', () => {
         {fooId: 1, id: 2}
       ]);
 
-      objectsEqual(foo.bars, bars);
+      expect(foo.bars).toEqual(bars);
     });
 
     it('should allow relation re-assignment', () => {
@@ -99,11 +87,8 @@ describe('JSData.hasMany', () => {
 
       foo.bars = otherBars;
 
-      objectsEqual(foo.bars, otherBars);
-      objectsEqual(
-        otherBars.map(bar => bar.fooId),
-        [foo.id]
-      );
+      expect(foo.bars).toEqual(otherBars);
+      expect(otherBars.map(bar => bar.fooId)).toEqual([foo.id]);
     });
   });
 
@@ -128,21 +113,21 @@ describe('JSData.hasMany', () => {
       const Foo = store.getMapper('foo').recordClass;
       const Bar = store.getMapper('bar').recordClass;
 
-      assert.isTrue(Foo.prototype.hasOwnProperty('bars'));
-      assert.isTrue(Bar.prototype.hasOwnProperty('foos'));
+      expect(Foo.prototype.hasOwnProperty('bars')).toBe(true);
+      expect(Bar.prototype.hasOwnProperty('foos')).toBe(true);
     });
 
     it('should return empty array for association if there is no linked records', () => {
       const foo = store.add('foo', {});
 
-      objectsEqual(foo.bars, []);
+      expect(foo.bars).toEqual([]);
     });
 
     it('should create association when related record is added to the store', () => {
       const foo = store.add('foo', {id: 1, barIds: [1]});
       const bars = store.add('bar', [{id: 1}, {id: 2}]);
 
-      objectsEqual(foo.bars, bars.slice(0, 1));
+      expect(foo.bars).toEqual(bars.slice(0, 1));
     });
 
     it('should allow relation re-assignment', () => {
@@ -153,9 +138,9 @@ describe('JSData.hasMany', () => {
 
       foo.bars = otherBars;
 
-      objectsEqual(foo.bars, otherBars);
-      objectsEqual(otherBars[0].foos, otherBars[1].foos);
-      objectsEqual(otherBars[0].foos, [anotherFoo, foo]);
+      expect(foo.bars).toEqual(otherBars);
+      expect(otherBars[0].foos).toEqual(otherBars[1].foos);
+      expect(otherBars[0].foos).toEqual([anotherFoo, foo]);
     });
   });
 
@@ -180,21 +165,21 @@ describe('JSData.hasMany', () => {
       const Foo = store.getMapper('foo').recordClass;
       const Bar = store.getMapper('bar').recordClass;
 
-      assert.isTrue(Foo.prototype.hasOwnProperty('bars'));
-      assert.isTrue(Bar.prototype.hasOwnProperty('foos'));
+      expect(Foo.prototype.hasOwnProperty('bars')).toBe(true);
+      expect(Bar.prototype.hasOwnProperty('foos')).toBe(true);
     });
 
     it('should return empty array for association if there is no linked records', () => {
       const foo = store.add('foo', {});
 
-      objectsEqual(foo.bars, []);
+      expect(foo.bars).toEqual([]);
     });
 
     it('should create association when related record is added to the store', () => {
       const foo = store.add('foo', {id: 1});
       const bars = store.add('bar', [{id: 1, fooIds: [1]}, {id: 2}]);
 
-      objectsEqual(foo.bars, bars.slice(0, 1));
+      expect(foo.bars).toEqual(bars.slice(0, 1));
     });
 
     it('should allow relation re-assignment', () => {
@@ -209,9 +194,9 @@ describe('JSData.hasMany', () => {
 
       foo.bars = otherBars;
 
-      objectsEqual(foo.bars, otherBars);
-      objectsEqual(otherBars[0].foos, otherBars[1].foos);
-      objectsEqual(otherBars[0].foos, [anotherFoo, foo]);
+      expect(foo.bars).toEqual(otherBars);
+      expect(otherBars[0].foos).toEqual(otherBars[1].foos);
+      expect(otherBars[0].foos).toEqual([anotherFoo, foo]);
     });
   });
 
@@ -247,11 +232,11 @@ describe('JSData.hasMany', () => {
     it('sets related records according to implemented setter', () => {
       foo.bars = store.add('bar', [{id: 2}, {id: 3}]);
 
-      assert.equal(foo.bars, foo._bars);
+      expect(foo.bars).toEqual(foo._bars);
     });
 
     it('gets related records according to implemented getter', () => {
-      assert.equal(foo.bars, foo._bars);
+      expect(foo.bars).toEqual(foo._bars);
     });
   });
 });

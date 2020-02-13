@@ -1,11 +1,11 @@
-import { data, objectsEqual, Post } from '../../_setup';
+import { data, Post } from '../../_setup';
 
 describe('Record#revert', () => {
   it('should return the previous version of an item', () => {
     const post = new Post.recordClass(data.p1);
     post.author = 'Jake';
     post.revert();
-    objectsEqual(post, data.p1);
+    expect(post).toEqual(data.p1);
   });
   it('should preserve fields in the optional preserve array', () => {
     const post = new Post.recordClass(data.p1);

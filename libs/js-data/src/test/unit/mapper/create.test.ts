@@ -1,11 +1,11 @@
-import { assert, JSData, objectsEqual } from '../../_setup';
+import { JSData, objectsEqual, store } from '../../_setup';
 
 describe('Mapper#create', () => {
   it('should be an instance method', () => {
     const Mapper = JSData.Mapper;
     const mapper = new Mapper({name: 'foo'});
-    assert.equal(typeof mapper.create, 'function');
-    assert.strictEqual(mapper.create, Mapper.prototype.create);
+    expect(typeof mapper.create).toEqual('function');
+    expect(mapper.create).toBe(Mapper.prototype.create);
   });
   it('should create', async () => {
     const props = {name: 'John'};
@@ -18,18 +18,18 @@ describe('Mapper#create', () => {
       create(mapper, _props, Opts) {
         createCalled = true;
         return new Promise((resolve, reject) => {
-          assert.strictEqual(mapper, User, 'should pass in the JSData.Mapper');
-          objectsEqual(_props, props, 'should pass in the props');
-          assert(!Opts.raw, 'Opts are provided');
+          expect(mapper).toBe(User);
+          expect(_props).toEqual(props);
+          expect(!Opts.raw).toBeTruthy();
           _props[mapper.idAttribute] = new Date().getTime();
           resolve(_props);
         });
       }
     });
     const user = await User.create(props);
-    assert(createCalled, 'Adapter#create should have been called');
-    assert(user[User.idAttribute], 'new user has an id');
-    assert(user instanceof User.recordClass, 'user is a record');
+    expect(createCalled).toBeTruthy();
+    expect(user[User.idAttribute]).toBeTruthy();
+    expect(user instanceof User.recordClass).toBeTruthy();
   });
   it('should create with defaults', async () => {
     const props = {name: 'John'};
@@ -48,19 +48,19 @@ describe('Mapper#create', () => {
       create(mapper, _props, Opts) {
         createCalled = true;
         return new Promise((resolve, reject) => {
-          assert.strictEqual(mapper, User, 'should pass in the JSData.Mapper');
-          objectsEqual(_props, props, 'should pass in the props');
-          assert(!Opts.raw, 'Opts are provided');
+          expect(mapper).toBe(User);
+          expect(_props).toEqual(props);
+          expect(!Opts.raw).toBeTruthy();
           _props[mapper.idAttribute] = new Date().getTime();
           resolve(_props);
         });
       }
     });
     const user = await User.create(props);
-    assert(createCalled, 'Adapter#create should have been called');
-    assert(user[User.idAttribute], 'new user has an id');
-    assert(user instanceof User.recordClass, 'user is a record');
-    assert.equal(user.role, 'viewer', 'user should have default value');
+    expect(createCalled).toBeTruthy();
+    expect(user[User.idAttribute]).toBeTruthy();
+    expect(user instanceof User.recordClass).toBeTruthy();
+    expect(user.role).toEqual('viewer');
   });
   it('should create without wrapping', async () => {
     const props = {name: 'John'};
@@ -74,18 +74,18 @@ describe('Mapper#create', () => {
       create(mapper, _props, Opts) {
         createCalled = true;
         return new Promise((resolve, reject) => {
-          assert.strictEqual(mapper, User, 'should pass in the JSData.Mapper');
-          objectsEqual(_props, props, 'should pass in the props');
-          assert(!Opts.raw, 'Opts are provided');
+          expect(mapper).toBe(User);
+          expect(_props).toEqual(props);
+          expect(!Opts.raw).toBeTruthy();
           _props[mapper.idAttribute] = new Date().getTime();
           resolve(_props);
         });
       }
     });
     const user = await User.create(props);
-    assert(createCalled, 'Adapter#create should have been called');
-    assert(user[User.idAttribute], 'new user has an id');
-    assert(!(user instanceof User.recordClass), 'user is NOT a record');
+    expect(createCalled).toBeTruthy();
+    expect(user[User.idAttribute]).toBeTruthy();
+    expect(!(user instanceof User.recordClass)).toBeTruthy();
   });
   it('should return raw', async () => {
     const props = {name: 'John'};
@@ -99,9 +99,9 @@ describe('Mapper#create', () => {
       create(mapper, _props, Opts) {
         createCalled = true;
         return new Promise((resolve, reject) => {
-          assert.strictEqual(mapper, User, 'should pass in the JSData.Mapper');
-          objectsEqual(_props, props, 'should pass in the props');
-          assert(Opts.raw, 'Opts are provided');
+          expect(mapper).toBe(User);
+          expect(_props).toEqual(props);
+          expect(Opts.raw).toBeTruthy();
           _props[mapper.idAttribute] = new Date().getTime();
           resolve({
             data: _props,
@@ -111,14 +111,13 @@ describe('Mapper#create', () => {
       }
     });
     const data = await User.create(props);
-    assert(createCalled, 'Adapter#create should have been called');
-    assert(data.data[User.idAttribute], 'new user has an id');
-    assert(data.data instanceof User.recordClass, 'user is a record');
-    assert.equal(data.adapter, 'mock', 'should have adapter name in response');
-    assert.equal(data.created, 1, 'should have other metadata in response');
+    expect(createCalled).toBeTruthy();
+    expect(data.data[User.idAttribute]).toBeTruthy();
+    expect(data.data instanceof User.recordClass).toBeTruthy();
+    expect(data.adapter).toEqual('mock');
+    expect(data.created).toEqual(1);
   });
   it('should nested create everything in opts.with', async function () {
-    const store = this.store;
     const createCalledCount: any = {};
 
     const incCreate = name => {
@@ -173,195 +172,158 @@ describe('Mapper#create', () => {
       }),
       {with: ['users']}
     );
-    assert(group.users[0].id);
-    assert.equal(group.users[0].name, 'John');
+    expect(group.users[0].id).toBeTruthy();
+    expect(group.users[0].name).toEqual('John');
 
     let user;
     // when props are a Record
     user = await store.createRecord('user', JSData.utils.plainCopy(userProps)).save({with: []});
-    assert(store.is('user', user), 'user should be a user record');
-    assert.strictEqual(store.get('user', user.id), user, 'user should be in the store');
-    objectsEqual(
-      user.comments,
-      [
-        {
-          content: 'foo',
-          userId: user.id
-        }
-      ],
-      'user.comments should be an array with a comment'
-    );
-    objectsEqual(
-      store.getAll('comment'),
-      [
-        {
-          content: 'foo',
-          userId: user.id
-        }
-      ],
-      'comments should not be in the store'
-    );
-    objectsEqual(user.profile, userProps.profile, 'user.profile should be undefined');
-    objectsEqual(store.getAll('profile'), [userProps.profile], 'profile should not be in the store');
-    objectsEqual(user.organization, userProps.organization);
-    assert(!user.organizationId, 'user.organizationId should be undefined');
-    objectsEqual(store.getAll('organization'), [userProps.organization], 'organization should be in the store');
+    expect(store.is('user', user)).toBeTruthy();
+    expect(store.get('user', user.id)).toBe(user);
+    objectsEqual(user.comments, [
+      {
+        content: 'foo',
+        userId: user.id
+      }
+    ]);
+    objectsEqual(store.getAll('comment'), [
+      {
+        content: 'foo',
+        userId: user.id
+      }
+    ]);
+    expect(user.profile).toEqual(userProps.profile);
+    expect(store.getAll('profile')).toEqual([userProps.profile]);
+    expect(user.organization).toEqual(userProps.organization);
+    expect(!user.organizationId).toBeTruthy();
+    expect(store.getAll('organization')).toEqual([userProps.organization]);
     clear();
 
     user = await store.createRecord('user', JSData.utils.plainCopy(userProps)).save({with: ['comments']});
-    assert(store.is('user', user), 'user should be a user record');
-    assert.strictEqual(store.get('user', user.id), user, 'user should be in the store');
-    assert(store.is('comment', user.comments[0]), 'user.comments[0] should be a comment record');
-    objectsEqual(store.getAll('comment'), user.comments, 'comments should be in the store');
-    objectsEqual(
-      user.profile,
-      {
-        email: 'john@email.com'
-      },
-      'user.profile should be undefined'
-    );
-    objectsEqual(store.getAll('profile'), [userProps.profile], 'profile should not be in the store');
-    objectsEqual(user.organization, userProps.organization);
-    assert(!user.organizationId, 'user.organizationId should be undefined');
-    objectsEqual(store.getAll('organization'), [userProps.organization], 'organization should be in the store');
+    expect(store.is('user', user)).toBeTruthy();
+    expect(store.get('user', user.id)).toBe(user);
+    expect(store.is('comment', user.comments[0])).toBeTruthy();
+    expect(store.getAll('comment')).toEqual(user.comments);
+    expect(user.profile).toEqual({
+      email: 'john@email.com'
+    });
+    expect(store.getAll('profile')).toEqual([userProps.profile]);
+    expect(user.organization).toEqual(userProps.organization);
+    expect(!user.organizationId).toBeTruthy();
+    expect(store.getAll('organization')).toEqual([userProps.organization]);
     clear();
 
     user = await store.create('user', store.createRecord('user', JSData.utils.plainCopy(userProps)), {
       with: ['comments', 'profile']
     });
-    assert(store.is('user', user), 'user should be a user record');
-    assert.strictEqual(store.get('user', user.id), user, 'user should be in the store');
-    assert(store.is('comment', user.comments[0]), 'user.comments[0] should be a comment record');
-    objectsEqual(store.getAll('comment'), user.comments, 'comments should be in the store');
-    assert(store.is('profile', user.profile), 'user.profile should be a profile record');
-    objectsEqual(store.getAll('profile'), [user.profile], 'profile should be in the store');
-    objectsEqual(user.organization, userProps.organization);
-    assert(!user.organizationId, 'user.organizationId should be undefined');
-    objectsEqual(store.getAll('organization'), [userProps.organization], 'organization should be in the store');
+    expect(store.is('user', user)).toBeTruthy();
+    expect(store.get('user', user.id)).toBe(user);
+    expect(store.is('comment', user.comments[0])).toBeTruthy();
+    expect(store.getAll('comment')).toEqual(user.comments);
+    expect(store.is('profile', user.profile)).toBeTruthy();
+    expect(store.getAll('profile')).toEqual([user.profile]);
+    expect(user.organization).toEqual(userProps.organization);
+    expect(!user.organizationId).toBeTruthy();
+    expect(store.getAll('organization')).toEqual([userProps.organization]);
     clear();
 
     user = await store.create('user', store.createRecord('user', JSData.utils.plainCopy(userProps)), {
       with: ['comments', 'profile', 'organization']
     });
-    assert(store.is('user', user), 'user should be a user record');
-    assert.strictEqual(store.get('user', user.id), user, 'user should be in the store');
-    assert(store.is('comment', user.comments[0]), 'user.comments[0] should be a comment record');
-    objectsEqual(store.getAll('comment'), user.comments, 'comments should be in the store');
-    assert(store.is('profile', user.profile), 'user.profile should be a profile record');
-    objectsEqual(store.getAll('profile'), [user.profile], 'profile should be in the store');
-    assert(store.is('organization', user.organization), 'user.organization should be a organization record');
-    assert.equal(store.getAll('organization')[0].id, user.organizationId, 'user.organizationId should be correct');
-    objectsEqual(store.getAll('organization'), [user.organization], 'organization should be in the store');
+    expect(store.is('user', user)).toBeTruthy();
+    expect(store.get('user', user.id)).toBe(user);
+    expect(store.is('comment', user.comments[0])).toBeTruthy();
+    expect(store.getAll('comment')).toEqual(user.comments);
+    expect(store.is('profile', user.profile)).toBeTruthy();
+    expect(store.getAll('profile')).toEqual([user.profile]);
+    expect(store.is('organization', user.organization)).toBeTruthy();
+    expect(store.getAll('organization')[0].id).toEqual(user.organizationId);
+    expect(store.getAll('organization')).toEqual([user.organization]);
     clear();
 
     // when props are NOT a record
     user = await store.create('user', JSData.utils.plainCopy(userProps), {with: []});
-    assert(store.is('user', user), 'user should be a user record');
-    assert.strictEqual(store.get('user', user.id), user, 'user should be in the store');
-    objectsEqual(
-      user.comments,
-      [
-        {
-          content: 'foo',
-          userId: user.id
-        }
-      ],
-      'user.comments should be an array with a comment'
-    );
-    objectsEqual(
-      store.getAll('comment'),
-      [
-        {
-          content: 'foo',
-          userId: user.id
-        }
-      ],
-      'comments should not be in the store'
-    );
-    objectsEqual(
-      user.profile,
+    expect(store.is('user', user)).toBeTruthy();
+    expect(store.get('user', user.id)).toBe(user);
+    objectsEqual(user.comments, [
+      {
+        content: 'foo',
+        userId: user.id
+      }
+    ]);
+    objectsEqual(store.getAll('comment'), [
+      {
+        content: 'foo',
+        userId: user.id
+      }
+    ]);
+    objectsEqual(user.profile, {
+      email: userProps.profile.email,
+      userId: user.id
+    });
+    objectsEqual(store.getAll('profile'), [
       {
         email: userProps.profile.email,
         userId: user.id
-      },
-      'user.profile should not be undefined'
-    );
-    objectsEqual(
-      store.getAll('profile'),
-      [
-        {
-          email: userProps.profile.email,
-          userId: user.id
-        }
-      ],
-      'profile should be in the store'
-    );
-    assert(store.is('organization', user.organization), 'user.organization should be a organization record');
-    assert.equal(store.getAll('organization')[0].id, user.organizationId, 'user.organizationId should be correct');
-    objectsEqual(store.getAll('organization'), [user.organization], 'organization should be in the store');
+      }
+    ]);
+    expect(store.is('organization', user.organization)).toBeTruthy();
+    expect(store.getAll('organization')[0].id).toEqual(user.organizationId);
+    expect(store.getAll('organization')).toEqual([user.organization]);
     clear();
 
     user = await store.create('user', JSData.utils.plainCopy(userProps), {with: ['comments']});
-    assert(store.is('user', user), 'user should be a user record');
-    assert.strictEqual(store.get('user', user.id), user, 'user should be in the store');
-    assert(store.is('comment', user.comments[0]), 'user.comments[0] should be a comment record');
-    objectsEqual(store.getAll('comment'), user.comments, 'comments should be in the store');
-    objectsEqual(
-      user.profile,
+    expect(store.is('user', user)).toBeTruthy();
+    expect(store.get('user', user.id)).toBe(user);
+    expect(store.is('comment', user.comments[0])).toBeTruthy();
+    expect(store.getAll('comment')).toEqual(user.comments);
+    objectsEqual(user.profile, {
+      email: userProps.profile.email,
+      userId: user.id
+    });
+    objectsEqual(store.getAll('profile'), [
       {
         email: userProps.profile.email,
         userId: user.id
-      },
-      'user.profile should not be undefined'
-    );
-    objectsEqual(
-      store.getAll('profile'),
-      [
-        {
-          email: userProps.profile.email,
-          userId: user.id
-        }
-      ],
-      'profile should be in the store'
-    );
-    assert(store.is('organization', user.organization), 'user.organization should be a organization record');
-    assert.equal(store.getAll('organization')[0].id, user.organizationId, 'user.organizationId should be correct');
-    objectsEqual(store.getAll('organization'), [user.organization], 'organization should be in the store');
+      }
+    ]);
+    expect(store.is('organization', user.organization)).toBeTruthy();
+    expect(store.getAll('organization')[0].id).toEqual(user.organizationId);
+    expect(store.getAll('organization')).toEqual([user.organization]);
     clear();
 
     user = await store.create('user', JSData.utils.plainCopy(userProps), {with: ['comments', 'profile']});
-    assert(store.is('user', user), 'user should be a user record');
-    assert.strictEqual(store.get('user', user.id), user, 'user should be in the store');
-    assert(store.is('comment', user.comments[0]), 'user.comments[0] should be a comment record');
-    objectsEqual(store.getAll('comment'), user.comments, 'comments should be in the store');
-    assert(store.is('profile', user.profile), 'user.profile should be a profile record');
-    objectsEqual(store.getAll('profile'), [user.profile], 'profile should be in the store');
-    assert(store.is('organization', user.organization), 'user.organization should be a organization record');
-    assert.equal(store.getAll('organization')[0].id, user.organizationId, 'user.organizationId should be correct');
-    objectsEqual(store.getAll('organization'), [user.organization], 'organization should be in the store');
+    expect(store.is('user', user)).toBeTruthy();
+    expect(store.get('user', user.id)).toBe(user);
+    expect(store.is('comment', user.comments[0])).toBeTruthy();
+    expect(store.getAll('comment')).toEqual(user.comments);
+    expect(store.is('profile', user.profile)).toBeTruthy();
+    expect(store.getAll('profile')).toEqual([user.profile]);
+    expect(store.is('organization', user.organization)).toBeTruthy();
+    expect(store.getAll('organization')[0].id).toEqual(user.organizationId);
+    expect(store.getAll('organization')).toEqual([user.organization]);
     clear();
 
     user = await store.create('user', JSData.utils.plainCopy(userProps), {
       with: ['comments', 'profile', 'organization']
     });
-    assert(store.is('user', user), 'user should be a user record');
-    assert.strictEqual(store.get('user', user.id), user, 'user should be in the store');
-    assert(store.is('comment', user.comments[0]), 'user.comments[0] should be a comment record');
-    objectsEqual(store.getAll('comment'), user.comments, 'comments should be in the store');
-    assert(store.is('profile', user.profile), 'user.profile should be a profile record');
-    objectsEqual(store.getAll('profile'), [user.profile], 'profile should be in the store');
-    assert(store.is('organization', user.organization), 'user.organization should be a organization record');
-    assert.equal(store.getAll('organization')[0].id, user.organizationId, 'user.organizationId should be correct');
-    objectsEqual(store.getAll('organization'), [user.organization], 'organization should be in the store');
+    expect(store.is('user', user)).toBeTruthy();
+    expect(store.get('user', user.id)).toBe(user);
+    expect(store.is('comment', user.comments[0])).toBeTruthy();
+    expect(store.getAll('comment')).toEqual(user.comments);
+    expect(store.is('profile', user.profile)).toBeTruthy();
+    expect(store.getAll('profile')).toEqual([user.profile]);
+    expect(store.is('organization', user.organization)).toBeTruthy();
+    expect(store.getAll('organization')[0].id).toEqual(user.organizationId);
+    expect(store.getAll('organization')).toEqual([user.organization]);
     clear();
 
-    assert.equal(createCalledCount.user, 9);
-    assert.equal(createCalledCount.comment, 6);
-    assert.equal(createCalledCount.profile, 4);
-    assert.equal(createCalledCount.organization, 2);
+    expect(createCalledCount.user).toEqual(9);
+    expect(createCalledCount.comment).toEqual(6);
+    expect(createCalledCount.profile).toEqual(4);
+    expect(createCalledCount.organization).toEqual(2);
   });
   it('should pass everything opts.pass', async function () {
-    const store = this.store;
     const createCalledCount: any = {};
     const utils = JSData.utils;
 
@@ -427,185 +389,152 @@ describe('Mapper#create', () => {
 
     // when props are a Record
     user = await store.create('user', store.createRecord('user', JSData.utils.plainCopy(userProps)), {pass: []});
-    assert(store.is('user', user), 'user should be a user record');
-    assert.strictEqual(store.get('user', user.id), user, 'user should be in the store');
-    objectsEqual(
-      user.comments,
-      [
-        {
-          content: 'foo',
-          userId: user.id
-        }
-      ],
-      'user.comments should be an array'
-    );
-    objectsEqual(
-      store.getAll('comment'),
-      [
-        {
-          content: 'foo',
-          userId: user.id
-        }
-      ],
-      'comments should not be in the store'
-    );
-    objectsEqual(user.profile, userProps.profile, 'user.profile should be a profile');
-    objectsEqual(store.getAll('profile'), [userProps.profile], 'profile should be in the store');
-    objectsEqual(user.organization, userProps.organization);
-    assert(!user.organizationId, 'user.organizationId should be undefined');
-    objectsEqual(store.getAll('organization'), [userProps.organization], 'organization should be in the store');
+    expect(store.is('user', user)).toBeTruthy();
+    expect(store.get('user', user.id)).toBe(user);
+    objectsEqual(user.comments, [
+      {
+        content: 'foo',
+        userId: user.id
+      }
+    ]);
+    objectsEqual(store.getAll('comment'), [
+      {
+        content: 'foo',
+        userId: user.id
+      }
+    ]);
+    expect(user.profile).toEqual(userProps.profile);
+    expect(store.getAll('profile')).toEqual([userProps.profile]);
+    expect(user.organization).toEqual(userProps.organization);
+    expect(!user.organizationId).toBeTruthy();
+    expect(store.getAll('organization')).toEqual([userProps.organization]);
     clear();
 
     user = await store.create('user', store.createRecord('user', JSData.utils.plainCopy(userProps)), {
       pass: ['comments']
     });
-    assert(store.is('user', user), 'user should be a user record');
-    assert.strictEqual(store.get('user', user.id), user, 'user should be in the store');
-    assert(store.is('comment', user.comments[0]), 'user.comments[0] should be a comment record');
-    objectsEqual(store.getAll('comment'), user.comments, 'comments should be in the store');
-    objectsEqual(user.profile, userProps.profile, 'user.profile should be a profile');
-    objectsEqual(store.getAll('profile'), [userProps.profile], 'profile should be in the store');
-    objectsEqual(user.organization, userProps.organization);
-    assert(!user.organizationId, 'user.organizationId should be undefined');
-    objectsEqual(store.getAll('organization'), [userProps.organization], 'organization should be in the store');
+    expect(store.is('user', user)).toBeTruthy();
+    expect(store.get('user', user.id)).toBe(user);
+    expect(store.is('comment', user.comments[0])).toBeTruthy();
+    expect(store.getAll('comment')).toEqual(user.comments);
+    expect(user.profile).toEqual(userProps.profile);
+    expect(store.getAll('profile')).toEqual([userProps.profile]);
+    expect(user.organization).toEqual(userProps.organization);
+    expect(!user.organizationId).toBeTruthy();
+    expect(store.getAll('organization')).toEqual([userProps.organization]);
     clear();
 
     user = await store.create('user', store.createRecord('user', JSData.utils.plainCopy(userProps)), {
       pass: ['comments', 'profile']
     });
-    assert(store.is('user', user), 'user should be a user record');
-    assert.strictEqual(store.get('user', user.id), user, 'user should be in the store');
-    assert(store.is('comment', user.comments[0]), 'user.comments[0] should be a comment record');
-    objectsEqual(store.getAll('comment'), user.comments, 'comments should be in the store');
-    assert(store.is('profile', user.profile), 'user.profile should be a profile record');
-    objectsEqual(store.getAll('profile'), [user.profile], 'profile should be in the store');
-    objectsEqual(user.organization, userProps.organization);
-    assert(!user.organizationId, 'user.organizationId should be undefined');
-    objectsEqual(store.getAll('organization'), [userProps.organization], 'organization should be in the store');
+    expect(store.is('user', user)).toBeTruthy();
+    expect(store.get('user', user.id)).toBe(user);
+    expect(store.is('comment', user.comments[0])).toBeTruthy();
+    expect(store.getAll('comment')).toEqual(user.comments);
+    expect(store.is('profile', user.profile)).toBeTruthy();
+    expect(store.getAll('profile')).toEqual([user.profile]);
+    expect(user.organization).toEqual(userProps.organization);
+    expect(!user.organizationId).toBeTruthy();
+    expect(store.getAll('organization')).toEqual([userProps.organization]);
     clear();
 
     user = await store.create('user', store.createRecord('user', JSData.utils.plainCopy(userProps)), {
       pass: ['comments', 'profile', 'organization']
     });
-    assert(store.is('user', user), 'user should be a user record');
-    assert.strictEqual(store.get('user', user.id), user, 'user should be in the store');
-    assert(store.is('comment', user.comments[0]), 'user.comments[0] should be a comment record');
-    objectsEqual(store.getAll('comment'), user.comments, 'comments should be in the store');
-    assert(store.is('profile', user.profile), 'user.profile should be a profile record');
-    objectsEqual(store.getAll('profile'), [user.profile], 'profile should be in the store');
-    assert(store.is('organization', user.organization), 'user.organization should be a organization record');
-    assert.equal(store.getAll('organization')[0].id, user.organizationId, 'user.organizationId should be correct');
-    objectsEqual(store.getAll('organization'), [user.organization], 'organization should be in the store');
+    expect(store.is('user', user)).toBeTruthy();
+    expect(store.get('user', user.id)).toBe(user);
+    expect(store.is('comment', user.comments[0])).toBeTruthy();
+    expect(store.getAll('comment')).toEqual(user.comments);
+    expect(store.is('profile', user.profile)).toBeTruthy();
+    expect(store.getAll('profile')).toEqual([user.profile]);
+    expect(store.is('organization', user.organization)).toBeTruthy();
+    expect(store.getAll('organization')[0].id).toEqual(user.organizationId);
+    expect(store.getAll('organization')).toEqual([user.organization]);
     clear();
 
     // when props are NOT a record
     user = await store.create('user', JSData.utils.plainCopy(userProps), {pass: []});
-    assert(store.is('user', user), 'user should be a user record');
-    assert.strictEqual(store.get('user', user.id), user, 'user should be in the store');
-    objectsEqual(
-      user.comments,
-      [
-        {
-          content: 'foo',
-          userId: user.id
-        }
-      ],
-      'user.comments should be there'
-    );
-    objectsEqual(
-      store.getAll('comment'),
-      [
-        {
-          content: 'foo',
-          userId: user.id
-        }
-      ],
-      'comments should not be in the store'
-    );
-    objectsEqual(
-      user.profile,
+    expect(store.is('user', user)).toBeTruthy();
+    expect(store.get('user', user.id)).toBe(user);
+    objectsEqual(user.comments, [
+      {
+        content: 'foo',
+        userId: user.id
+      }
+    ]);
+    objectsEqual(store.getAll('comment'), [
+      {
+        content: 'foo',
+        userId: user.id
+      }
+    ]);
+    objectsEqual(user.profile, {
+      email: userProps.profile.email,
+      userId: user.id
+    });
+    objectsEqual(store.getAll('profile'), [
       {
         email: userProps.profile.email,
         userId: user.id
-      },
-      'user.profile should be a profile'
-    );
-    objectsEqual(
-      store.getAll('profile'),
-      [
-        {
-          email: userProps.profile.email,
-          userId: user.id
-        }
-      ],
-      'profile should be in the store'
-    );
-    objectsEqual(user.organization, userProps.organization);
-    assert(!user.organizationId, 'user.organizationId should be undefined');
-    objectsEqual(store.getAll('organization'), [userProps.organization], 'organization should be in the store');
+      }
+    ]);
+    expect(user.organization).toEqual(userProps.organization);
+    expect(!user.organizationId).toBeTruthy();
+    expect(store.getAll('organization')).toEqual([userProps.organization]);
     clear();
 
     user = await store.create('user', JSData.utils.plainCopy(userProps), {pass: ['comments']});
-    assert(store.is('user', user), 'user should be a user record');
-    assert.strictEqual(store.get('user', user.id), user, 'user should be in the store');
-    assert(store.is('comment', user.comments[0]), 'user.comments[0] should be a comment record');
-    objectsEqual(store.getAll('comment'), user.comments, 'comments should be in the store');
-    objectsEqual(
-      user.profile,
+    expect(store.is('user', user)).toBeTruthy();
+    expect(store.get('user', user.id)).toBe(user);
+    expect(store.is('comment', user.comments[0])).toBeTruthy();
+    expect(store.getAll('comment')).toEqual(user.comments);
+    objectsEqual(user.profile, {
+      email: userProps.profile.email,
+      userId: user.id
+    });
+    objectsEqual(store.getAll('profile'), [
       {
         email: userProps.profile.email,
         userId: user.id
-      },
-      'user.profile should be a profile'
-    );
-    objectsEqual(
-      store.getAll('profile'),
-      [
-        {
-          email: userProps.profile.email,
-          userId: user.id
-        }
-      ],
-      'profile should be in the store'
-    );
-    objectsEqual(user.organization, userProps.organization);
-    assert(!user.organizationId, 'user.organizationId should be undefined');
-    objectsEqual(store.getAll('organization'), [userProps.organization], 'organization should be in the store');
+      }
+    ]);
+    expect(user.organization).toEqual(userProps.organization);
+    expect(!user.organizationId).toBeTruthy();
+    expect(store.getAll('organization')).toEqual([userProps.organization]);
     clear();
 
     user = await store.create('user', JSData.utils.plainCopy(userProps), {pass: ['comments', 'profile']});
-    assert(store.is('user', user), 'user should be a user record');
-    assert.strictEqual(store.get('user', user.id), user, 'user should be in the store');
-    assert(store.is('comment', user.comments[0]), 'user.comments[0] should be a comment record');
-    objectsEqual(store.getAll('comment'), user.comments, 'comments should be in the store');
-    assert(store.is('profile', user.profile), 'user.profile should be a profile record');
-    objectsEqual(store.getAll('profile'), [user.profile], 'profile should be in the store');
-    objectsEqual(user.organization, userProps.organization);
-    assert(!user.organizationId, 'user.organizationId should be undefined');
-    objectsEqual(store.getAll('organization'), [userProps.organization], 'organization should be in the store');
+    expect(store.is('user', user)).toBeTruthy();
+    expect(store.get('user', user.id)).toBe(user);
+    expect(store.is('comment', user.comments[0])).toBeTruthy();
+    expect(store.getAll('comment')).toEqual(user.comments);
+    expect(store.is('profile', user.profile)).toBeTruthy();
+    expect(store.getAll('profile')).toEqual([user.profile]);
+    expect(user.organization).toEqual(userProps.organization);
+    expect(!user.organizationId).toBeTruthy();
+    expect(store.getAll('organization')).toEqual([userProps.organization]);
     clear();
 
     user = await store.create('user', JSData.utils.plainCopy(userProps), {
       pass: ['comments', 'profile', 'organization']
     });
-    assert(store.is('user', user), 'user should be a user record');
-    assert.strictEqual(store.get('user', user.id), user, 'user should be in the store');
-    assert(store.is('comment', user.comments[0]), 'user.comments[0] should be a comment record');
-    objectsEqual(store.getAll('comment'), user.comments, 'comments should be in the store');
-    assert(store.is('profile', user.profile), 'user.profile should be a profile record');
-    objectsEqual(store.getAll('profile'), [user.profile], 'profile should be in the store');
-    assert(store.is('organization', user.organization), 'user.organization should be a organization record');
-    assert.equal(store.getAll('organization')[0].id, user.organizationId, 'user.organizationId should be correct');
-    objectsEqual(store.getAll('organization'), [user.organization], 'organization should be in the store');
+    expect(store.is('user', user)).toBeTruthy();
+    expect(store.get('user', user.id)).toBe(user);
+    expect(store.is('comment', user.comments[0])).toBeTruthy();
+    expect(store.getAll('comment')).toEqual(user.comments);
+    expect(store.is('profile', user.profile)).toBeTruthy();
+    expect(store.getAll('profile')).toEqual([user.profile]);
+    expect(store.is('organization', user.organization)).toBeTruthy();
+    expect(store.getAll('organization')[0].id).toEqual(user.organizationId);
+    expect(store.getAll('organization')).toEqual([user.organization]);
     clear();
 
-    assert.equal(createCalledCount.user, 8);
-    assert(!createCalledCount.comment);
-    assert(!createCalledCount.profile);
-    assert(!createCalledCount.organization);
+    expect(createCalledCount.user).toEqual(8);
+    expect(!createCalledCount.comment).toBeTruthy();
+    expect(!createCalledCount.profile).toBeTruthy();
+    expect(!createCalledCount.organization).toBeTruthy();
   });
   it('should combine opts.with and opts.pass', async function () {
-    const store = this.store;
     const createCalledCount: any = {};
     const utils = JSData.utils;
 
@@ -667,185 +596,153 @@ describe('Mapper#create', () => {
 
     // when props are a Record
     let user = await store.create('user', store.createRecord('user', JSData.utils.plainCopy(userProps)), {pass: []});
-    assert(store.is('user', user), 'user should be a user record');
-    assert.strictEqual(store.get('user', user.id), user, 'user should be in the store');
-    objectsEqual(
-      user.comments,
-      [
-        {
-          content: 'foo',
-          userId: user.id
-        }
-      ],
-      'user.comments should be an array'
-    );
-    objectsEqual(
-      store.getAll('comment'),
-      [
-        {
-          content: 'foo',
-          userId: user.id
-        }
-      ],
-      'comments should not be in the store'
-    );
-    objectsEqual(user.profile, userProps.profile, 'user.profile should be a profile');
-    objectsEqual(store.getAll('profile'), [userProps.profile], 'profile should be in the store');
-    objectsEqual(user.organization, userProps.organization);
-    assert(!user.organizationId, 'user.organizationId should be undefined');
-    objectsEqual(store.getAll('organization'), [userProps.organization], 'organization should be in the store');
+    expect(store.is('user', user)).toBeTruthy();
+    expect(store.get('user', user.id)).toBe(user);
+    objectsEqual(user.comments, [
+      {
+        content: 'foo',
+        userId: user.id
+      }
+    ]);
+    objectsEqual(store.getAll('comment'), [
+      {
+        content: 'foo',
+        userId: user.id
+      }
+    ]);
+    expect(user.profile).toEqual(userProps.profile);
+    expect(store.getAll('profile')).toEqual([userProps.profile]);
+    expect(user.organization).toEqual(userProps.organization);
+    expect(!user.organizationId).toBeTruthy();
+    expect(store.getAll('organization')).toEqual([userProps.organization]);
     clear();
 
     user = await store.create('user', store.createRecord('user', JSData.utils.plainCopy(userProps)), {
       pass: ['comments']
     });
-    assert(store.is('user', user), 'user should be a user record');
-    assert.strictEqual(store.get('user', user.id), user, 'user should be in the store');
-    assert(store.is('comment', user.comments[0]), 'user.comments[0] should be a comment record');
-    objectsEqual(store.getAll('comment'), user.comments, 'comments should be in the store');
-    objectsEqual(user.profile, userProps.profile, 'user.profile should be a profile');
-    objectsEqual(store.getAll('profile'), [userProps.profile], 'profile should be in the store');
-    objectsEqual(user.organization, userProps.organization);
-    assert(!user.organizationId, 'user.organizationId should be undefined');
-    objectsEqual(store.getAll('organization'), [userProps.organization], 'organization should be in the store');
+    expect(store.is('user', user)).toBeTruthy();
+    expect(store.get('user', user.id)).toBe(user);
+    expect(store.is('comment', user.comments[0])).toBeTruthy();
+    expect(store.getAll('comment')).toEqual(user.comments);
+    expect(user.profile).toEqual(userProps.profile);
+    expect(store.getAll('profile')).toEqual([userProps.profile]);
+    expect(user.organization).toEqual(userProps.organization);
+    expect(!user.organizationId).toBeTruthy();
+    expect(store.getAll('organization')).toEqual([userProps.organization]);
     clear();
 
     user = await store.create('user', store.createRecord('user', JSData.utils.plainCopy(userProps)), {
       with: ['comments'],
       pass: ['profile']
     });
-    assert(store.is('user', user), 'user should be a user record');
-    assert.strictEqual(store.get('user', user.id), user, 'user should be in the store');
-    assert(store.is('comment', user.comments[0]), 'user.comments[0] should be a comment record');
-    objectsEqual(store.getAll('comment'), user.comments, 'comments should be in the store');
-    assert(store.is('profile', user.profile), 'user.profile should be a profile record');
-    objectsEqual(store.getAll('profile'), [user.profile], 'profile should be in the store');
-    objectsEqual(user.organization, userProps.organization);
-    assert(!user.organizationId, 'user.organizationId should be undefined');
-    objectsEqual(store.getAll('organization'), [userProps.organization], 'organization should be in the store');
+    expect(store.is('user', user)).toBeTruthy();
+    expect(store.get('user', user.id)).toBe(user);
+    expect(store.is('comment', user.comments[0])).toBeTruthy();
+    expect(store.getAll('comment')).toEqual(user.comments);
+    expect(store.is('profile', user.profile)).toBeTruthy();
+    expect(store.getAll('profile')).toEqual([user.profile]);
+    expect(user.organization).toEqual(userProps.organization);
+    expect(!user.organizationId).toBeTruthy();
+    expect(store.getAll('organization')).toEqual([userProps.organization]);
     clear();
 
     user = await store.create('user', store.createRecord('user', JSData.utils.plainCopy(userProps)), {
       with: ['comments', 'profile'],
       pass: ['organization']
     });
-    assert(store.is('user', user), 'user should be a user record');
-    assert.strictEqual(store.get('user', user.id), user, 'user should be in the store');
-    assert(store.is('comment', user.comments[0]), 'user.comments[0] should be a comment record');
-    objectsEqual(store.getAll('comment'), user.comments, 'comments should be in the store');
-    assert(store.is('profile', user.profile), 'user.profile should be a profile record');
-    objectsEqual(store.getAll('profile'), [user.profile], 'profile should be in the store');
-    assert(store.is('organization', user.organization), 'user.organization should be a organization record');
-    assert.equal(store.getAll('organization')[0].id, user.organizationId, 'user.organizationId should be correct');
-    objectsEqual(store.getAll('organization'), [user.organization], 'organization should be in the store');
+    expect(store.is('user', user)).toBeTruthy();
+    expect(store.get('user', user.id)).toBe(user);
+    expect(store.is('comment', user.comments[0])).toBeTruthy();
+    expect(store.getAll('comment')).toEqual(user.comments);
+    expect(store.is('profile', user.profile)).toBeTruthy();
+    expect(store.getAll('profile')).toEqual([user.profile]);
+    expect(store.is('organization', user.organization)).toBeTruthy();
+    expect(store.getAll('organization')[0].id).toEqual(user.organizationId);
+    expect(store.getAll('organization')).toEqual([user.organization]);
     clear();
 
     // when props are NOT a record
     user = await store.create('user', JSData.utils.plainCopy(userProps), {pass: []});
-    assert(store.is('user', user), 'user should be a user record');
-    assert.strictEqual(store.get('user', user.id), user, 'user should be in the store');
-    objectsEqual(
-      user.comments,
-      [
-        {
-          content: 'foo',
-          userId: user.id
-        }
-      ],
-      'user.comments should be an array'
-    );
-    objectsEqual(
-      store.getAll('comment'),
-      [
-        {
-          content: 'foo',
-          userId: user.id
-        }
-      ],
-      'comments should not be in the store'
-    );
-    objectsEqual(
-      user.profile,
+    expect(store.is('user', user)).toBeTruthy();
+    expect(store.get('user', user.id)).toBe(user);
+    objectsEqual(user.comments, [
+      {
+        content: 'foo',
+        userId: user.id
+      }
+    ]);
+    objectsEqual(store.getAll('comment'), [
+      {
+        content: 'foo',
+        userId: user.id
+      }
+    ]);
+    objectsEqual(user.profile, {
+      email: userProps.profile.email,
+      userId: user.id
+    });
+    objectsEqual(store.getAll('profile'), [
       {
         email: userProps.profile.email,
         userId: user.id
-      },
-      'user.profile should be a profile'
-    );
-    objectsEqual(
-      store.getAll('profile'),
-      [
-        {
-          email: userProps.profile.email,
-          userId: user.id
-        }
-      ],
-      'profile should be in the store'
-    );
-    objectsEqual(user.organization, userProps.organization);
-    assert(!user.organizationId, 'user.organizationId should be undefined');
-    objectsEqual(store.getAll('organization'), [userProps.organization], 'organization should be in the store');
+      }
+    ]);
+    expect(user.organization).toEqual(userProps.organization);
+    expect(!user.organizationId).toBeTruthy();
+    expect(store.getAll('organization')).toEqual([userProps.organization]);
     clear();
 
     user = await store.create('user', JSData.utils.plainCopy(userProps), {pass: ['comments']});
-    assert(store.is('user', user), 'user should be a user record');
-    assert.strictEqual(store.get('user', user.id), user, 'user should be in the store');
-    assert(store.is('comment', user.comments[0]), 'user.comments[0] should be a comment record');
-    objectsEqual(store.getAll('comment'), user.comments, 'comments should be in the store');
-    objectsEqual(
-      user.profile,
+    expect(store.is('user', user)).toBeTruthy();
+    expect(store.get('user', user.id)).toBe(user);
+    expect(store.is('comment', user.comments[0])).toBeTruthy();
+    expect(store.getAll('comment')).toEqual(user.comments);
+    objectsEqual(user.profile, {
+      email: userProps.profile.email,
+      userId: user.id
+    });
+    objectsEqual(store.getAll('profile'), [
       {
         email: userProps.profile.email,
         userId: user.id
-      },
-      'user.profile should be a profile'
-    );
-    objectsEqual(
-      store.getAll('profile'),
-      [
-        {
-          email: userProps.profile.email,
-          userId: user.id
-        }
-      ],
-      'profile should be in the store'
-    );
-    objectsEqual(user.organization, userProps.organization);
-    assert(!user.organizationId, 'user.organizationId should be undefined');
-    objectsEqual(store.getAll('organization'), [userProps.organization], 'organization should be in the store');
+      }
+    ]);
+    expect(user.organization).toEqual(userProps.organization);
+    expect(!user.organizationId).toBeTruthy();
+    expect(store.getAll('organization')).toEqual([userProps.organization]);
     clear();
 
     user = await store.create('user', JSData.utils.plainCopy(userProps), {with: ['comments'], pass: ['profile']});
-    assert(store.is('user', user), 'user should be a user record');
-    assert.strictEqual(store.get('user', user.id), user, 'user should be in the store');
-    assert(store.is('comment', user.comments[0]), 'user.comments[0] should be a comment record');
-    objectsEqual(store.getAll('comment'), user.comments, 'comments should be in the store');
-    assert(store.is('profile', user.profile), 'user.profile should be a profile record');
-    objectsEqual(store.getAll('profile'), [user.profile], 'profile should be in the store');
-    objectsEqual(user.organization, userProps.organization);
-    assert(!user.organizationId, 'user.organizationId should be undefined');
-    objectsEqual(store.getAll('organization'), [userProps.organization], 'organization should be in the store');
+    expect(store.is('user', user)).toBeTruthy();
+    expect(store.get('user', user.id)).toBe(user);
+    expect(store.is('comment', user.comments[0])).toBeTruthy();
+    expect(store.getAll('comment')).toEqual(user.comments);
+    expect(store.is('profile', user.profile)).toBeTruthy();
+    expect(store.getAll('profile')).toEqual([user.profile]);
+    expect(user.organization).toEqual(userProps.organization);
+    expect(!user.organizationId).toBeTruthy();
+    expect(store.getAll('organization')).toEqual([userProps.organization]);
     clear();
 
     user = await store.create('user', JSData.utils.plainCopy(userProps), {
       with: ['comments', 'profile'],
       pass: ['organization']
     });
-    assert(store.is('user', user), 'user should be a user record');
-    assert.strictEqual(store.get('user', user.id), user, 'user should be in the store');
-    assert(store.is('comment', user.comments[0]), 'user.comments[0] should be a comment record');
-    objectsEqual(store.getAll('comment'), user.comments, 'comments should be in the store');
-    assert(store.is('profile', user.profile), 'user.profile should be a profile record');
-    objectsEqual(store.getAll('profile'), [user.profile], 'profile should be in the store');
-    assert(store.is('organization', user.organization), 'user.organization should be a organization record');
-    assert.equal(store.getAll('organization')[0].id, user.organizationId, 'user.organizationId should be correct');
-    objectsEqual(store.getAll('organization'), [user.organization], 'organization should be in the store');
+    expect(store.is('user', user)).toBeTruthy();
+    expect(store.get('user', user.id)).toBe(user);
+    expect(store.is('comment', user.comments[0])).toBeTruthy();
+    expect(store.getAll('comment')).toEqual(user.comments);
+    expect(store.is('profile', user.profile)).toBeTruthy();
+    expect(store.getAll('profile')).toEqual([user.profile]);
+    expect(store.is('organization', user.organization)).toBeTruthy();
+    expect(store.getAll('organization')[0].id).toEqual(user.organizationId);
+    expect(store.getAll('organization')).toEqual([user.organization]);
     clear();
 
-    assert.equal(createCalledCount.user, 8);
-    assert.equal(createCalledCount.comment, 4);
-    assert.equal(createCalledCount.profile, 2);
-    assert(!createCalledCount.organization);
+    expect(createCalledCount.user).toEqual(8);
+    expect(createCalledCount.comment).toEqual(4);
+    expect(createCalledCount.profile).toEqual(2);
+    expect(!createCalledCount.organization).toBeTruthy();
   });
   it('should validate', async () => {
     const props = {name: 1234, age: false};
@@ -870,8 +767,8 @@ describe('Mapper#create', () => {
       user = await User.create(props);
       throw new Error('validation error should have been thrown!');
     } catch (err) {
-      assert.equal(err.message, 'validation failed');
-      objectsEqual(err.errors, [
+      expect(err.message).toEqual('validation failed');
+      expect(err.errors).toEqual([
         {
           actual: 'number',
           expected: 'one of (string)',
@@ -884,9 +781,9 @@ describe('Mapper#create', () => {
         }
       ]);
     }
-    assert.equal(createCalled, false, 'Adapter#create should NOT have been called');
-    assert.equal(user, undefined, 'user was not created');
-    assert.equal(props[User.idAttribute], undefined, 'props does NOT have an id');
+    expect(createCalled).toEqual(false);
+    expect(user).toEqual(undefined);
+    expect(props[User.idAttribute]).toEqual(undefined);
   });
   it('should validate required', async () => {
     const props = {};
@@ -911,8 +808,8 @@ describe('Mapper#create', () => {
       user = await User.create(props);
       throw new Error('validation error should have been thrown!');
     } catch (err) {
-      assert.equal(err.message, 'validation failed');
-      objectsEqual(err.errors, [
+      expect(err.message).toEqual('validation failed');
+      expect(err.errors).toEqual([
         {
           actual: 'undefined',
           expected: 'a value',
@@ -925,9 +822,9 @@ describe('Mapper#create', () => {
         }
       ]);
     }
-    assert.equal(createCalled, false, 'Adapter#create should NOT have been called');
-    assert.equal(user, undefined, 'user was not created');
-    assert.equal(props[User.idAttribute], undefined, 'props does NOT have an id');
+    expect(createCalled).toEqual(false);
+    expect(user).toEqual(undefined);
+    expect(props[User.idAttribute]).toEqual(undefined);
   });
   it('should disallow extra props', async () => {
     const props = {
@@ -974,8 +871,8 @@ describe('Mapper#create', () => {
       user = await User.create(props);
       throw new Error('validation error should have been thrown!');
     } catch (err) {
-      assert.equal(err.message, 'validation failed');
-      objectsEqual(err.errors, [
+      expect(err.message).toEqual('validation failed');
+      expect(err.errors).toEqual([
         {
           actual: 'extra fields: baz',
           expected: 'no extra fields',
@@ -988,8 +885,8 @@ describe('Mapper#create', () => {
         }
       ]);
     }
-    assert.equal(createCalled, false, 'Adapter#create should NOT have been called');
-    assert.equal(user, undefined, 'user was not created');
-    assert.equal(props[User.idAttribute], undefined, 'props does NOT have an id');
+    expect(createCalled).toEqual(false);
+    expect(user).toEqual(undefined);
+    expect(props[User.idAttribute]).toEqual(undefined);
   });
 });

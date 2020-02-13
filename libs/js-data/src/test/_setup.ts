@@ -1,30 +1,14 @@
-import { assert } from 'chai';
 import * as JSData from '../index';
 import { Collection, DataStore, Mapper } from '../index';
 import * as sinon from 'sinon';
 
 export function objectsEqual(a, b, msg?) {
-  assert.deepEqual(
-    JSON.parse(JSON.stringify(a)),
-    JSON.parse(JSON.stringify(b)),
-    msg || 'Expected objects or arrays to be equal'
-  );
+  expect(JSON.parse(JSON.stringify(a)))
+    .toEqual(JSON.parse(JSON.stringify(b)));
 }
-
-export function objectsNotEqual(a, b, msg?) {
-  assert.notDeepEqual(
-    JSON.parse(JSON.stringify(a)),
-    JSON.parse(JSON.stringify(b)),
-    msg || 'Expected objects or arrays to be equal'
-  );
-}
-
-assert.fail = msg => {
-  assert.equal('should not reach this!: ' + msg, 'failure');
-};
 
 // Setup global data once
-export { assert, JSData, sinon };
+export { JSData, sinon };
 export const TYPES_EXCEPT_STRING = [123, 123.123, null, undefined, {}, [], true, false, () => {}];
 export const TYPES_EXCEPT_STRING_OR_ARRAY = [123, 123.123, null, undefined, {}, true, false, () => {}];
 export const TYPES_EXCEPT_STRING_OR_NUMBER = [null, undefined, {}, [], true, false, () => {}];
@@ -117,7 +101,7 @@ export let ProfileCollection: Collection;
 export let CommentCollection: Collection;
 
 // Clean setup for each test
-beforeEach(function () {
+beforeEach(() => {
   data = {};
   data.p1 = {author: 'John', age: 30, id: 5};
   data.p2 = {author: 'Sally', age: 31, id: 6};

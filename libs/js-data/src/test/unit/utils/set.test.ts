@@ -23,16 +23,12 @@ describe('utils.set', () => {
 });
 
 describe('utils.unset', () => {
-  it('should be a static method', () => {
-    expect(typeof utils.unset).toEqual('function');
-  });
-
   it('can unSet a value of an object at the provided key or path', () => {
     const john = {name: 'John', age: 25, spy: true, parent: {name: 'Mom', age: 50}};
     utils.unset(john, 'spy');
     utils.unset(john, 'parent.age');
     utils.unset(john, 'parent.notExist');
-    expect(null).toEqual(john.spy);
-    expect(null).toEqual(john.parent.age);
+    expect(john.spy).toBeFalsy();
+    expect(john.parent.age).toBeFalsy();
   });
 });

@@ -1,21 +1,17 @@
-import { assert, JSData } from '../../_setup';
+import { JSData } from '../../_setup';
 
 describe('Container#getAdapter', () => {
   it('should get an adapter', () => {
     const Container = JSData.Container;
     const store = new Container();
-    assert.equal(typeof store.getAdapter, 'function');
-    assert.strictEqual(store.getAdapter, Container.prototype.getAdapter);
+    expect(typeof store.getAdapter).toEqual('function');
+    expect(store.getAdapter).toBe(Container.prototype.getAdapter);
 
     const adapter = {};
     store.registerAdapter('foo', adapter);
-    assert.equal(store.getAdapter('foo') === adapter, true);
-    assert.throws(
-      () => {
-        store.getAdapter();
-      },
-      Error,
-      '[Container#getAdapter:name] expected: string, found: undefined\nhttp://www.js-data.io/v3.0/docs/errors#400'
-    );
+    expect(store.getAdapter('foo') === adapter).toEqual(true);
+    expect(() => {
+      store.getAdapter();
+    }).toThrow();
   });
 });

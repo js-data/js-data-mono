@@ -1,17 +1,15 @@
-import { assert } from '../../_setup';
+import { PostCollection } from '../../_setup';
 
 describe('Query#get', () => {
-  it('should work');
-
   it('should not allow index access after operation', function () {
-    const collection = this.PostCollection;
+    const collection = PostCollection;
 
-    assert.throws(() => {
+    expect(() => {
       collection
         .query()
         .filter()
         .get()
         .run();
-    }, Error);
+    }).toThrow();
   });
 });

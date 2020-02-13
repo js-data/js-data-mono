@@ -435,6 +435,27 @@ export default class Mapper extends Component {
   validateOnSet: any;
   keepChangeHistory: any;
 
+  /**
+   * Create a subclass of this Mapper:
+   *
+   * @example <caption>Mapper.extend</caption>
+   * const JSData = require('js-data');
+   * const { Mapper } = JSData;
+   * console.log('Using JSData v' + JSData.version.full);
+   *
+   * // Extend the class using ES2015 class syntax.
+   * class CustomMapperClass extends Mapper {
+   *   foo () { return 'bar'; }
+   *   static beep () { return 'boop'; }
+   * };
+   * const customMapper = new CustomMapperClass();
+   * console.log(customMapper.foo());
+   * console.log(CustomMapperClass.beep());
+   *
+   * @param {MapperOpts} [opts={}] Properties to add to the prototype of the
+   * subclass.
+   * @since 3.0.0
+   */
   constructor(opts: MapperOpts = {}) {
     super();
 
@@ -609,7 +630,7 @@ export default class Mapper extends Component {
    *
    * @method Mapper#afterUpdate
    * @param {(string|number)} id The `id` argument passed to {@link Mapper#update}.
-   * @param {props} props The `props` argument passed to {@link Mapper#update}.
+   * @param {object} props The `props` argument passed to {@link Mapper#update}.
    * @param {object} opts The `opts` argument passed to {@link Mapper#update}.
    * @param {*} result The result, if any.
    * @since 3.0.0
@@ -747,7 +768,7 @@ export default class Mapper extends Component {
    *
    * @method Mapper#beforeUpdate
    * @param {(string|number)} id The `id` argument passed to {@link Mapper#update}.
-   * @param {props} props The `props` argument passed to {@link Mapper#update}.
+   * @param {object} props The `props` argument passed to {@link Mapper#update}.
    * @param {object} opts The `opts` argument passed to {@link Mapper#update}.
    * @since 3.0.0
    */
@@ -1020,20 +1041,6 @@ export default class Mapper extends Component {
     }
 
     return recordOrRecords;
-  }
-
-  /**
-   * Use {@link Mapper#createRecord} instead.
-   * @deprecated
-   * @method Mapper#createInstance
-   * @param {Object|Array} props See {@link Mapper#createRecord}.
-   * @param {object} [opts] See {@link Mapper#createRecord}.
-   * @returns {Object|Array} See {@link Mapper#createRecord}.
-   * @see Mapper#createRecord
-   * @since 3.0.0
-   */
-  createInstance(props, opts?) {
-    return this.createRecord(props, opts);
   }
 
   /**
@@ -2502,56 +2509,3 @@ export default class Mapper extends Component {
     });
   }
 }
-
-/**
- * Create a subclass of this Mapper:
- *
- * @example <caption>Mapper.extend</caption>
- * const JSData = require('js-data');
- * const { Mapper } = JSData;
- * console.log('Using JSData v' + JSData.version.full);
- *
- * // Extend the class using ES2015 class syntax.
- * class CustomMapperClass extends Mapper {
- *   foo () { return 'bar'; }
- *   static beep () { return 'boop'; }
- * };
- * const customMapper = new CustomMapperClass();
- * console.log(customMapper.foo());
- * console.log(CustomMapperClass.beep());
- *
- * // Extend the class using alternate method.
- * const OtherMapperClass = Mapper.extend({
- *   foo () { return 'bar'; }
- * }, {
- *   beep () { return 'boop'; }
- * });
- * const otherMapper = new OtherMapperClass();
- * console.log(otherMapper.foo());
- * console.log(OtherMapperClass.beep());
- *
- * // Extend the class, providing a custom constructor.
- * function AnotherMapperClass () {
- *   Mapper.call(this);
- *   this.created_at = new Date().getTime();
- * }
- * Mapper.extend({
- *   constructor: AnotherMapperClass,
- *   foo () { return 'bar'; }
- * }, {
- *   beep () { return 'boop'; }
- * })
- * const anotherMapper = new AnotherMapperClass();
- * console.log(anotherMapper.created_at);
- * console.log(anotherMapper.foo());
- * console.log(AnotherMapperClass.beep());
- *
- * @method Mapper.extend
- * @param {object} [props={}] Properties to add to the prototype of the
- * subclass.
- * @param {object} [props.constructor] Provide a custom constructor function
- * to be used as the subclass itself.
- * @param {object} [classProps={}] Static properties to add to the subclass.
- * @returns {Constructor} Subclass of this Mapper class.
- * @since 3.0.0
- */

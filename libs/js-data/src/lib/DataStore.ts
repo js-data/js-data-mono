@@ -9,13 +9,6 @@ export interface DataStoreOpts extends SimpleStoreOpts {
   [customAttr: string]: any
 
   linkRelations?: boolean
-  unlinkOnDestroy?: boolean
-  collectionClass /*: typeof Collection */?
-  mapperClass?
-  scopes?: any
-}
-
-const DATASTORE_DEFAULTS: DataStoreOpts = {
   /**
    * Whether in-memory relations should be unlinked from records after they are
    * destroyed.
@@ -25,6 +18,13 @@ const DATASTORE_DEFAULTS: DataStoreOpts = {
    * @since 3.0.0
    * @type {boolean}
    */
+  unlinkOnDestroy?: boolean
+  collectionClass? /*: typeof Collection */
+  mapperClass?
+  scopes?: any
+}
+
+const DATASTORE_DEFAULTS: DataStoreOpts = {
   unlinkOnDestroy: true,
 
   collectionClass: LinkedCollection

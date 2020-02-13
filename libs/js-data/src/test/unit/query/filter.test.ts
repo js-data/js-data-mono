@@ -1,14 +1,14 @@
-import { JSData, objectsEqual } from '../../_setup';
-import { QueryDefinition } from '../../../src/Query';
+import { data, JSData, PostCollection, store } from '../../_setup';
+import { QueryDefinition } from '../../../lib/Query';
 
 describe('Query#filter', () => {
   it('should work', function () {
-    const collection = this.PostCollection;
-    const p1 = this.data.p1;
-    const p2 = this.data.p2;
-    const p3 = this.data.p3;
-    const p4 = this.data.p4;
-    const p5 = this.data.p5;
+    const collection = PostCollection;
+    const p1 = data.p1;
+    const p2 = data.p2;
+    const p3 = data.p3;
+    const p4 = data.p4;
+    const p5 = data.p5;
 
     p1.roles = ['admin'];
     p2.roles = ['admin', 'dev'];
@@ -16,34 +16,20 @@ describe('Query#filter', () => {
     p4.roles = [];
     p5.roles = ['admin', 'dev', 'owner'];
 
-    this.store.add('post', [p1, p2, p3, p4, p5]);
+    store.add('post', [p1, p2, p3, p4, p5]);
 
     let params: QueryDefinition = {
       author: 'John'
     };
 
-    objectsEqual(
-      collection
-        .query()
-        .filter(params)
-        .run(),
-      [p1],
-      'should default a string to "=="'
-    );
+    expect(collection.query().filter(params).run()).toEqual([p1]);
 
     params = {
       author: 'Adam',
       id: 9
     };
 
-    objectsEqual(
-      collection
-        .query()
-        .filter(params)
-        .run(),
-      [p5],
-      'should default a string to "=="'
-    );
+    expect(collection.query().filter(params).run()).toEqual([p5]);
 
     params = {
       where: {
@@ -51,53 +37,25 @@ describe('Query#filter', () => {
       }
     };
 
-    objectsEqual(
-      collection
-        .query()
-        .filter(params)
-        .run(),
-      [p1],
-      'should default a string to "=="'
-    );
+    expect(collection.query().filter(params).run()).toEqual([p1]);
 
     params.where.author = {
       '==': 'John'
     };
 
-    objectsEqual(
-      collection
-        .query()
-        .filter(params)
-        .run(),
-      [p1],
-      'should accept normal "==" clause'
-    );
+    expect(collection.query().filter(params).run()).toEqual([p1]);
 
     params.where.author = {
       '===': null
     };
 
-    objectsEqual(
-      collection
-        .query()
-        .filter(params)
-        .run(),
-      [],
-      'should accept normal "===" clause'
-    );
+    expect(collection.query().filter(params).run()).toEqual([]);
 
     params.where.author = {
       '!=': 'John'
     };
 
-    objectsEqual(
-      collection
-        .query()
-        .filter(params)
-        .run(),
-      [p2, p3, p4, p5],
-      'should accept normal "!=" clause'
-    );
+    expect(collection.query().filter(params).run()).toEqual([p2, p3, p4, p5]);
 
     params.where = {
       age: {
@@ -105,14 +63,7 @@ describe('Query#filter', () => {
       }
     };
 
-    objectsEqual(
-      collection
-        .query()
-        .filter(params)
-        .run(),
-      [p3, p4, p5],
-      'should accept normal ">" clause'
-    );
+    expect(collection.query().filter(params).run()).toEqual([p3, p4, p5]);
 
     params.where = {
       age: {
@@ -120,14 +71,7 @@ describe('Query#filter', () => {
       }
     };
 
-    objectsEqual(
-      collection
-        .query()
-        .filter(params)
-        .run(),
-      [p2, p3, p4, p5],
-      'should accept normal ">=" clause'
-    );
+    expect(collection.query().filter(params).run()).toEqual([p2, p3, p4, p5]);
 
     params.where = {
       age: {
@@ -135,14 +79,10 @@ describe('Query#filter', () => {
       }
     };
 
-    objectsEqual(
-      collection
-        .query()
-        .filter(params)
-        .run(),
-      [p1],
-      'should accept normal "<" clause'
-    );
+    expect(collection
+      .query()
+      .filter(params)
+      .run()).toEqual([p1]);
 
     params.where = {
       age: {
@@ -151,14 +91,10 @@ describe('Query#filter', () => {
       }
     };
 
-    objectsEqual(
-      collection
-        .query()
-        .filter(params)
-        .run(),
-      [p2, p3],
-      'should accept dual "<" and ">" clause'
-    );
+    expect(collection
+      .query()
+      .filter(params)
+      .run()).toEqual([p2, p3]);
 
     params.where = {
       age: {
@@ -167,14 +103,10 @@ describe('Query#filter', () => {
       }
     };
 
-    objectsEqual(
-      collection
-        .query()
-        .filter(params)
-        .run(),
-      [p1, p2, p3, p4, p5],
-      'should accept or "<" and ">" clause'
-    );
+    expect(collection
+      .query()
+      .filter(params)
+      .run()).toEqual([p1, p2, p3, p4, p5]);
 
     params.where = {
       age: {
@@ -185,14 +117,10 @@ describe('Query#filter', () => {
       }
     };
 
-    objectsEqual(
-      collection
-        .query()
-        .filter(params)
-        .run(),
-      [p1, p2, p4, p5],
-      'should accept or "<=" and "==" clause'
-    );
+    expect(collection
+      .query()
+      .filter(params)
+      .run()).toEqual([p1, p2, p4, p5]);
 
     params.where = {
       age: {
@@ -200,14 +128,10 @@ describe('Query#filter', () => {
       }
     };
 
-    objectsEqual(
-      collection
-        .query()
-        .filter(params)
-        .run(),
-      [p1, p2],
-      'should accept normal "<=" clause'
-    );
+    expect(collection
+      .query()
+      .filter(params)
+      .run()).toEqual([p1, p2]);
 
     params.where = {
       age: {
@@ -218,14 +142,10 @@ describe('Query#filter', () => {
       }
     };
 
-    objectsEqual(
-      collection
-        .query()
-        .filter(params)
-        .run(),
-      [p1, p4, p5],
-      'should accept normal "in" clause'
-    );
+    expect(collection
+      .query()
+      .filter(params)
+      .run()).toEqual([p1, p4, p5]);
 
     params.where = {
       author: {
@@ -233,14 +153,10 @@ describe('Query#filter', () => {
       }
     };
 
-    objectsEqual(
-      collection
-        .query()
-        .filter(params)
-        .run(),
-      [p1],
-      'should accept normal "in" clause with a string'
-    );
+    expect(collection
+      .query()
+      .filter(params)
+      .run()).toEqual([p1]);
 
     params.where = {
       author: {
@@ -248,14 +164,10 @@ describe('Query#filter', () => {
       }
     };
 
-    objectsEqual(
-      collection
-        .query()
-        .filter(params)
-        .run(),
-      [p2, p3, p4, p5],
-      'should accept normal "notIn" clause with a string'
-    );
+    expect(collection
+      .query()
+      .filter(params)
+      .run()).toEqual([p2, p3, p4, p5]);
 
     params.where = {
       age: {
@@ -266,14 +178,10 @@ describe('Query#filter', () => {
       }
     };
 
-    objectsEqual(
-      collection
-        .query()
-        .filter(params)
-        .run(),
-      [p2, p4],
-      'should accept and/or clause'
-    );
+    expect(collection
+      .query()
+      .filter(params)
+      .run()).toEqual([p2, p4]);
 
     params.where = {
       id: {
@@ -281,124 +189,80 @@ describe('Query#filter', () => {
       }
     };
 
-    objectsEqual(
-      collection
-        .query()
-        .filter(params)
-        .run(),
-      [p1, p2, p3, p5],
-      'should accept notIn clause'
-    );
+    expect(collection
+      .query()
+      .filter(params)
+      .run()).toEqual([p1, p2, p3, p5]);
 
     params.where = {age: {garbage: 'should have no effect'}};
 
-    objectsEqual(
-      collection
-        .query()
-        .filter(params)
-        .run(),
-      [p1, p2, p3, p4, p5],
-      'should return all elements'
-    );
+    expect(collection
+      .query()
+      .filter(params)
+      .run()).toEqual([p1, p2, p3, p4, p5]);
 
     params.where = {author: {like: 'Ada%'}};
 
-    objectsEqual(
-      collection
-        .query()
-        .filter(params)
-        .run(),
-      [p4, p5],
-      'should support like'
-    );
+    expect(collection
+      .query()
+      .filter(params)
+      .run()).toEqual([p4, p5]);
 
     params.where = {author: {like: '%a%'}};
 
-    objectsEqual(
-      collection
-        .query()
-        .filter(params)
-        .run(),
-      [p2, p4, p5],
-      'should support like'
-    );
+    expect(collection
+      .query()
+      .filter(params)
+      .run()).toEqual([p2, p4, p5]);
 
     params.where = {author: {notLike: 'Ada%'}};
 
-    objectsEqual(
-      collection
-        .query()
-        .filter(params)
-        .run(),
-      [p1, p2, p3],
-      'should support notLike'
-    );
+    expect(collection
+      .query()
+      .filter(params)
+      .run()).toEqual([p1, p2, p3]);
 
     params.where = {roles: {isectEmpty: ['admin']}};
 
-    objectsEqual(
-      collection
-        .query()
-        .filter(params)
-        .run(),
-      [p4],
-      'should support isectEmpty'
-    );
+    expect(collection
+      .query()
+      .filter(params)
+      .run()).toEqual([p4]);
 
     params.where = {roles: {isectNotEmpty: ['admin']}};
 
-    objectsEqual(
-      collection
-        .query()
-        .filter(params)
-        .run(),
-      [p1, p2, p3, p5],
-      'should support isectNotEmpty'
-    );
+    expect(collection
+      .query()
+      .filter(params)
+      .run()).toEqual([p1, p2, p3, p5]);
 
     params.where = {roles: {notContains: 'admin'}};
 
-    objectsEqual(
-      collection
-        .query()
-        .filter(params)
-        .run(),
-      [p4],
-      'should support notContains'
-    );
+    expect(collection
+      .query()
+      .filter(params)
+      .run()).toEqual([p4]);
 
     params.where = {age: {'!==': 33}};
 
-    objectsEqual(
-      collection
-        .query()
-        .filter(params)
-        .run(),
-      [p1, p2, p3],
-      'should support !=='
-    );
+    expect(collection
+      .query()
+      .filter(params)
+      .run()).toEqual([p1, p2, p3]);
 
     params = undefined;
 
-    objectsEqual(
-      collection
-        .query()
-        .filter(params)
-        .run(),
-      [p1, p2, p3, p4, p5],
-      'should do nothing'
-    );
+    expect(collection
+      .query()
+      .filter(params)
+      .run()).toEqual([p1, p2, p3, p4, p5]);
 
     params = {offset: 4};
 
-    objectsEqual(
-      collection
-        .query()
-        .filter(params)
-        .run(),
-      [p5],
-      'should support offset'
-    );
+    expect(collection
+      .query()
+      .filter(params)
+      .run()).toEqual([p5]);
 
     params = {
       where: [
@@ -415,13 +279,10 @@ describe('Query#filter', () => {
         }
       ]
     };
-    objectsEqual(
-      collection
-        .query()
-        .filter(params)
-        .run(),
-      [p1, p2, p3, p5]
-    );
+    expect(collection
+      .query()
+      .filter(params)
+      .run()).toEqual([p1, p2, p3, p5]);
 
     params = {
       where: [
@@ -441,13 +302,10 @@ describe('Query#filter', () => {
         }
       ]
     };
-    objectsEqual(
-      collection
-        .query()
-        .filter(params)
-        .run(),
-      [p1, p5]
-    );
+    expect(collection
+      .query()
+      .filter(params)
+      .run()).toEqual([p1, p5]);
 
     params = {
       where: [
@@ -478,31 +336,24 @@ describe('Query#filter', () => {
         }
       ]
     };
-    objectsEqual(
-      collection
-        .query()
-        .filter(params)
-        .run(),
-      [p1, p3, p5]
-    );
+    expect(collection
+      .query()
+      .filter(params)
+      .run()).toEqual([p1, p3, p5]);
   });
   it('should allow custom filter function', function () {
-    const p1 = this.data.p1;
-    const p2 = this.data.p2;
-    const p3 = this.data.p3;
-    const p4 = this.data.p4;
-    this.store.add('post', [p1, p2, p3, p4]);
+    const p1 = data.p1;
+    const p2 = data.p2;
+    const p3 = data.p3;
+    const p4 = data.p4;
+    store.add('post', [p1, p2, p3, p4]);
 
-    objectsEqual(
-      this.store
-        .query('post')
-        .filter(item => {
-          return item.author === 'John' || item.age % 30 === 1;
-        })
-        .run(),
-      [p1, p2],
-      'should keep p1 and p2'
-    );
+    expect(store
+      .query('post')
+      .filter(item => {
+        return item.author === 'John' || item.age % 30 === 1;
+      })
+      .run()).toEqual([p1, p2]);
   });
   it('should filter by nested keys', () => {
     const store = new JSData.DataStore();
@@ -544,14 +395,10 @@ describe('Query#filter', () => {
       }
     };
 
-    objectsEqual(
-      store
-        .query('thing')
-        .filter(params)
-        .run(),
-      [things[2], things[3]],
-      'should filter by a nested key'
-    );
+    expect(store
+      .query('thing')
+      .filter(params)
+      .run()).toEqual([things[2], things[3]]);
   });
   it('should support the "like" operator', function () {
     const users = [
@@ -566,157 +413,99 @@ describe('Query#filter', () => {
       {id: 9, name: 'fooxfoo'},
       {id: 10, name: 'fooxxfoox'}
     ];
-    this.store.add('user', users);
+    store.add('user', users);
 
-    objectsEqual(
-      this.store
-        .query('user')
-        .filter({where: {name: {like: 'foo'}}})
-        .run(),
-      [users[0]],
-      'foo'
-    );
-    objectsEqual(
-      this.store
-        .query('user')
-        .filter({where: {name: {like: '_foo'}}})
-        .run(),
-      [users[1]],
-      '_foo'
-    );
-    objectsEqual(
-      this.store
-        .query('user')
-        .filter({where: {name: {like: 'foo_'}}})
-        .run(),
-      [users[2]],
-      'foo_'
-    );
-    objectsEqual(
-      this.store
-        .query('user')
-        .filter({where: {name: {like: '%foo'}}})
-        .run(),
-      [users[0], users[1], users[3], users[7], users[8]],
-      '%foo'
-    );
-    objectsEqual(
-      this.store
-        .query('user')
-        .filter({where: {name: {likei: 'FOO%'}}})
-        .run(),
-      [users[0], users[2], users[4], users[7], users[8], users[9]],
-      'FOO%'
-    );
-    objectsEqual(
-      this.store
-        .query('user')
-        .filter({where: {name: {like: '%foo%'}}})
-        .run(),
-      users,
-      '%foo%'
-    );
-    objectsEqual(
-      this.store
-        .query('user')
-        .filter({where: {name: {like: '%foo%foo%'}}})
-        .run(),
-      [users[6], users[7], users[8], users[9]],
-      '%foo%foo%'
-    );
-    objectsEqual(
-      this.store
-        .query('user')
-        .filter({where: {name: {like: 'foo%foo'}}})
-        .run(),
-      [users[7], users[8]],
-      'foo%foo'
-    );
-    objectsEqual(
-      this.store
-        .query('user')
-        .filter({where: {name: {like: 'foo_foo'}}})
-        .run(),
-      [users[8]],
-      'foo_foo'
-    );
-    objectsEqual(
-      this.store
-        .query('user')
-        .filter({where: {name: {like: 'foo%foo_'}}})
-        .run(),
-      [users[9]],
-      'foo%foo'
-    );
+    expect(store
+      .query('user')
+      .filter({where: {name: {like: 'foo'}}})
+      .run()).toEqual([users[0]]);
+    expect(store
+      .query('user')
+      .filter({where: {name: {like: '_foo'}}})
+      .run()).toEqual([users[1]]);
+    expect(store
+      .query('user')
+      .filter({where: {name: {like: 'foo_'}}})
+      .run()).toEqual([users[2]]);
+    expect(store
+      .query('user')
+      .filter({where: {name: {like: '%foo'}}})
+      .run()).toEqual([users[0], users[1], users[3], users[7], users[8]]);
+    expect(store
+      .query('user')
+      .filter({where: {name: {likei: 'FOO%'}}})
+      .run()).toEqual([users[0], users[2], users[4], users[7], users[8], users[9]]);
+    expect(store
+      .query('user')
+      .filter({where: {name: {like: '%foo%'}}})
+      .run()).toEqual(users);
+    expect(store
+      .query('user')
+      .filter({where: {name: {like: '%foo%foo%'}}})
+      .run()).toEqual([users[6], users[7], users[8], users[9]]);
+    expect(store
+      .query('user')
+      .filter({where: {name: {like: 'foo%foo'}}})
+      .run()).toEqual([users[7], users[8]]);
+    expect(store
+      .query('user')
+      .filter({where: {name: {like: 'foo_foo'}}})
+      .run()).toEqual([users[8]]);
+    expect(store
+      .query('user')
+      .filter({where: {name: {like: 'foo%foo_'}}})
+      .run()).toEqual([users[9]]);
 
-    objectsEqual(
-      this.store
-        .query('user')
-        .filter({where: {name: {notLike: 'foo'}}})
-        .run(),
+    expect(store
+      .query('user')
+      .filter({where: {name: {notLike: 'foo'}}})
+      .run()).toEqual(
       [users[1], users[2], users[3], users[4], users[5], users[6], users[7], users[8], users[9]]
     );
-    objectsEqual(
-      this.store
-        .query('user')
-        .filter({where: {name: {notLike: '_foo'}}})
-        .run(),
+    expect(store
+      .query('user')
+      .filter({where: {name: {notLike: '_foo'}}})
+      .run()).toEqual(
       [users[0], users[2], users[3], users[4], users[5], users[6], users[7], users[8], users[9]]
     );
-    objectsEqual(
-      this.store
-        .query('user')
-        .filter({where: {name: {notLike: 'foo_'}}})
-        .run(),
+    expect(store
+      .query('user')
+      .filter({where: {name: {notLike: 'foo_'}}})
+      .run()).toEqual(
       [users[0], users[1], users[3], users[4], users[5], users[6], users[7], users[8], users[9]]
     );
-    objectsEqual(
-      this.store
-        .query('user')
-        .filter({where: {name: {notLike: '%foo'}}})
-        .run(),
-      [users[2], users[4], users[5], users[6], users[9]]
-    );
-    objectsEqual(
-      this.store
-        .query('user')
-        .filter({where: {name: {notLike: 'foo%'}}})
-        .run(),
-      [users[1], users[3], users[5], users[6]]
-    );
-    objectsEqual(
-      this.store
-        .query('user')
-        .filter({where: {name: {notLike: '%foo%'}}})
-        .run(),
-      []
-    );
-    objectsEqual(
-      this.store
-        .query('user')
-        .filter({where: {name: {notLike: '%foo%foo%'}}})
-        .run(),
-      [users[0], users[1], users[2], users[3], users[4], users[5]]
-    );
-    objectsEqual(
-      this.store
-        .query('user')
-        .filter({where: {name: {notLike: 'foo%foo'}}})
-        .run(),
+    expect(store
+      .query('user')
+      .filter({where: {name: {notLike: '%foo'}}})
+      .run()).toEqual([users[2], users[4], users[5], users[6], users[9]]);
+    expect(store
+      .query('user')
+      .filter({where: {name: {notLike: 'foo%'}}})
+      .run()).toEqual([users[1], users[3], users[5], users[6]]);
+    expect(store
+      .query('user')
+      .filter({where: {name: {notLike: '%foo%'}}})
+      .run()).toEqual([]);
+    expect(store
+      .query('user')
+      .filter({where: {name: {notLike: '%foo%foo%'}}})
+      .run()).toEqual([users[0], users[1], users[2], users[3], users[4], users[5]]);
+    expect(store
+      .query('user')
+      .filter({where: {name: {notLike: 'foo%foo'}}})
+      .run()).toEqual(
       [users[0], users[1], users[2], users[3], users[4], users[5], users[6], users[9]]
     );
-    objectsEqual(
-      this.store
-        .query('user')
-        .filter({where: {name: {notLike: 'foo_foo'}}})
-        .run(),
+    expect(store
+      .query('user')
+      .filter({where: {name: {notLike: 'foo_foo'}}})
+      .run()).toEqual(
       [users[0], users[1], users[2], users[3], users[4], users[5], users[6], users[7], users[9]]
     );
-    objectsEqual(
-      this.store
-        .query('user')
-        .filter({where: {name: {notLike: 'foo%foo_'}}})
-        .run(),
+    expect(store
+      .query('user')
+      .filter({where: {name: {notLike: 'foo%foo_'}}})
+      .run()).toEqual(
       [users[0], users[1], users[2], users[3], users[4], users[5], users[6], users[7], users[8]]
     );
   });

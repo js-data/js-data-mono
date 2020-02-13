@@ -1,102 +1,111 @@
-import { assert, JSData, objectsEqual } from '../../_setup';
+import {
+  CommentCollection,
+  data,
+  GroupCollection,
+  JSData,
+  objectsEqual,
+  OrganizationCollection,
+  ProfileCollection,
+  store,
+  UserCollection
+} from '../../_setup';
 
 describe('LinkedCollection#add', () => {
   it('should add', () => {
     const store = new JSData.DataStore();
-    const mapper = store.defineMapper('user'); // eslint-disable-line
+    store.defineMapper('user');
     const collection = store.getCollection('user');
     const user = collection.add({id: 1});
-    assert.equal(user.id, 1);
+    expect(user.id).toEqual(1);
   });
-  it('should inject relations', function () {
+  it('should inject relations', () => {
     // can inject items without relations
-    this.UserCollection.add(this.data.user1);
-    this.OrganizationCollection.add(this.data.organization2);
-    this.CommentCollection.add(this.data.comment3);
-    this.ProfileCollection.add(this.data.profile4);
+    UserCollection.add(data.user1);
+    OrganizationCollection.add(data.organization2);
+    CommentCollection.add(data.comment3);
+    ProfileCollection.add(data.profile4);
 
-    assert.deepEqual(this.UserCollection.get(1).id, this.data.user1.id);
-    assert.deepEqual(this.OrganizationCollection.get(2).id, this.data.organization2.id);
-    assert.deepEqual(this.CommentCollection.get(3).id, this.data.comment3.id);
-    assert.deepEqual(this.ProfileCollection.get(4).id, this.data.profile4.id);
+    expect(UserCollection.get(1).id).toEqual(data.user1.id);
+    expect(OrganizationCollection.get(2).id).toEqual(data.organization2.id);
+    expect(CommentCollection.get(3).id).toEqual(data.comment3.id);
+    expect(ProfileCollection.get(4).id).toEqual(data.profile4.id);
 
     // can inject items with relations
-    this.UserCollection.add(this.data.user10);
-    this.OrganizationCollection.add(this.data.organization15);
-    this.CommentCollection.add(this.data.comment19);
-    this.ProfileCollection.add(this.data.profile21);
-    this.GroupCollection.add(this.data.group1);
+    UserCollection.add(data.user10);
+    OrganizationCollection.add(data.organization15);
+    CommentCollection.add(data.comment19);
+    ProfileCollection.add(data.profile21);
+    GroupCollection.add(data.group1);
 
     // originals
-    assert.equal(this.UserCollection.get(10).name, this.data.user10.name);
-    assert.equal(this.UserCollection.get(10).id, this.data.user10.id);
-    assert.equal(this.UserCollection.get(10).organizationId, this.data.user10.organizationId);
-    assert(Array.isArray(this.UserCollection.get(10).comments));
-    assert.deepEqual(this.OrganizationCollection.get(15).name, this.data.organization15.name);
-    assert.deepEqual(this.OrganizationCollection.get(15).id, this.data.organization15.id);
-    assert(Array.isArray(this.OrganizationCollection.get(15).users));
-    assert.deepEqual(this.CommentCollection.get(19).id, this.data.comment19.id);
-    assert.deepEqual(this.CommentCollection.get(19).content, this.data.comment19.content);
-    assert.deepEqual(this.ProfileCollection.get(21).id, this.data.profile21.id);
-    assert.deepEqual(this.ProfileCollection.get(21).content, this.data.profile21.content);
-    assert.deepEqual(this.GroupCollection.get(1).id, this.data.group1.id);
-    assert.deepEqual(this.GroupCollection.get(1).name, this.data.group1.name);
-    assert(Array.isArray(this.GroupCollection.get(1).userIds));
+    expect(UserCollection.get(10).name).toEqual(data.user10.name);
+    expect(UserCollection.get(10).id).toEqual(data.user10.id);
+    expect(UserCollection.get(10).organizationId).toEqual(data.user10.organizationId);
+    expect(Array.isArray(UserCollection.get(10).comments)).toBeTruthy();
+    expect(OrganizationCollection.get(15).name).toEqual(data.organization15.name);
+    expect(OrganizationCollection.get(15).id).toEqual(data.organization15.id);
+    expect(Array.isArray(OrganizationCollection.get(15).users)).toBeTruthy();
+    expect(CommentCollection.get(19).id).toEqual(data.comment19.id);
+    expect(CommentCollection.get(19).content).toEqual(data.comment19.content);
+    expect(ProfileCollection.get(21).id).toEqual(data.profile21.id);
+    expect(ProfileCollection.get(21).content).toEqual(data.profile21.content);
+    expect(GroupCollection.get(1).id).toEqual(data.group1.id);
+    expect(GroupCollection.get(1).name).toEqual(data.group1.name);
+    expect(Array.isArray(GroupCollection.get(1).userIds)).toBeTruthy();
 
     // user10 relations
-    assert.deepEqual(this.CommentCollection.get(11), this.UserCollection.get(10).comments[0]);
-    assert.deepEqual(this.CommentCollection.get(12), this.UserCollection.get(10).comments[1]);
-    assert.deepEqual(this.CommentCollection.get(13), this.UserCollection.get(10).comments[2]);
-    assert.deepEqual(this.OrganizationCollection.get(14), this.UserCollection.get(10).organization);
-    assert.deepEqual(this.ProfileCollection.get(15), this.UserCollection.get(10).profile);
-    assert(Array.isArray(this.UserCollection.get(10).groups));
-    assert.deepEqual(this.UserCollection.get(10).groups[0], this.GroupCollection.get(1));
+    expect(CommentCollection.get(11)).toEqual(UserCollection.get(10).comments[0]);
+    expect(CommentCollection.get(12)).toEqual(UserCollection.get(10).comments[1]);
+    expect(CommentCollection.get(13)).toEqual(UserCollection.get(10).comments[2]);
+    expect(OrganizationCollection.get(14)).toEqual(UserCollection.get(10).organization);
+    expect(ProfileCollection.get(15)).toEqual(UserCollection.get(10).profile);
+    expect(Array.isArray(UserCollection.get(10).groups)).toBeTruthy();
+    expect(UserCollection.get(10).groups[0]).toEqual(GroupCollection.get(1));
 
     // group1 relations
-    assert(Array.isArray(this.GroupCollection.get(1).users));
-    assert.deepEqual(this.GroupCollection.get(1).users[0], this.UserCollection.get(10));
+    expect(Array.isArray(GroupCollection.get(1).users)).toBeTruthy();
+    expect(GroupCollection.get(1).users[0]).toEqual(UserCollection.get(10));
 
     // organization15 relations
-    assert.deepEqual(this.UserCollection.get(16), this.OrganizationCollection.get(15).users[0]);
-    assert.deepEqual(this.UserCollection.get(17), this.OrganizationCollection.get(15).users[1]);
-    assert.deepEqual(this.UserCollection.get(18), this.OrganizationCollection.get(15).users[2]);
+    expect(UserCollection.get(16)).toEqual(OrganizationCollection.get(15).users[0]);
+    expect(UserCollection.get(17)).toEqual(OrganizationCollection.get(15).users[1]);
+    expect(UserCollection.get(18)).toEqual(OrganizationCollection.get(15).users[2]);
 
     // comment19 relations
-    assert.deepEqual(this.UserCollection.get(20), this.CommentCollection.get(19).user);
-    assert.deepEqual(this.UserCollection.get(19), this.CommentCollection.get(19).approvedByUser);
+    expect(UserCollection.get(20)).toEqual(CommentCollection.get(19).user);
+    expect(UserCollection.get(19)).toEqual(CommentCollection.get(19).approvedByUser);
 
     // profile21 relations
-    assert.deepEqual(this.UserCollection.get(22), this.ProfileCollection.get(21).user);
+    expect(UserCollection.get(22)).toEqual(ProfileCollection.get(21).user);
   });
-  it('should inject localKeys relations', function () {
-    const store = this.store;
+  it('should inject localKeys relations', () => {
     const group = store.add('group', {
       id: 1,
       users: {
         id: 1
       }
     });
-    assert.strictEqual(group, store.get('group', 1));
-    assert.strictEqual(group.users[0], store.get('user', 1));
+    expect(group).toBe(store.get('group', 1));
+    expect(group.users[0]).toBe(store.get('user', 1));
   });
-  it('should find inverse links', function () {
-    this.UserCollection.add({organizationId: 5, id: 1});
-    this.OrganizationCollection.add({id: 5});
+  it('should find inverse links', () => {
+    UserCollection.add({organizationId: 5, id: 1});
+    OrganizationCollection.add({id: 5});
 
-    objectsEqual(this.UserCollection.get(1).organization, {id: 5});
+    expect(UserCollection.get(1).organization).toEqual({id: 5});
 
-    objectsEqual(this.UserCollection.get(1).comments, []);
-    objectsEqual(this.UserCollection.get(1).approvedComments, []);
+    expect(UserCollection.get(1).comments).toEqual([]);
+    expect(UserCollection.get(1).approvedComments).toEqual([]);
 
-    this.CommentCollection.add({approvedBy: 1, id: 23});
+    CommentCollection.add({approvedBy: 1, id: 23});
 
-    assert.equal(0, this.UserCollection.get(1).comments.length);
-    assert.equal(1, this.UserCollection.get(1).approvedComments.length);
+    expect(0).toEqual(UserCollection.get(1).comments.length);
+    expect(1).toEqual(UserCollection.get(1).approvedComments.length);
 
-    this.CommentCollection.add({approvedBy: 1, id: 44});
+    CommentCollection.add({approvedBy: 1, id: 44});
 
-    assert.equal(0, this.UserCollection.get(1).comments.length);
-    assert.equal(2, this.UserCollection.get(1).approvedComments.length);
+    expect(0).toEqual(UserCollection.get(1).comments.length);
+    expect(2).toEqual(UserCollection.get(1).approvedComments.length);
   });
   it('should inject cyclic dependencies', () => {
     const store = new JSData.DataStore({
@@ -154,21 +163,21 @@ describe('LinkedCollection#add', () => {
       }
     ]);
 
-    assert.equal(injected[0].id, 1);
-    assert.equal(injected[0].children[0].id, 2);
-    assert.equal(injected[0].children[1].id, 3);
-    assert.equal(injected[0].children[0].children[0].id, 4);
-    assert.equal(injected[0].children[0].children[1].id, 5);
-    assert.equal(injected[0].children[1].children[0].id, 6);
-    assert.equal(injected[0].children[1].children[1].id, 7);
+    expect(injected[0].id).toEqual(1);
+    expect(injected[0].children[0].id).toEqual(2);
+    expect(injected[0].children[1].id).toEqual(3);
+    expect(injected[0].children[0].children[0].id).toEqual(4);
+    expect(injected[0].children[0].children[1].id).toEqual(5);
+    expect(injected[0].children[1].children[0].id).toEqual(6);
+    expect(injected[0].children[1].children[1].id).toEqual(7);
 
-    assert(store.getCollection('foo').get(1));
-    assert(store.getCollection('foo').get(2));
-    assert(store.getCollection('foo').get(3));
-    assert(store.getCollection('foo').get(4));
-    assert(store.getCollection('foo').get(5));
-    assert(store.getCollection('foo').get(6));
-    assert(store.getCollection('foo').get(7));
+    expect(store.getCollection('foo').get(1)).toBeTruthy();
+    expect(store.getCollection('foo').get(2)).toBeTruthy();
+    expect(store.getCollection('foo').get(3)).toBeTruthy();
+    expect(store.getCollection('foo').get(4)).toBeTruthy();
+    expect(store.getCollection('foo').get(5)).toBeTruthy();
+    expect(store.getCollection('foo').get(6)).toBeTruthy();
+    expect(store.getCollection('foo').get(7)).toBeTruthy();
   });
   it('should work when injecting child relations multiple times', () => {
     const store = new JSData.DataStore({
@@ -205,7 +214,7 @@ describe('LinkedCollection#add', () => {
       ]
     });
 
-    assert(store.get('parent', 1).children[0] instanceof Child.recordClass);
+    expect(store.get('parent', 1).children[0] instanceof Child.recordClass).toBeTruthy();
 
     store.add('parent', {
       id: 1,
@@ -222,9 +231,9 @@ describe('LinkedCollection#add', () => {
       ]
     });
 
-    assert(store.get('parent', 1).children[0] instanceof Child.recordClass);
-    assert(store.get('parent', 1).children[1] instanceof Child.recordClass);
-    assert.deepEqual(store.filter('child', {parentId: 1}), store.get('parent', 1).children);
+    expect(store.get('parent', 1).children[0] instanceof Child.recordClass).toBeTruthy();
+    expect(store.get('parent', 1).children[1] instanceof Child.recordClass).toBeTruthy();
+    expect(store.filter('child', {parentId: 1})).toEqual(store.get('parent', 1).children);
   });
 
   it('should not auto-add relations where auto-add has been disabled', () => {
@@ -262,10 +271,10 @@ describe('LinkedCollection#add', () => {
       id: 1,
       bars: [bar1Json, bar2Json]
     });
-    assert.equal(foo.bars[0].fooId, 1);
-    assert.equal(foo.bars[1].fooId, 1);
-    assert.equal(foo.bars.length, 2);
-    assert.deepEqual(store.getAll('bar'), [], 'nothing should have been injected');
+    expect(foo.bars[0].fooId).toEqual(1);
+    expect(foo.bars[1].fooId).toEqual(1);
+    expect(foo.bars.length).toEqual(2);
+    expect(store.getAll('bar')).toEqual([]);
   });
   it('should allow custom relation injection logic', () => {
     const store = new JSData.DataStore({
@@ -367,10 +376,10 @@ describe('LinkedCollection#add', () => {
       id: 3,
       fooId: 1
     });
-    assert.equal(foo.bars.length, 3);
-    assert.equal(store.getAll('bar').length, 3);
+    expect(foo.bars.length).toEqual(3);
+    expect(store.getAll('bar').length).toEqual(3);
   });
-  it('should inject 1,000 items', function () {
+  it('should inject 1,000 items', () => {
     const users = [];
     for (let i = 0; i < 1000; i++) {
       users.push({
@@ -382,7 +391,7 @@ describe('LinkedCollection#add', () => {
       });
     }
     // const start = new Date().getTime()
-    this.UserCollection.add(users);
+    UserCollection.add(users);
     // console.log('\tinject 1,000 users time taken: ', new Date().getTime() - start, 'ms')
   });
   it('should inject 1,000 items where there is an index on "age"', () => {

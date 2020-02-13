@@ -1,16 +1,16 @@
-import { assert, JSData, sinon } from '../../_setup';
-import { proxiedMapperMethods } from '../../../src/Container';
+import { JSData, sinon } from '../../_setup';
+import { proxiedMapperMethods } from '../../../lib/Container';
 
 describe('Container', () => {
   it('should be a constructor function', () => {
     const Container = JSData.Container;
-    assert.equal(typeof Container, 'function');
+    expect(typeof Container).toEqual('function');
     const container = new Container();
-    assert(container instanceof Container);
-    assert.deepEqual(container._adapters, {});
-    assert.deepEqual(container._mappers, {});
-    assert.deepEqual(container.mapperDefaults, {});
-    assert.strictEqual(container.mapperClass, JSData.Mapper);
+    expect(container instanceof Container).toBeTruthy();
+    expect(container._adapters).toEqual({});
+    expect(container._mappers).toEqual({});
+    expect(container.mapperDefaults).toEqual({});
+    expect(container.mapperClass).toBe(JSData.Mapper);
   });
   it('should accept overrides', () => {
     const Container = JSData.Container;
@@ -24,20 +24,20 @@ describe('Container', () => {
         idAttribute: '_id'
       }
     });
-    assert.deepEqual(container._adapters, {});
-    assert.deepEqual(container._mappers, {});
-    assert.equal(container.foo, 'bar');
-    assert.deepEqual(container.mapperDefaults, {
+    expect(container._adapters).toEqual({});
+    expect(container._mappers).toEqual({});
+    expect(container.foo).toEqual('bar');
+    expect(container.mapperDefaults).toEqual({
       idAttribute: '_id'
     });
-    assert.strictEqual(container.mapperClass, Foo);
+    expect(container.mapperClass).toBe(Foo);
   });
   it('should have events', () => {
     const store = new JSData.Container();
     const listener = sinon.stub();
     store.on('bar', listener);
     store.emit('bar');
-    assert(listener.calledOnce);
+    expect(listener.calledOnce).toBeTruthy();
   });
   it('should proxy Mapper events', () => {
     const store = new JSData.Container();
@@ -45,8 +45,8 @@ describe('Container', () => {
     const listener = sinon.stub();
     store.on('bar', listener);
     store.getMapper('user').emit('bar', 'foo');
-    assert(listener.calledOnce);
-    assert.deepEqual(listener.firstCall.args, ['user', 'foo']);
+    expect(listener.calledOnce).toBeTruthy();
+    expect(listener.firstCall.args).toEqual(['user', 'foo']);
   });
   it('should proxy all Mapper events', () => {
     const store = new JSData.Container();
@@ -54,8 +54,8 @@ describe('Container', () => {
     const listener = sinon.stub();
     store.on('all', listener);
     store.getMapper('user').emit('bar', 'foo');
-    assert(listener.calledOnce);
-    assert.deepEqual(listener.firstCall.args, ['bar', 'user', 'foo']);
+    expect(listener.calledOnce).toBeTruthy();
+    expect(listener.firstCall.args).toEqual(['bar', 'user', 'foo']);
   });
   it('should proxy Mapper methods', () => {
     const container = new JSData.Container();
@@ -65,10 +65,10 @@ describe('Container', () => {
       sinon.replace(mapper, method, sinon.fake());
       if (method === 'getSchema') {
         container[method]('user');
-        assert((mapper[method] as any).calledWithMatch(), errorMsg);
+        expect((mapper[method] as any).calledWithMatch()).toBeTruthy();
       } else {
         container[method]('user', {id: 1});
-        assert(mapper[method].calledWithMatch({id: 1}), errorMsg);
+        expect(mapper[method].calledWithMatch({id: 1})).toBeTruthy();
       }
     });
   });

@@ -1,17 +1,17 @@
-import { assert, JSData } from '../../_setup';
+import { JSData } from '../../_setup';
 
 describe('Query#between', () => {
   it('should work', () => {
     let result;
     const collection = new JSData.Collection();
 
-    assert.throws(() => {
+    expect(() => {
       collection
         .query()
         .filter()
         .between()
         .run();
-    }, Error);
+    }).toThrow();
 
     collection.createIndex('age');
     collection.createIndex('role');
@@ -42,39 +42,41 @@ describe('Query#between', () => {
       .query()
       .between([32], [33], {index: 'age', leftInclusive: false})
       .run();
-    assert.deepEqual(result, []);
+    expect(result).toEqual([]);
     result = collection
       .query()
       .between(['dev'], ['sup'], {index: 'role', leftInclusive: false})
       .run();
-    assert.deepEqual(result, []);
+    expect(result).toEqual([]);
     result = collection
       .query()
       .between([32, 'admin'], [33, 'dev'], {index: 'ageRole', leftInclusive: false})
       .run();
-    assert.deepEqual(result, [data[7], data[6], data[9], data[10], data[14], data[17]]);
+    expect(result).toEqual([data[7], data[6], data[9], data[10], data[14], data[17]]);
 
     result = collection
       .query()
       .between([32], [33], {index: 'age'})
       .run();
-    assert.deepEqual(result, [data[6], data[7], data[8], data[9], data[10], data[11]]);
+    expect(result).toEqual([data[6], data[7], data[8], data[9], data[10], data[11]]);
     result = collection
       .query()
       .between(['dev'], ['sup'], {index: 'role'})
       .run();
-    assert.deepEqual(result, [data[0], data[1], data[4], data[7], data[12], data[13], data[16]]);
+    expect(result).toEqual([data[0], data[1], data[4], data[7], data[12], data[13], data[16]]);
     result = collection
       .query()
       .between([32, 'admin'], [33, 'dev'], {index: 'ageRole'})
       .run();
-    assert.deepEqual(result, [data[8], data[11], data[7], data[6], data[9], data[10], data[14], data[17]]);
+    expect(result).toEqual(
+      [data[8], data[11], data[7], data[6], data[9], data[10], data[14], data[17]]
+    );
 
     result = collection
       .query()
       .between([32], [33], {index: 'age', rightInclusive: true})
       .run();
-    assert.deepEqual(result, [
+    expect(result).toEqual([
       data[6],
       data[7],
       data[8],
@@ -92,7 +94,7 @@ describe('Query#between', () => {
       .query()
       .between(['dev'], ['sup'], {index: 'role', rightInclusive: true})
       .run();
-    assert.deepEqual(result, [
+    expect(result).toEqual([
       data[0],
       data[1],
       data[4],
@@ -110,7 +112,7 @@ describe('Query#between', () => {
       .query()
       .between([32, 'admin'], [33, 'dev'], {index: 'ageRole', rightInclusive: true})
       .run();
-    assert.deepEqual(result, [
+    expect(result).toEqual([
       data[8],
       data[11],
       data[7],
@@ -128,7 +130,7 @@ describe('Query#between', () => {
       .query()
       .between([32], [33], {index: 'age', leftInclusive: false, rightInclusive: true})
       .run();
-    assert.deepEqual(result, [data[12], data[13], data[14], data[15], data[16], data[17]]);
+    expect(result).toEqual([data[12], data[13], data[14], data[15], data[16], data[17]]);
     result = collection
       .query()
       .between(['dev'], ['sup'], {
@@ -137,7 +139,7 @@ describe('Query#between', () => {
         rightInclusive: true
       })
       .run();
-    assert.deepEqual(result, [data[5], data[6], data[9], data[10], data[15]]);
+    expect(result).toEqual([data[5], data[6], data[9], data[10], data[15]]);
     result = collection
       .query()
       .between([32, 'admin'], [33, 'dev'], {
@@ -146,6 +148,8 @@ describe('Query#between', () => {
         rightInclusive: true
       })
       .run();
-    assert.deepEqual(result, [data[7], data[6], data[9], data[10], data[14], data[17], data[12], data[13], data[16]]);
+    expect(result).toEqual(
+      [data[7], data[6], data[9], data[10], data[14], data[17], data[12], data[13], data[16]]
+    );
   });
 });

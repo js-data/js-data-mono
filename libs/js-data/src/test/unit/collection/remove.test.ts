@@ -1,34 +1,26 @@
-import { assert, JSData, objectsEqual } from '../../_setup';
+import { data, JSData, PostCollection, store, UserCollection } from '../../_setup';
 
 describe('Collection#remove', () => {
   it('should remove an item from the collection', function () {
-    this.UserCollection.createIndex('age');
-    const user = this.UserCollection.add({id: 1, age: 30});
-    const user2 = this.UserCollection.add({id: 2, age: 31});
-    const user3 = this.UserCollection.add({id: 3, age: 32});
+    UserCollection.createIndex('age');
+    const user = UserCollection.add({id: 1, age: 30});
+    const user2 = UserCollection.add({id: 2, age: 31});
+    const user3 = UserCollection.add({id: 3, age: 32});
     const users = [user, user2, user3];
-    assert(this.UserCollection.get(1) === user, 'user 1 is in the store');
-    assert(this.UserCollection.get(2) === user2, 'user 2 is in the store');
-    assert(this.UserCollection.get(3) === user3, 'user 3 is in the store');
-    assert.deepEqual(
-      this.UserCollection.between([30], [32], {
-        rightInclusive: true,
-        index: 'age'
-      }),
-      users,
-      'users can be selected by age index'
-    );
-    this.UserCollection.remove(1);
-    assert(!this.UserCollection.get(1), 'user 1 is no longer in the store');
+    expect(UserCollection.get(1) === user).toBeTruthy();
+    expect(UserCollection.get(2) === user2).toBeTruthy();
+    expect(UserCollection.get(3) === user3).toBeTruthy();
+    expect(UserCollection.between([30], [32], {
+      rightInclusive: true,
+      index: 'age'
+    })).toEqual(users);
+    UserCollection.remove(1);
+    expect(!UserCollection.get(1)).toBeTruthy();
     users.shift();
-    assert.deepEqual(
-      this.UserCollection.between([30], [32], {
-        rightInclusive: true,
-        index: 'age'
-      }),
-      users,
-      'user 1 cannot be retrieved by index'
-    );
+    expect(UserCollection.between([30], [32], {
+      rightInclusive: true,
+      index: 'age'
+    })).toEqual(users);
   });
 
   it('should remove plain records', () => {
@@ -49,117 +41,83 @@ describe('Collection#remove', () => {
     const collection = new JSData.Collection(data);
     const item = collection.get(1);
     const removed = collection.remove(1);
-    assert.equal(item === removed, true);
+    expect(item === removed).toEqual(true);
   });
 
   it('should remove unsaved records', function () {
     const alice = {author: 'Alice'};
-    const bob = this.store.createRecord('post', {author: 'Bob'});
-    objectsEqual(this.PostCollection.add([this.data.p1, this.data.p2, alice, this.data.p3, bob, this.data.p4]), [
-      this.data.p1,
-      this.data.p2,
+    const bob = store.createRecord('post', {author: 'Bob'});
+    expect(
+      PostCollection.add([data.p1, data.p2, alice, data.p3, bob, data.p4])
+    ).toEqual([
+      data.p1,
+      data.p2,
       alice,
-      this.data.p3,
+      data.p3,
       bob,
-      this.data.p4
+      data.p4
     ]);
 
-    assert.strictEqual(
-      bob,
-      this.PostCollection.filter({
-        author: 'Bob'
-      })[0]
-    );
-    assert.notStrictEqual(
-      alice,
-      this.PostCollection.filter({
+    expect(bob).toBe(PostCollection.filter({
+      author: 'Bob'
+    })[0]);
+    expect(alice).not.toBe(PostCollection.filter({
+      author: 'Alice'
+    })[0]);
+
+    expect(PostCollection.get(5)).toEqual(data.p1);
+    expect(PostCollection.get(6)).toEqual(data.p2);
+    expect(PostCollection.get(7)).toEqual(data.p3);
+    expect(PostCollection.get(8)).toEqual(data.p4);
+    expect(PostCollection.filter({
+      id: undefined
+    }).length).toEqual(2);
+    expect(PostCollection.filter({
+      author: 'Bob'
+    }).length).toEqual(1);
+    expect(PostCollection.filter().length).toEqual(6);
+
+    let removedAlice = PostCollection.remove(alice);
+    expect(removedAlice).toEqual(undefined);
+    expect(PostCollection.filter({
+      author: 'Alice'
+    }).length).toEqual(1);
+    expect(PostCollection.filter().length).toEqual(6);
+    removedAlice = PostCollection.remove(
+      PostCollection.filter({
         author: 'Alice'
       })[0]
     );
+    expect(removedAlice).toEqual({author: 'Alice'});
+    expect(PostCollection.filter({
+      author: 'Alice'
+    }).length).toEqual(0);
+    expect(PostCollection.filter().length).toEqual(5);
+    expect(PostCollection.filter({
+      id: undefined
+    }).length).toEqual(1);
+    expect(PostCollection.filter({
+      author: 'Bob'
+    }).length).toEqual(1);
 
-    objectsEqual(this.PostCollection.get(5), this.data.p1);
-    objectsEqual(this.PostCollection.get(6), this.data.p2);
-    objectsEqual(this.PostCollection.get(7), this.data.p3);
-    objectsEqual(this.PostCollection.get(8), this.data.p4);
-    objectsEqual(
-      this.PostCollection.filter({
-        id: undefined
-      }).length,
-      2
-    );
-    objectsEqual(
-      this.PostCollection.filter({
-        author: 'Bob'
-      }).length,
-      1
-    );
-    objectsEqual(this.PostCollection.filter().length, 6);
+    PostCollection.add({author: 'Bob'});
+    expect(PostCollection.filter({
+      id: undefined
+    }).length).toEqual(2);
+    expect(PostCollection.filter({
+      author: 'Bob'
+    }).length).toEqual(2);
+    expect(PostCollection.filter().length).toEqual(6);
 
-    let removedAlice = this.PostCollection.remove(alice);
-    assert.equal(removedAlice, undefined);
-    objectsEqual(
-      this.PostCollection.filter({
-        author: 'Alice'
-      }).length,
-      1
-    );
-    objectsEqual(this.PostCollection.filter().length, 6);
-    removedAlice = this.PostCollection.remove(
-      this.PostCollection.filter({
-        author: 'Alice'
-      })[0]
-    );
-    objectsEqual(removedAlice, {author: 'Alice'});
-    objectsEqual(
-      this.PostCollection.filter({
-        author: 'Alice'
-      }).length,
-      0
-    );
-    objectsEqual(this.PostCollection.filter().length, 5);
-    objectsEqual(
-      this.PostCollection.filter({
-        id: undefined
-      }).length,
-      1
-    );
-    objectsEqual(
-      this.PostCollection.filter({
-        author: 'Bob'
-      }).length,
-      1
-    );
+    const removedBob = PostCollection.remove(bob);
+    expect(removedBob).toBe(bob);
 
-    this.PostCollection.add({author: 'Bob'});
-    objectsEqual(
-      this.PostCollection.filter({
-        id: undefined
-      }).length,
-      2
-    );
-    objectsEqual(
-      this.PostCollection.filter({
-        author: 'Bob'
-      }).length,
-      2
-    );
-    objectsEqual(this.PostCollection.filter().length, 6);
-
-    const removedBob = this.PostCollection.remove(bob);
-    assert.strictEqual(removedBob, bob);
-
-    objectsEqual(
-      this.PostCollection.filter({
-        id: undefined
-      }).length,
-      1
-    );
-    objectsEqual(
-      this.PostCollection.filter({
-        author: 'Bob'
-      }).length,
-      1
-    );
-    objectsEqual(this.PostCollection.filter().length, 5);
+    expect(PostCollection.filter({
+      id: undefined
+    }).length).toEqual(1);
+    expect(PostCollection.filter({
+      author: 'Bob'
+    }).length).toEqual(1);
+    expect(PostCollection.filter().length).toEqual(5);
   });
 });

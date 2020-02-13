@@ -10,7 +10,7 @@
     "deprecation": {
       "severity": "warn"
     },
-    "forin": true,
+    "forin": false,
     "import-blacklist": [true, "rxjs/Rx"],
     "interface-over-type-literal": true,
     "member-access": false,
@@ -27,7 +27,7 @@
     ],
     "no-arg": true,
     "no-bitwise": true,
-    "no-console": [true, "debug", "info", "time", "timeEnd", "trace"],
+    "no-console": false,
     "no-construct": true,
     "no-debugger": true,
     "no-duplicate-super": true,
@@ -37,7 +37,7 @@
     "no-inferrable-types": [true, "ignore-params"],
     "no-misused-new": true,
     "no-non-null-assertion": true,
-    "no-shadowed-variable": true,
+    "no-shadowed-variable": false,
     "no-string-literal": false,
     "no-string-throw": true,
     "no-switch-case-fall-through": true,

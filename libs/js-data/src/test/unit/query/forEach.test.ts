@@ -1,15 +1,15 @@
-import { assert } from '../../_setup';
+import { data, PostCollection, store } from '../../_setup';
 
 describe('Query#forEach', () => {
   it('should work', function () {
-    const collection = this.PostCollection;
-    const p1 = this.data.p1;
-    const p2 = this.data.p2;
-    const p3 = this.data.p3;
-    const p4 = this.data.p4;
-    const p5 = this.data.p5;
+    const collection = PostCollection;
+    const p1 = data.p1;
+    const p2 = data.p2;
+    const p3 = data.p3;
+    const p4 = data.p4;
+    const p5 = data.p5;
 
-    this.store.add('post', [p1, p2, p3, p4, p5]);
+    store.add('post', [p1, p2, p3, p4, p5]);
     let count = 0;
     collection
       .query()
@@ -17,6 +17,6 @@ describe('Query#forEach', () => {
         count++;
       })
       .run();
-    assert.equal(count, 5);
+    expect(count).toEqual(5);
   });
 });

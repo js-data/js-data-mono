@@ -1,4 +1,4 @@
-import { assert, JSData, objectsEqual } from '../_setup';
+import { CommentCollection, data, JSData, OrganizationCollection, ProfileCollection, UserCollection } from '../_setup';
 
 describe('DataStore integration tests', () => {
   it('relation links should stay up-to-date', () => {
@@ -44,28 +44,28 @@ describe('DataStore integration tests', () => {
       id: 88,
       foo_id: 66
     });
-    assert.strictEqual(bar88.foo, foo66);
-    assert.strictEqual(foo66.bars[0], bar88);
-    assert.deepEqual(foo77.bars, []);
-    assert.equal(bar88.foo_id, 66);
+    expect(bar88.foo).toBe(foo66);
+    expect(foo66.bars[0]).toBe(bar88);
+    expect(foo77.bars).toEqual([]);
+    expect(bar88.foo_id).toEqual(66);
     bar88.foo_id = 77;
-    assert.strictEqual(bar88.foo, foo77);
-    assert.equal(bar88.foo_id, 77);
-    assert.strictEqual(foo77.bars[0], bar88);
-    assert.deepEqual(foo66.bars, []);
+    expect(bar88.foo).toBe(foo77);
+    expect(bar88.foo_id).toEqual(77);
+    expect(foo77.bars[0]).toBe(bar88);
+    expect(foo66.bars).toEqual([]);
     bar88.foo = foo66;
-    assert.strictEqual(bar88.foo, foo66);
-    assert.equal(bar88.foo_id, 66);
-    assert.strictEqual(foo66.bars[0], bar88);
-    assert.deepEqual(foo77.bars, []);
+    expect(bar88.foo).toBe(foo66);
+    expect(bar88.foo_id).toEqual(66);
+    expect(foo66.bars[0]).toBe(bar88);
+    expect(foo77.bars).toEqual([]);
     foo77.bars = [bar88];
-    assert.strictEqual(foo77.bars[0], bar88);
-    assert.equal(bar88.foo_id, 77);
-    assert.deepEqual(foo66.bars, []);
+    expect(foo77.bars[0]).toBe(bar88);
+    expect(bar88.foo_id).toEqual(77);
+    expect(foo66.bars).toEqual([]);
     foo66.bars = [bar88];
-    assert.strictEqual(foo66.bars[0], bar88);
-    assert.equal(bar88.foo_id, 66);
-    assert.deepEqual(foo77.bars, []);
+    expect(foo66.bars[0]).toBe(bar88);
+    expect(bar88.foo_id).toEqual(66);
+    expect(foo77.bars).toEqual([]);
   });
   it('should allow enhanced relation getters', () => {
     let wasItActivated = false;
@@ -104,8 +104,8 @@ describe('DataStore integration tests', () => {
         id: 1
       }
     });
-    assert.equal(foo.bar.id, 1);
-    assert(wasItActivated);
+    expect(foo.bar.id).toEqual(1);
+    expect(wasItActivated).toBeTruthy();
   });
   it('should configure enumerability and linking of relations', () => {
     const store = new JSData.DataStore();
@@ -159,14 +159,14 @@ describe('DataStore integration tests', () => {
       }
     });
 
-    assert(store.get('child', child.id));
-    assert.equal(child.parentId, 2);
-    assert(child.parent === store.get('parent', child.parentId));
+    expect(store.get('child', child.id)).toBeTruthy();
+    expect(child.parentId).toEqual(2);
+    expect(child.parent === store.get('parent', child.parentId)).toBeTruthy();
 
-    assert(store.get('otherChild', otherChild.id));
-    assert.equal(otherChild.parentId, 4);
-    assert(otherChild.parent === store.get('parent', otherChild.parentId), 'parent was injected and linked');
-    assert(store.get('parent', otherChild.parentId), 'parent was injected and linked');
+    expect(store.get('otherChild', otherChild.id)).toBeTruthy();
+    expect(otherChild.parentId).toEqual(4);
+    expect(otherChild.parent === store.get('parent', otherChild.parentId)).toBeTruthy();
+    expect(store.get('parent', otherChild.parentId)).toBeTruthy();
 
     let foundParent = false;
     let k;
@@ -175,7 +175,7 @@ describe('DataStore integration tests', () => {
         foundParent = true;
       }
     }
-    assert(!foundParent, 'parent is NOT enumerable');
+    expect(!foundParent).toBeTruthy();
     foundParent = false;
     for (k in otherChild) {
       if (
@@ -186,53 +186,53 @@ describe('DataStore integration tests', () => {
         foundParent = true;
       }
     }
-    assert(foundParent, 'parent is enumerable');
+    expect(foundParent).toBeTruthy();
   });
   it.skip('should unlink upon ejection', function () {
-    this.UserCollection.add(this.data.user10);
-    this.OrganizationCollection.add(this.data.organization15);
-    this.CommentCollection.add(this.data.comment19);
-    this.ProfileCollection.add(this.data.profile21);
+    UserCollection.add(data.user10);
+    OrganizationCollection.add(data.organization15);
+    CommentCollection.add(data.comment19);
+    ProfileCollection.add(data.profile21);
 
     // user10 relations
-    assert(Array.isArray(this.UserCollection.get(10).comments));
-    this.CommentCollection.remove(11);
-    assert(!this.CommentCollection.get(11));
-    assert.equal(this.UserCollection.get(10).comments.length, 2);
-    this.CommentCollection.remove(12);
-    assert(!this.CommentCollection.get(12));
-    assert.equal(this.UserCollection.get(10).comments.length, 1);
-    this.CommentCollection.remove(13);
-    assert(!this.CommentCollection.get(13));
-    assert.equal(this.UserCollection.get(10).comments.length, 0);
-    this.OrganizationCollection.remove(14);
-    assert(!this.OrganizationCollection.get(14));
-    assert(!this.UserCollection.get(10).organization);
+    expect(Array.isArray(UserCollection.get(10).comments)).toBeTruthy();
+    CommentCollection.remove(11);
+    expect(!CommentCollection.get(11)).toBeTruthy();
+    expect(UserCollection.get(10).comments.length).toEqual(2);
+    CommentCollection.remove(12);
+    expect(!CommentCollection.get(12)).toBeTruthy();
+    expect(UserCollection.get(10).comments.length).toEqual(1);
+    CommentCollection.remove(13);
+    expect(!CommentCollection.get(13)).toBeTruthy();
+    expect(UserCollection.get(10).comments.length).toEqual(0);
+    OrganizationCollection.remove(14);
+    expect(!OrganizationCollection.get(14)).toBeTruthy();
+    expect(!UserCollection.get(10).organization).toBeTruthy();
 
     // organization15 relations
-    assert(Array.isArray(this.OrganizationCollection.get(15).users));
-    this.UserCollection.remove(16);
-    assert(!this.UserCollection.get(16));
-    assert.equal(this.OrganizationCollection.get(15).users.length, 2);
-    this.UserCollection.remove(17);
-    assert(!this.UserCollection.get(17));
-    assert.equal(this.OrganizationCollection.get(15).users.length, 1);
-    this.UserCollection.remove(18);
-    assert(!this.UserCollection.get(18));
-    assert.equal(this.OrganizationCollection.get(15).users.length, 0);
+    expect(Array.isArray(OrganizationCollection.get(15).users)).toBeTruthy();
+    UserCollection.remove(16);
+    expect(!UserCollection.get(16)).toBeTruthy();
+    expect(OrganizationCollection.get(15).users.length).toEqual(2);
+    UserCollection.remove(17);
+    expect(!UserCollection.get(17)).toBeTruthy();
+    expect(OrganizationCollection.get(15).users.length).toEqual(1);
+    UserCollection.remove(18);
+    expect(!UserCollection.get(18)).toBeTruthy();
+    expect(OrganizationCollection.get(15).users.length).toEqual(0);
 
     // comment19 relations
-    assert.deepEqual(this.UserCollection.get(20), this.CommentCollection.get(19).user);
-    assert.deepEqual(this.UserCollection.get(19), this.CommentCollection.get(19).approvedByUser);
-    this.UserCollection.remove(20);
-    assert(!this.CommentCollection.get(19).user);
-    this.UserCollection.remove(19);
-    assert(!this.CommentCollection.get(19).approvedByUser);
+    expect(UserCollection.get(20)).toEqual(CommentCollection.get(19).user);
+    expect(UserCollection.get(19)).toEqual(CommentCollection.get(19).approvedByUser);
+    UserCollection.remove(20);
+    expect(!CommentCollection.get(19).user).toBeTruthy();
+    UserCollection.remove(19);
+    expect(!CommentCollection.get(19).approvedByUser).toBeTruthy();
 
     // profile21 relations
-    assert.deepEqual(this.UserCollection.get(22), this.ProfileCollection.get(21).user);
-    this.UserCollection.remove(22);
-    assert(!this.ProfileCollection.get(21).user);
+    expect(UserCollection.get(22)).toEqual(ProfileCollection.get(21).user);
+    UserCollection.remove(22);
+    expect(!ProfileCollection.get(21).user).toBeTruthy();
   });
   it('should emit change events', done => {
     const store = new JSData.DataStore();
@@ -246,55 +246,55 @@ describe('DataStore integration tests', () => {
       }
     });
     const foo = store.add('foo', {id: 1});
-    assert.equal(foo.bar, undefined);
+    expect(foo.bar).toEqual(undefined);
 
     store.on('change', (mapperName, record, changes) => {
-      assert.equal(mapperName, 'foo');
-      assert.strictEqual(record, foo);
+      expect(mapperName).toEqual('foo');
+      expect(record).toBe(foo);
       try {
-        assert.deepEqual(changes, {added: {bar: 'baz'}, changed: {}, removed: {}});
+        expect(changes).toEqual({added: {bar: 'baz'}, changed: {}, removed: {}});
       } catch (err) {
-        assert.deepEqual(changes, {added: {}, changed: {bar: 'beep'}, removed: {}});
+        expect(changes).toEqual({added: {}, changed: {bar: 'beep'}, removed: {}});
       }
       handlersCalled++;
     });
 
     store.getCollection('foo').on('change', (record, changes) => {
-      assert.strictEqual(record, foo);
+      expect(record).toBe(foo);
       try {
-        assert.deepEqual(changes, {added: {bar: 'baz'}, changed: {}, removed: {}});
+        expect(changes).toEqual({added: {bar: 'baz'}, changed: {}, removed: {}});
       } catch (err) {
-        assert.deepEqual(changes, {added: {}, changed: {bar: 'beep'}, removed: {}});
+        expect(changes).toEqual({added: {}, changed: {bar: 'beep'}, removed: {}});
       }
       handlersCalled++;
     });
 
     foo.on('change', (record, changes) => {
-      assert.strictEqual(record, foo);
+      expect(record).toBe(foo);
       try {
-        assert.deepEqual(changes, {added: {bar: 'baz'}, changed: {}, removed: {}});
+        expect(changes).toEqual({added: {bar: 'baz'}, changed: {}, removed: {}});
       } catch (err) {
-        assert.deepEqual(changes, {added: {}, changed: {bar: 'beep'}, removed: {}});
+        expect(changes).toEqual({added: {}, changed: {bar: 'beep'}, removed: {}});
       }
       handlersCalled++;
     });
 
     store.on('change:bar', (mapperName, record, value) => {
-      assert.equal(mapperName, 'foo');
-      assert.strictEqual(record, foo);
-      assert(value === 'baz' || value === 'beep');
+      expect(mapperName).toEqual('foo');
+      expect(record).toBe(foo);
+      expect(value === 'baz' || value === 'beep').toBeTruthy();
       handlersCalled++;
     });
 
     store.getCollection('foo').on('change:bar', (record, value) => {
-      assert.strictEqual(record, foo);
-      assert(value === 'baz' || value === 'beep');
+      expect(record).toBe(foo);
+      expect(value === 'baz' || value === 'beep').toBeTruthy();
       handlersCalled++;
     });
 
     foo.on('change:bar', (record, value) => {
-      assert.strictEqual(record, foo);
-      assert(value === 'baz' || value === 'beep');
+      expect(record).toBe(foo);
+      expect(value === 'baz' || value === 'beep').toBeTruthy();
       handlersCalled++;
     });
 
@@ -355,31 +355,31 @@ describe('DataStore integration tests', () => {
       id: 66,
       bars: [{id: 88}]
     });
-    assert.strictEqual(foo66, store.get('foo', 66));
-    assert.strictEqual(foo66.bars[0], store.get('bar', 88));
-    assert.strictEqual(foo66.bars[0].foo_id, 66);
+    expect(foo66).toBe(store.get('foo', 66));
+    expect(foo66.bars[0]).toBe(store.get('bar', 88));
+    expect(foo66.bars[0].foo_id).toBe(66);
 
     const bar99 = store.add('bar', {
       id: 99,
       foo: {id: 101}
     });
-    assert.strictEqual(bar99, store.get('bar', 99));
-    assert.strictEqual(bar99.foo, store.get('foo', 101));
-    assert.strictEqual(bar99.foo_id, 101);
+    expect(bar99).toBe(store.get('bar', 99));
+    expect(bar99.foo).toBe(store.get('foo', 101));
+    expect(bar99.foo_id).toBe(101);
 
     const bar = store.add('bar', {
       foo: {}
     });
-    assert.strictEqual(bar, store.unsaved('bar')[0]);
-    assert.strictEqual(bar.foo, store.unsaved('foo')[0]);
-    assert.strictEqual(bar.foo_id, undefined);
+    expect(bar).toBe(store.unsaved('bar')[0]);
+    expect(bar.foo).toBe(store.unsaved('foo')[0]);
+    expect(bar.foo_id).toBe(undefined);
 
     let bar2 = store.add('bar', bar);
-    assert.strictEqual(bar2, bar);
+    expect(bar2).toBe(bar);
     let foo2 = store.add('foo', bar.foo);
-    assert.strictEqual(foo2, bar.foo);
-    assert.equal(store.unsaved('bar').length, 1);
-    assert.equal(store.unsaved('foo').length, 1);
+    expect(foo2).toBe(bar.foo);
+    expect(store.unsaved('bar').length).toEqual(1);
+    expect(store.unsaved('foo').length).toEqual(1);
 
     store.prune('bar');
     store.prune('foo');
@@ -387,16 +387,16 @@ describe('DataStore integration tests', () => {
     const foo = store.add('foo', {
       bars: [{}]
     });
-    assert.strictEqual(foo, store.unsaved('foo')[0]);
-    assert.strictEqual(foo.bars[0], store.unsaved('bar')[0]);
-    assert.strictEqual(foo.bars[0].foo_id, undefined);
+    expect(foo).toBe(store.unsaved('foo')[0]);
+    expect(foo.bars[0]).toBe(store.unsaved('bar')[0]);
+    expect(foo.bars[0].foo_id).toBe(undefined);
 
     foo2 = store.add('foo', foo);
-    assert.strictEqual(foo2, foo);
+    expect(foo2).toBe(foo);
     bar2 = store.add('bar', foo.bars[0]);
-    assert.strictEqual(bar2, foo.bars[0]);
-    assert.equal(store.unsaved('bar').length, 1);
-    assert.equal(store.unsaved('foo').length, 1);
+    expect(bar2).toBe(foo.bars[0]);
+    expect(store.unsaved('bar').length).toEqual(1);
+    expect(store.unsaved('foo').length).toEqual(1);
   });
   it('should correctly unlink inverse records', () => {
     const store = new JSData.DataStore();
@@ -437,28 +437,28 @@ describe('DataStore integration tests', () => {
       {uid: 'b1', a_uid: 'a1'},
       {uid: 'b2', a_uid: 'a1'}
     ]);
-    objectsEqual(aRecord.b, bRecords);
-    assert.strictEqual(bRecords[0].a, aRecord);
-    assert.strictEqual(bRecords[1].a, aRecord);
+    expect(aRecord.b).toEqual(bRecords);
+    expect(bRecords[0].a).toBe(aRecord);
+    expect(bRecords[1].a).toBe(aRecord);
 
     const aRecord2 = store.add('A', {uid: 'a2'});
     const bRecords2 = store.add('B', [
       {uid: 'b3', a_uid: 'a2'},
       {uid: 'b4', a_uid: 'a2'}
     ]);
-    objectsEqual(aRecord2.b, bRecords2);
-    assert.strictEqual(bRecords2[0].a, aRecord2);
-    assert.strictEqual(bRecords2[1].a, aRecord2);
+    expect(aRecord2.b).toEqual(bRecords2);
+    expect(bRecords2[0].a).toBe(aRecord2);
+    expect(bRecords2[1].a).toBe(aRecord2);
 
     store.remove('B', 'b2');
-    objectsEqual(aRecord.b, [bRecords[0]]);
-    assert.strictEqual(bRecords[0].a, aRecord);
-    assert.strictEqual(bRecords[1].a, undefined);
+    expect(aRecord.b).toEqual([bRecords[0]]);
+    expect(bRecords[0].a).toBe(aRecord);
+    expect(bRecords[1].a).toBe(undefined);
 
     store.remove('A', 'a2');
-    objectsEqual(aRecord2.b, []);
-    assert.equal(bRecords2[0].a, undefined);
-    assert.equal(bRecords2[1].a, undefined);
+    expect(aRecord2.b).toEqual([]);
+    expect(bRecords2[0].a).toEqual(undefined);
+    expect(bRecords2[1].a).toEqual(undefined);
   });
   it('should add property accessors to prototype of target and allow relation re-assignment using defaults', () => {
     const store = new JSData.DataStore();
@@ -487,14 +487,14 @@ describe('DataStore integration tests', () => {
     const bar = store.add('bar', {id: 1, fooId: 1});
     const bar2 = store.add('bar', {id: 2, fooId: 1});
     const bar3 = store.add('bar', {id: 3});
-    assert.strictEqual(bar.foo, foo);
-    assert.strictEqual(bar2.foo, foo);
-    assert(!bar3.foo);
+    expect(bar.foo).toBe(foo);
+    expect(bar2.foo).toBe(foo);
+    expect(!bar3.foo).toBeTruthy();
     bar.foo = foo2;
     bar3.foo = foo;
-    assert.strictEqual(bar.foo, foo2);
-    assert.strictEqual(bar2.foo, foo);
-    assert.strictEqual(bar3.foo, foo);
+    expect(bar.foo).toBe(foo2);
+    expect(bar2.foo).toBe(foo);
+    expect(bar3.foo).toBe(foo);
   });
 
   it('should not create an inverseLink if no inverseRelationship is defined', () => {
@@ -512,7 +512,7 @@ describe('DataStore integration tests', () => {
     });
     const foo = store.add('foo', {id: 1});
     const bar = store.add('bar', {id: 1, foo_id: 1});
-    assert.strictEqual(bar._foo, foo);
+    expect(bar._foo).toBe(foo);
   });
 
   it('should add property accessors to prototype of target and allow relation re-assignment using customizations', () => {
@@ -542,14 +542,14 @@ describe('DataStore integration tests', () => {
     const bar = store.add('bar', {id: 1, fooId: 1});
     const bar2 = store.add('bar', {id: 2, fooId: 1});
     const bar3 = store.add('bar', {id: 3});
-    assert.strictEqual(bar._foo, foo);
-    assert.strictEqual(bar2._foo, foo);
-    assert(!bar3._foo);
+    expect(bar._foo).toBe(foo);
+    expect(bar2._foo).toBe(foo);
+    expect(!bar3._foo).toBeTruthy();
     bar._foo = foo2;
     bar3._foo = foo;
-    assert.strictEqual(bar._foo, foo2);
-    assert.strictEqual(bar2._foo, foo);
-    assert.strictEqual(bar3._foo, foo);
+    expect(bar._foo).toBe(foo2);
+    expect(bar2._foo).toBe(foo);
+    expect(bar3._foo).toBe(foo);
   });
   it('should allow custom getter and setter', () => {
     const store = new JSData.DataStore();
@@ -588,16 +588,16 @@ describe('DataStore integration tests', () => {
     const bar = store.add('bar', {id: 1, fooId: 1});
     const bar2 = store.add('bar', {id: 2, fooId: 1});
     const bar3 = store.add('bar', {id: 3});
-    assert.strictEqual(bar._foo, foo);
-    assert.strictEqual(bar2._foo, foo);
-    assert(!bar3._foo);
+    expect(bar._foo).toBe(foo);
+    expect(bar2._foo).toBe(foo);
+    expect(!bar3._foo).toBeTruthy();
     bar._foo = foo2;
     bar3._foo = foo;
-    assert.strictEqual(bar._foo, foo2);
-    assert.strictEqual(bar2._foo, foo);
-    assert.strictEqual(bar3._foo, foo);
-    assert.equal(getCalled, 11);
-    assert.equal(setCalled, 4);
+    expect(bar._foo).toBe(foo2);
+    expect(bar2._foo).toBe(foo);
+    expect(bar3._foo).toBe(foo);
+    expect(getCalled).toEqual(11);
+    expect(setCalled).toEqual(4);
   });
   it('supports tree-like relations', () => {
     const store = new JSData.DataStore();
@@ -647,20 +647,20 @@ describe('DataStore integration tests', () => {
       }
     ]);
 
-    assert.equal(nodes[0].parent, null);
-    assert.deepEqual(nodes[0].children, [nodes[2], nodes[3]]);
+    expect(nodes[0].parent).toBeFalsy();
+    expect(nodes[0].children).toEqual([nodes[2], nodes[3]]);
 
-    assert.equal(nodes[1].parent, null);
-    assert.deepEqual(nodes[1].children, []);
+    expect(nodes[1].parent).toBeFalsy();
+    expect(nodes[1].children).toEqual([]);
 
-    assert.strictEqual(nodes[2].parent, nodes[0]);
-    assert.deepEqual(nodes[2].children, []);
+    expect(nodes[2].parent).toBe(nodes[0]);
+    expect(nodes[2].children).toEqual([]);
 
-    assert.equal(nodes[3].parent, nodes[0]);
-    assert.deepEqual(nodes[3].children, [nodes[4]]);
+    expect(nodes[3].parent).toEqual(nodes[0]);
+    expect(nodes[3].children).toEqual([nodes[4]]);
 
-    assert.equal(nodes[4].parent, nodes[3]);
-    assert.deepEqual(nodes[4].children, []);
+    expect(nodes[4].parent).toEqual(nodes[3]);
+    expect(nodes[4].children).toEqual([]);
   });
 
   it('should find hasMany foreignKeys with custom idAttribute', () => {
@@ -709,7 +709,7 @@ describe('DataStore integration tests', () => {
       barIds: [0, 2]
     });
 
-    assert.isOk(foo.bars);
-    assert.deepEqual(foo.bars, [bars[0], bars[2]]);
+    expect(foo.bars).toBeTruthy();
+    expect(foo.bars).toEqual([bars[0], bars[2]]);
   });
 });

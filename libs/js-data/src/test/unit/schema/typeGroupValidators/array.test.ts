@@ -1,4 +1,4 @@
-import { assert, JSData, sinon } from '../../../_setup';
+import { JSData, sinon } from '../../../_setup';
 
 describe('Schema.typeGroupValidators.array', () => {
   it('executes correct validation keywords', () => {
@@ -13,7 +13,7 @@ describe('Schema.typeGroupValidators.array', () => {
     const array = JSData.Schema.typeGroupValidators.array;
 
     forOwn(validationKeywords, (func, key) => {
-      assert.equal(func.callCount, 0, `${key} should not have been called yet`);
+      expect(func.callCount).toEqual(0);
     });
 
     // execute all 4
@@ -24,40 +24,40 @@ describe('Schema.typeGroupValidators.array', () => {
       uniqueItems: true
     });
 
-    assert.equal(validationKeywords.items.callCount, 1);
-    assert.equal(validationKeywords.maxItems.callCount, 1);
-    assert.equal(validationKeywords.minItems.callCount, 1);
-    assert.equal(validationKeywords.uniqueItems.callCount, 1);
+    expect(validationKeywords.items.callCount).toEqual(1);
+    expect(validationKeywords.maxItems.callCount).toEqual(1);
+    expect(validationKeywords.minItems.callCount).toEqual(1);
+    expect(validationKeywords.uniqueItems.callCount).toEqual(1);
 
     // execute items only
     array(['foo'], {
       items: {}
     });
 
-    assert.equal(validationKeywords.items.callCount, 2);
-    assert.equal(validationKeywords.maxItems.callCount, 1);
-    assert.equal(validationKeywords.minItems.callCount, 1);
-    assert.equal(validationKeywords.uniqueItems.callCount, 1);
+    expect(validationKeywords.items.callCount).toEqual(2);
+    expect(validationKeywords.maxItems.callCount).toEqual(1);
+    expect(validationKeywords.minItems.callCount).toEqual(1);
+    expect(validationKeywords.uniqueItems.callCount).toEqual(1);
 
     // execute maxItems only
     array(['foo'], {
       maxItems: 4
     });
 
-    assert.equal(validationKeywords.items.callCount, 2);
-    assert.equal(validationKeywords.maxItems.callCount, 2);
-    assert.equal(validationKeywords.minItems.callCount, 1);
-    assert.equal(validationKeywords.uniqueItems.callCount, 1);
+    expect(validationKeywords.items.callCount).toEqual(2);
+    expect(validationKeywords.maxItems.callCount).toEqual(2);
+    expect(validationKeywords.minItems.callCount).toEqual(1);
+    expect(validationKeywords.uniqueItems.callCount).toEqual(1);
 
     // execute minItems only
     array(['foo'], {
       minItems: 1
     });
 
-    assert.equal(validationKeywords.items.callCount, 2);
-    assert.equal(validationKeywords.maxItems.callCount, 2);
-    assert.equal(validationKeywords.minItems.callCount, 2);
-    assert.equal(validationKeywords.uniqueItems.callCount, 1);
+    expect(validationKeywords.items.callCount).toEqual(2);
+    expect(validationKeywords.maxItems.callCount).toEqual(2);
+    expect(validationKeywords.minItems.callCount).toEqual(2);
+    expect(validationKeywords.uniqueItems.callCount).toEqual(1);
 
     // execute maxItems and minItems
     array(['foo'], {
@@ -75,14 +75,14 @@ describe('Schema.typeGroupValidators.array', () => {
       uniqueItems: true
     });
 
-    assert.equal(validationKeywords.items.callCount, 2);
-    assert.equal(validationKeywords.maxItems.callCount, 3);
-    assert.equal(validationKeywords.minItems.callCount, 3);
-    assert.equal(validationKeywords.uniqueItems.callCount, 3);
+    expect(validationKeywords.items.callCount).toEqual(2);
+    expect(validationKeywords.maxItems.callCount).toEqual(3);
+    expect(validationKeywords.minItems.callCount).toEqual(3);
+    expect(validationKeywords.uniqueItems.callCount).toEqual(3);
 
     forOwn(validationKeywords, (func, key) => {
       if (TARGET_KEYWORDS.indexOf(key) === -1) {
-        assert.equal(func.callCount, 0, `${key} should not have been called`);
+        expect(func.callCount).toEqual(0);
       }
       validationKeywords[key].restore();
     });

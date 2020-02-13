@@ -1,11 +1,11 @@
-import { assert, JSData, objectsEqual } from '../../_setup';
+import { JSData } from '../../_setup';
 
 describe('Mapper#findAll', () => {
   it('should be an instance method', () => {
     const Mapper = JSData.Mapper;
     const mapper = new Mapper({name: 'foo'});
-    assert.equal(typeof mapper.findAll, 'function');
-    assert.strictEqual(mapper.findAll, Mapper.prototype.findAll);
+    expect(typeof mapper.findAll).toEqual('function');
+    expect(mapper.findAll).toBe(Mapper.prototype.findAll);
   });
   it('should findAll', async () => {
     const query = {id: 1};
@@ -20,17 +20,17 @@ describe('Mapper#findAll', () => {
       findAll(mapper, _query, Opts) {
         findAllCalled = true;
         return new Promise((resolve, reject) => {
-          assert.strictEqual(mapper, User, 'should pass in the Model');
-          assert.deepEqual(_query, query, 'should pass in the query');
-          assert.equal(Opts.raw, false, 'Opts are provided');
+          expect(mapper).toBe(User);
+          expect(_query).toEqual(query);
+          expect(Opts.raw).toEqual(false);
           resolve(props);
         });
       }
     });
     const users = await User.findAll(query);
-    assert(findAllCalled, 'Adapter#findAll should have been called');
-    objectsEqual(users, props, 'user should have been found');
-    assert(users[0] instanceof User.recordClass, 'user is a record');
+    expect(findAllCalled).toBeTruthy();
+    expect(users).toEqual(props);
+    expect(users[0] instanceof User.recordClass).toBeTruthy();
   });
   it('should return raw', async () => {
     const query = {id: 1};
@@ -46,9 +46,9 @@ describe('Mapper#findAll', () => {
       findAll(mapper, _query, Opts) {
         findAllCalled = true;
         return new Promise((resolve, reject) => {
-          assert.strictEqual(mapper, User, 'should pass in the Model');
-          assert.deepEqual(_query, query, 'should pass in the query');
-          assert.equal(Opts.raw, true, 'Opts are provided');
+          expect(mapper).toBe(User);
+          expect(_query).toEqual(query);
+          expect(Opts.raw).toEqual(true);
           resolve({
             data: props,
             found: 1
@@ -57,10 +57,10 @@ describe('Mapper#findAll', () => {
       }
     });
     const data = await User.findAll(query);
-    assert(findAllCalled, 'Adapter#findAll should have been called');
-    objectsEqual(data.data, props, 'user should have been found');
-    assert(data.data[0] instanceof User.recordClass, 'user is a record');
-    assert.equal(data.adapter, 'mock', 'should have adapter name in response');
-    assert.equal(data.found, 1, 'should have other metadata in response');
+    expect(findAllCalled).toBeTruthy();
+    expect(data.data).toEqual(props);
+    expect(data.data[0] instanceof User.recordClass).toBeTruthy();
+    expect(data.adapter).toEqual('mock');
+    expect(data.found).toEqual(1);
   });
 });

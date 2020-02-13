@@ -1,4 +1,4 @@
-import { assert, JSData } from '../../_setup';
+import { JSData } from '../../_setup';
 
 describe('Collection#map', () => {
   it('should map', () => {
@@ -6,12 +6,12 @@ describe('Collection#map', () => {
     const collection = new JSData.Collection(data);
     const ctx = {};
     const mapping = collection.map(function (item) {
-      assert(this === ctx, 'should have correct context');
+      expect(this === ctx).toBeTruthy();
       return item.id;
     }, ctx);
-    assert(mapping.indexOf(1) !== -1);
-    assert(mapping.indexOf(2) !== -1);
-    assert(mapping.indexOf(3) !== -1);
-    assert.equal(mapping.length, 3);
+    expect(mapping.indexOf(1) !== -1).toBeTruthy();
+    expect(mapping.indexOf(2) !== -1).toBeTruthy();
+    expect(mapping.indexOf(3) !== -1).toBeTruthy();
+    expect(mapping.length).toEqual(3);
   });
 });

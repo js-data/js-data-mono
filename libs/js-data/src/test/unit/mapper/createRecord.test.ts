@@ -1,27 +1,27 @@
-import { assert, JSData, objectsEqual, TYPES_EXCEPT_OBJECT_OR_ARRAY } from '../../_setup';
+import { JSData, store, TYPES_EXCEPT_OBJECT_OR_ARRAY } from '../../_setup';
 
 describe('Mapper#createRecord', () => {
   it('should be an instance method', () => {
     const Mapper = JSData.Mapper;
     const mapper = new Mapper({name: 'foo'});
-    assert.equal(typeof mapper.createRecord, 'function');
-    assert.strictEqual(mapper.createRecord, Mapper.prototype.createRecord);
+    expect(typeof mapper.createRecord).toEqual('function');
+    expect(mapper.createRecord).toBe(Mapper.prototype.createRecord);
   });
   it('should require an object or array', () => {
     const Mapper = JSData.Mapper;
     const mapper = new Mapper({name: 'foo'});
-    assert.doesNotThrow(() => {
+    expect(() => {
       mapper.createRecord();
       mapper.createRecord({});
       mapper.createRecord([{}]);
-    });
+    }).not.toThrow();
     TYPES_EXCEPT_OBJECT_OR_ARRAY.forEach(value => {
       if (!value) {
         return;
       }
-      assert.throws(() => {
+      expect(() => {
         mapper.createRecord(value);
-      }, `[Mapper#createRecord:props] expected: array or object, found: ${typeof value}\nhttp://www.js-data.io/v3.0/docs/errors#400`);
+      }).toThrow();
     });
   });
   it('should create an instance', () => {
@@ -97,37 +97,36 @@ describe('Mapper#createRecord', () => {
 
     const person = PersonMapper.createRecord(personAttrs);
     const person2 = new Person(personAttrs);
-    const person3 = PersonMapper.createInstance(personAttrs);
+    const person3 = PersonMapper.createRecord(personAttrs);
     const dog = DogMapper.createRecord(dogAttrs);
     const dog2 = new Dog(dogAttrs);
     const cat = CatMapper.createRecord();
     const cat2 = new Cat();
 
-    assert.equal(person.say(), 'hi');
-    assert.equal(person2.say(), 'hi');
-    assert.equal(person3.say(), 'hi');
-    assert.equal(dog.say(), 'woof');
-    assert.equal(dog2.say(), 'woof');
-    assert.equal(cat.say(), 'meow');
-    assert.equal(cat2.say(), 'meow');
+    expect(person.say()).toEqual('hi');
+    expect(person2.say()).toEqual('hi');
+    expect(person3.say()).toEqual('hi');
+    expect(dog.say()).toEqual('woof');
+    expect(dog2.say()).toEqual('woof');
+    expect(cat.say()).toEqual('meow');
+    expect(cat2.say()).toEqual('meow');
 
-    objectsEqual(person, {
+    expect(person).toEqual({
       first: 'John',
       last: 'Anderson'
     });
-    objectsEqual(dog, dogAttrs);
-    objectsEqual(cat, {});
+    expect(dog).toEqual(dogAttrs);
+    expect(cat).toEqual({});
 
-    assert(person instanceof Person);
-    assert(person2 instanceof Person);
-    assert(person3 instanceof Person);
-    assert(dog instanceof Dog);
-    assert(dog2 instanceof Dog);
-    assert(cat instanceof Cat);
-    assert(cat2 instanceof Cat);
+    expect(person instanceof Person).toBeTruthy();
+    expect(person2 instanceof Person).toBeTruthy();
+    expect(person3 instanceof Person).toBeTruthy();
+    expect(dog instanceof Dog).toBeTruthy();
+    expect(dog2 instanceof Dog).toBeTruthy();
+    expect(cat instanceof Cat).toBeTruthy();
+    expect(cat2 instanceof Cat).toBeTruthy();
   });
   it('should create records on nested data', function () {
-    const store = this.store;
     const userProps = {
       name: 'John',
       organization: {
@@ -143,9 +142,9 @@ describe('Mapper#createRecord', () => {
       }
     };
     const user = store.createRecord('user', userProps);
-    assert(store.is('user', user), 'user should be a user record');
-    assert(store.is('comment', user.comments[0]), 'user.comments[0] should be a comment record');
-    assert(store.is('profile', user.profile), 'user.profile should be a profile record');
-    assert(store.is('organization', user.organization), 'user.organization should be a organization record');
+    expect(store.is('user', user)).toBeTruthy();
+    expect(store.is('comment', user.comments[0])).toBeTruthy();
+    expect(store.is('profile', user.profile)).toBeTruthy();
+    expect(store.is('organization', user.organization)).toBeTruthy();
   });
 });

@@ -1,133 +1,99 @@
-import { assert, JSData, objectsEqual, TYPES_EXCEPT_OBJECT_OR_ARRAY } from '../../_setup';
+import { data, JSData, PostCollection, TYPES_EXCEPT_OBJECT_OR_ARRAY, UserCollection } from '../../_setup';
 
 describe('Collection#add', () => {
   it('should inject new items into the collection', () => {
     const collection = new JSData.Collection();
     const user = collection.add({id: 1});
     const users = collection.add([{id: 2}, {id: 3}]);
-    assert(collection.get(1) === user);
-    assert.deepEqual(
-      collection.between([2], [3], {
-        rightInclusive: true
-      }),
-      users
-    );
+    expect(collection.get(1) === user).toBeTruthy();
+    expect(collection.between([2], [3], {
+      rightInclusive: true
+    })).toEqual(users);
   });
   it('should inject multiple items into the collection', function () {
-    objectsEqual(this.PostCollection.add([this.data.p1, this.data.p2, this.data.p3, this.data.p4]), [
-      this.data.p1,
-      this.data.p2,
-      this.data.p3,
-      this.data.p4
+    expect(
+      PostCollection.add([data.p1, data.p2, data.p3, data.p4])
+    ).toEqual([
+      data.p1,
+      data.p2,
+      data.p3,
+      data.p4
     ]);
 
-    objectsEqual(this.PostCollection.get(5), this.data.p1);
-    objectsEqual(this.PostCollection.get(6), this.data.p2);
-    objectsEqual(this.PostCollection.get(7), this.data.p3);
-    objectsEqual(this.PostCollection.get(8), this.data.p4);
+    expect(PostCollection.get(5)).toEqual(data.p1);
+    expect(PostCollection.get(6)).toEqual(data.p2);
+    expect(PostCollection.get(7)).toEqual(data.p3);
+    expect(PostCollection.get(8)).toEqual(data.p4);
   });
   it('should allow unsaved records into the collection', function () {
-    objectsEqual(
-      this.PostCollection.add([
-        this.data.p1,
-        this.data.p2,
-        {author: 'Alice'},
-        this.data.p3,
-        {author: 'Bob'},
-        this.data.p4
-      ]),
-      [this.data.p1, this.data.p2, {author: 'Alice'}, this.data.p3, {author: 'Bob'}, this.data.p4]
+    expect(PostCollection.add([
+      data.p1,
+      data.p2,
+      {author: 'Alice'},
+      data.p3,
+      {author: 'Bob'},
+      data.p4
+    ])).toEqual(
+      [data.p1, data.p2, {author: 'Alice'}, data.p3, {author: 'Bob'}, data.p4]
     );
 
-    objectsEqual(this.PostCollection.get(5), this.data.p1);
-    objectsEqual(this.PostCollection.get(6), this.data.p2);
-    objectsEqual(this.PostCollection.get(7), this.data.p3);
-    objectsEqual(this.PostCollection.get(8), this.data.p4);
-    objectsEqual(
-      this.PostCollection.filter({
-        id: undefined
-      }).length,
-      2
-    );
-    objectsEqual(
-      this.PostCollection.filter({
-        id: undefined
-      })[0],
-      {author: 'Bob'}
-    );
-    objectsEqual(
-      this.PostCollection.filter({
-        id: undefined
-      })[1],
-      {author: 'Alice'}
-    );
-    objectsEqual(
-      this.PostCollection.filter({
-        id: undefined
-      })[0],
-      {author: 'Bob'}
-    );
-    objectsEqual(this.PostCollection.filter().length, 6);
+    expect(PostCollection.get(5)).toEqual(data.p1);
+    expect(PostCollection.get(6)).toEqual(data.p2);
+    expect(PostCollection.get(7)).toEqual(data.p3);
+    expect(PostCollection.get(8)).toEqual(data.p4);
+    expect(PostCollection.filter({
+      id: undefined
+    }).length).toEqual(2);
+    expect(PostCollection.filter({
+      id: undefined
+    })[0]).toEqual({author: 'Bob'});
+    expect(PostCollection.filter({
+      id: undefined
+    })[1]).toEqual({author: 'Alice'});
+    expect(PostCollection.filter({
+      id: undefined
+    })[0]).toEqual({author: 'Bob'});
+    expect(PostCollection.filter().length).toEqual(6);
 
-    this.PostCollection.add({author: 'Bob'});
-    objectsEqual(
-      this.PostCollection.filter({
-        id: undefined
-      }).length,
-      3
-    );
-    objectsEqual(
-      this.PostCollection.filter({
-        author: 'Bob'
-      }).length,
-      2
-    );
-    objectsEqual(this.PostCollection.filter().length, 7);
+    PostCollection.add({author: 'Bob'});
+    expect(PostCollection.filter({
+      id: undefined
+    }).length).toEqual(3);
+    expect(PostCollection.filter({
+      author: 'Bob'
+    }).length).toEqual(2);
+    expect(PostCollection.filter().length).toEqual(7);
 
-    this.PostCollection.add({author: 'Bob'});
-    objectsEqual(
-      this.PostCollection.filter({
-        id: undefined
-      }).length,
-      4
-    );
-    objectsEqual(
-      this.PostCollection.filter({
-        author: 'Bob'
-      }).length,
-      3
-    );
-    objectsEqual(this.PostCollection.filter().length, 8);
+    PostCollection.add({author: 'Bob'});
+    expect(PostCollection.filter({
+      id: undefined
+    }).length).toEqual(4);
+    expect(PostCollection.filter({
+      author: 'Bob'
+    }).length).toEqual(3);
+    expect(PostCollection.filter().length).toEqual(8);
   });
   it('should inject existing items into the collection and call Record#commit', () => {
     const collection = new JSData.Collection({mapper: new JSData.Mapper({name: 'user'})});
 
     const user = collection.add({id: 1});
-    assert.equal(user.hasChanges(), false, 'user does not have changes yet');
+    expect(user.hasChanges()).toEqual(false);
     user.foo = 'bar';
-    assert.equal(user.hasChanges(), true, 'user has changes now');
+    expect(user.hasChanges()).toEqual(true);
     const users = collection.add([{id: 2}, {id: 3}]);
     const userAgain = collection.add({id: 1});
-    assert.equal(user.hasChanges(), false, 'user no longer has changes');
+    expect(user.hasChanges()).toEqual(false);
     const usersAgain = collection.add([{id: 2}, {id: 3}]);
-    assert(collection.get(1) === user, 'original reference should still be valid');
-    assert(collection.get(1) === userAgain, 'new reference should be valid');
-    assert(user === userAgain, 'both references should point to the same object');
-    assert.deepEqual(
-      collection.between([2], [3], {
-        rightInclusive: true
-      }),
-      users,
-      'injection of array should work'
-    );
-    assert.deepEqual(
-      collection.between([2], [3], {
-        rightInclusive: true
-      }),
-      usersAgain,
-      're-inject of array should work'
-    );
-    assert.deepEqual(users, usersAgain, 'inject arrays should be equal');
+    expect(collection.get(1) === user).toBeTruthy();
+    expect(collection.get(1) === userAgain).toBeTruthy();
+    expect(user === userAgain).toBeTruthy();
+    expect(collection.between([2], [3], {
+      rightInclusive: true
+    })).toEqual(users);
+    expect(collection.between([2], [3], {
+      rightInclusive: true
+    })).toEqual(usersAgain);
+    expect(users).toEqual(usersAgain);
   });
   it('should insert a record into all indexes', () => {
     const data = [
@@ -137,25 +103,21 @@ describe('Collection#add', () => {
     const collection = new JSData.Collection(data);
     collection.createIndex('age');
     collection.add({id: 3, age: 20});
-    assert(collection.get(1) === data[1]);
-    assert.equal(collection.getAll(20, {index: 'age'}).length, 1);
+    expect(collection.get(1) === data[1]).toBeTruthy();
+    expect(collection.getAll(20, {index: 'age'}).length).toEqual(1);
   });
   it('should not require an id', () => {
     const collection = new JSData.Collection();
-    assert.doesNotThrow(() => {
+    expect(() => {
       collection.add({});
-    });
+    }).not.toThrow();
   });
   it('should test opts.onConflict', () => {
     const collection = new JSData.Collection();
     collection.add({id: 1});
-    assert.throws(
-      () => {
-        collection.add({id: 1}, {onConflict: 'invalid_choice'});
-      },
-      Error,
-      '[Collection#add:opts.onConflict] expected: one of (merge, replace, skip), found: invalid_choice\nhttp://www.js-data.io/v3.0/docs/errors#400'
-    );
+    expect(() => {
+      collection.add({id: 1}, {onConflict: 'invalid_choice'});
+    }).toThrow();
   });
   it('should respect opts.noValidate', () => {
     const mapper = new JSData.Mapper({
@@ -172,43 +134,39 @@ describe('Collection#add', () => {
     const collection = new JSData.Collection({mapper});
     const userData = {id: Math.random().toString(), name: Math.random().toString()};
     const user = collection.add(userData);
-    assert.doesNotThrow(() => {
+    expect(() => {
       collection.add(Object.assign({}, userData, {name: null}), {noValidate: true});
-    });
+    }).not.toThrow();
     // original noValidate prop value should be restored
-    assert.equal(user._get('noValidate'), false);
+    expect(user._get('noValidate')).toEqual(false);
   });
   it('should required an argument', () => {
     const collection = new JSData.Collection();
     TYPES_EXCEPT_OBJECT_OR_ARRAY.forEach(value => {
-      assert.throws(
-        () => {
-          collection.add(value);
-        },
-        Error,
-        `[Collection#add:records] expected: object or array, found: ${typeof value}\nhttp://www.js-data.io/v3.0/docs/errors#400`
-      );
+      expect(() => {
+        collection.add(value);
+      }).toThrow();
     });
   });
   it('should replace existing items', () => {
     const collection = new JSData.Collection({mapper: new JSData.Mapper({name: 'user'})});
     const user = collection.add({id: 1, foo: 'bar', beep: 'boop'});
-    assert.equal(user.id, 1);
-    assert.equal(user.foo, 'bar');
-    assert.equal(user.beep, 'boop');
-    assert(!user.biz);
+    expect(user.id).toEqual(1);
+    expect(user.foo).toEqual('bar');
+    expect(user.beep).toEqual('boop');
+    expect(!user.biz).toBeTruthy();
     let existing = collection.add({id: 1, biz: 'baz', foo: 'BAR'}, {onConflict: 'replace'});
-    assert(user === existing);
-    assert.equal(user.id, 1);
-    assert.equal(user.biz, 'baz');
-    assert.equal(user.foo, 'BAR');
-    assert(!user.beep);
+    expect(user === existing).toBeTruthy();
+    expect(user.id).toEqual(1);
+    expect(user.biz).toEqual('baz');
+    expect(user.foo).toEqual('BAR');
+    expect(!user.beep).toBeTruthy();
     existing = collection.add(existing);
-    assert(user === existing);
-    assert.equal(existing.id, 1);
-    assert.equal(existing.biz, 'baz');
-    assert.equal(existing.foo, 'BAR');
-    assert(!existing.beep);
+    expect(user === existing).toBeTruthy();
+    expect(existing.id).toEqual(1);
+    expect(existing.biz).toEqual('baz');
+    expect(existing.foo).toEqual('BAR');
+    expect(!existing.beep).toBeTruthy();
 
     const store = new JSData.DataStore();
     store.defineMapper('test', {
@@ -224,21 +182,21 @@ describe('Collection#add', () => {
     store.add('test', test);
     const test2 = store.createRecord('test', {id: 'abcd', count: 2});
     store.add('test', test2);
-    assert.equal(store.get('test', 'abcd').count, 2);
+    expect(store.get('test', 'abcd').count).toEqual(2);
   });
   it('should replace existing items (2)', function () {
-    let post = this.PostCollection.add(this.data.p1);
+    let post = PostCollection.add(data.p1);
     post.foo = 'bar';
     post.beep = 'boop';
-    objectsEqual(post, {
+    expect(post).toEqual({
       author: 'John',
       age: 30,
       id: 5,
       foo: 'bar',
       beep: 'boop'
     });
-    post = this.PostCollection.add(this.data.p1, {onConflict: 'replace'});
-    objectsEqual(post, {
+    post = PostCollection.add(data.p1, {onConflict: 'replace'});
+    expect(post).toEqual({
       author: 'John',
       age: 30,
       id: 5
@@ -247,15 +205,15 @@ describe('Collection#add', () => {
   it('should keep existing items', () => {
     const collection = new JSData.Collection({mapper: new JSData.Mapper({name: 'user'})});
     const user = collection.add({id: 1, foo: 'bar', beep: 'boop'});
-    assert.equal(user.id, 1);
-    assert.equal(user.foo, 'bar');
-    assert.equal(user.beep, 'boop');
+    expect(user.id).toEqual(1);
+    expect(user.foo).toEqual('bar');
+    expect(user.beep).toEqual('boop');
     const existing = collection.add({id: 1, biz: 'baz', foo: 'BAR'}, {onConflict: 'skip'});
-    assert(user === existing);
-    assert.equal(user.id, 1);
-    assert.equal(user.foo, 'bar');
-    assert.equal(user.beep, 'boop');
-    assert(!user.biz);
+    expect(user === existing).toBeTruthy();
+    expect(user.id).toEqual(1);
+    expect(user.foo).toEqual('bar');
+    expect(user.beep).toEqual('boop');
+    expect(!user.biz).toBeTruthy();
 
     const store = new JSData.DataStore();
     store.defineMapper('test', {
@@ -272,7 +230,7 @@ describe('Collection#add', () => {
     store.add('test', test);
     const test2 = store.createRecord('test', {id: 'abcd', count: 2});
     store.add('test', test2);
-    assert.equal(store.get('test', 'abcd').count, 1);
+    expect(store.get('test', 'abcd').count).toEqual(1);
   });
   it('should inject 1,000 items', function () {
     const users = [];
@@ -286,7 +244,7 @@ describe('Collection#add', () => {
       });
     }
     // const start = new Date().getTime()
-    this.UserCollection.add(users);
+    UserCollection.add(users);
     // console.log('\tinject 1,000 users time taken: ', new Date().getTime() - start, 'ms')
   });
   it.skip('should inject 10,000 items', function () {
@@ -301,7 +259,7 @@ describe('Collection#add', () => {
       });
     }
     const start = new Date().getTime();
-    this.UserCollection.add(users);
+    UserCollection.add(users);
     console.log('\tinject 10,000 users time taken: ', new Date().getTime() - start, 'ms');
   });
   it('should inject 1,000 items where there is an index on "age"', () => {
@@ -369,8 +327,8 @@ describe('Collection#add', () => {
       }
     ]);
     const post = store.add('post', {id: 2, title: 'foo', user_id: 1});
-    assert.strictEqual(post.user, user1);
+    expect(post.user).toBe(user1);
     store.add('post', {id: 2, title: 'foo', user_id: 2});
-    assert.strictEqual(post.user, user2);
+    expect(post.user).toBe(user2);
   });
 });

@@ -1,4 +1,4 @@
-import { assert, JSData, sinon } from '../_setup';
+import { JSData, sinon } from '../_setup';
 
 describe('Collection integration tests', () => {
   it('should emit add events', done => {
@@ -13,10 +13,10 @@ describe('Collection integration tests', () => {
     collection.on('all', listener2);
     const records = collection.add(data);
     setTimeout(() => {
-      assert(listener.calledOnce, 'listener should have been called once');
-      assert.deepEqual(listener.firstCall.args, [records], 'should have been called with the correct args');
-      assert(listener2.calledOnce, 'listener2 should have been called once');
-      assert.deepEqual(listener2.firstCall.args, ['add', records], 'should have been called with the correct args');
+      expect(listener.calledOnce).toBeTruthy();
+      expect(listener.firstCall.args).toEqual([records]);
+      expect(listener2.calledOnce).toBeTruthy();
+      expect(listener2.firstCall.args).toEqual(['add', records]);
       done();
     }, 30);
   });
@@ -35,8 +35,8 @@ describe('Collection integration tests', () => {
       silent: true
     });
     setTimeout(() => {
-      assert.equal(listener.called, false, 'listener should not have been called');
-      assert.equal(listener2.called, false, 'listener2 should not have been called');
+      expect(listener.called).toEqual(false);
+      expect(listener2.called).toEqual(false);
       done();
     }, 30);
   });
@@ -54,10 +54,10 @@ describe('Collection integration tests', () => {
     collection.on('all', listener2);
     const records = collection.remove(data);
     setTimeout(() => {
-      assert(listener.calledOnce, 'listener should have been called once');
-      assert.deepEqual(listener.firstCall.args, [records], 'should have been called with the correct args');
-      assert(listener2.calledOnce, 'listener2 should have been called once');
-      assert.deepEqual(listener2.firstCall.args, ['remove', records], 'should have been called with the correct args');
+      expect(listener.calledOnce).toBeTruthy();
+      expect(listener.firstCall.args).toEqual([records]);
+      expect(listener2.calledOnce).toBeTruthy();
+      expect(listener2.firstCall.args).toEqual(['remove', records]);
       done();
     }, 30);
   });
@@ -74,14 +74,10 @@ describe('Collection integration tests', () => {
     collection.on('all', listener2);
     data[0].emit('foo', 'bar', 'biz', 'baz');
     setTimeout(() => {
-      assert(listener.calledOnce, 'listener should have been called once');
-      assert.deepEqual(listener.firstCall.args, ['bar', 'biz', 'baz'], 'should have been called with the correct args');
-      assert(listener2.calledOnce, 'listener2 should have been called once');
-      assert.deepEqual(
-        listener2.firstCall.args,
-        ['foo', 'bar', 'biz', 'baz'],
-        'should have been called with the correct args'
-      );
+      expect(listener.calledOnce).toBeTruthy();
+      expect(listener.firstCall.args).toEqual(['bar', 'biz', 'baz']);
+      expect(listener2.calledOnce).toBeTruthy();
+      expect(listener2.firstCall.args).toEqual(['foo', 'bar', 'biz', 'baz']);
       done();
     }, 30);
   });
@@ -99,8 +95,8 @@ describe('Collection integration tests', () => {
     collection.on('all', listener2);
     data[0].emit('foo', 'bar', 'biz', 'baz');
     setTimeout(() => {
-      assert.equal(listener.called, false, 'listener should not have been called');
-      assert.equal(listener2.called, false, 'listener2 should not have been called');
+      expect(listener.called).toEqual(false);
+      expect(listener2.called).toEqual(false);
       done();
     }, 30);
   });

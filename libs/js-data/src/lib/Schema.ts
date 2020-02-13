@@ -989,12 +989,6 @@ export interface SchemaDefinition {
  * @param {object} definition Schema definition according to json-schema.org
  */
 export default class Schema extends Component {
-  type: string;
-  properties: any;
-  private readonly extends: Schema;
-  private readonly items: Schema;
-  private readonly track: any;
-  private readonly additionalProperties: any;
 
   constructor(definition: SchemaDefinition = {}) {
     super();
@@ -1024,6 +1018,22 @@ export default class Schema extends Component {
       }
     });
   }
+
+  static ANY_OPS = ANY_OPS;
+  static ARRAY_OPS = ARRAY_OPS;
+  static NUMERIC_OPS = NUMERIC_OPS;
+  static OBJECT_OPS = OBJECT_OPS;
+  static STRING_OPS = STRING_OPS;
+  static typeGroupValidators = typeGroupValidators;
+  static types = types;
+  static validate = validate;
+  static validationKeywords: any = validationKeywords;
+  type: string;
+  properties: any;
+  private readonly extends: Schema;
+  private readonly items: Schema;
+  private readonly track: any;
+  private readonly additionalProperties: any;
 
   /**
    * This adds ES5 getters/setters to the target based on the "properties" in
@@ -1283,14 +1293,4 @@ export default class Schema extends Component {
   validate(value, opts?) {
     return validate(value, this, opts);
   }
-
-  static ANY_OPS = ANY_OPS;
-  static ARRAY_OPS = ARRAY_OPS;
-  static NUMERIC_OPS = NUMERIC_OPS;
-  static OBJECT_OPS = OBJECT_OPS;
-  static STRING_OPS = STRING_OPS;
-  static typeGroupValidators = typeGroupValidators;
-  static types = types;
-  static validate = validate;
-  static validationKeywords: any = validationKeywords;
 }

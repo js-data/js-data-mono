@@ -1,11 +1,11 @@
-import { assert, JSData } from '../../_setup';
+import { JSData } from '../../_setup';
 
 describe('Mapper#updateMany', () => {
   it('should be an instance method', () => {
     const Mapper = JSData.Mapper;
     const mapper = new Mapper({name: 'foo'});
-    assert.equal(typeof mapper.updateMany, 'function');
-    assert.strictEqual(mapper.updateMany, Mapper.prototype.updateMany);
+    expect(typeof mapper.updateMany).toEqual('function');
+    expect(mapper.updateMany).toBe(Mapper.prototype.updateMany);
   });
   it('should update', async () => {
     const id = 1;
@@ -19,18 +19,18 @@ describe('Mapper#updateMany', () => {
       updateMany(mapper, _props, Opts) {
         updateManyCalled = true;
         return new Promise((resolve, reject) => {
-          assert.strictEqual(mapper, User, 'should pass in the Mapper');
-          assert.deepEqual(_props, props, 'should pass in the props');
-          assert.equal(Opts.raw, false, 'Opts are provided');
+          expect(mapper).toBe(User);
+          expect(_props).toEqual(props);
+          expect(Opts.raw).toEqual(false);
           _props[0].foo = 'bar';
           resolve(_props);
         });
       }
     });
     const users = await User.updateMany(props);
-    assert(updateManyCalled, 'Adapter#updateMany should have been called');
-    assert.equal(users[0].foo, 'bar', 'user has a new field');
-    assert(users[0] instanceof User.recordClass, 'user is a record');
+    expect(updateManyCalled).toBeTruthy();
+    expect(users[0].foo).toEqual('bar');
+    expect(users[0] instanceof User.recordClass).toBeTruthy();
   });
   it('should return raw', async () => {
     const id = 1;
@@ -45,9 +45,9 @@ describe('Mapper#updateMany', () => {
       updateMany(mapper, _props, Opts) {
         updateManyCalled = true;
         return new Promise((resolve, reject) => {
-          assert.strictEqual(mapper, User, 'should pass in the Mapper');
-          assert.deepEqual(_props, props, 'should pass in the props');
-          assert.equal(Opts.raw, true, 'Opts are provided');
+          expect(mapper).toBe(User);
+          expect(_props).toEqual(props);
+          expect(Opts.raw).toEqual(true);
           _props[0].foo = 'bar';
           resolve({
             data: _props,
@@ -57,11 +57,11 @@ describe('Mapper#updateMany', () => {
       }
     });
     const data = await User.updateMany(props);
-    assert(updateManyCalled, 'Adapter#update should have been called');
-    assert.equal(data.data[0].foo, 'bar', 'user has a new field');
-    assert(data.data[0] instanceof User.recordClass, 'user is a record');
-    assert.equal(data.adapter, 'mock', 'should have adapter name in response');
-    assert.equal(data.updated, 1, 'should have other metadata in response');
+    expect(updateManyCalled).toBeTruthy();
+    expect(data.data[0].foo).toEqual('bar');
+    expect(data.data[0] instanceof User.recordClass).toBeTruthy();
+    expect(data.adapter).toEqual('mock');
+    expect(data.updated).toEqual(1);
   });
   it('should validate', async () => {
     const props = [
@@ -90,8 +90,8 @@ describe('Mapper#updateMany', () => {
       users = await User.updateMany(props);
       throw new Error('validation error should have been thrown!');
     } catch (err) {
-      assert.equal(err.message, 'validation failed');
-      assert.deepEqual(err.errors, [
+      expect(err.message).toEqual('validation failed');
+      expect(err.errors).toEqual([
         [
           {
             actual: 'number',
@@ -109,7 +109,7 @@ describe('Mapper#updateMany', () => {
         ]
       ]);
     }
-    assert.equal(updateCalled, false, 'Adapter#updateMany should NOT have been called');
-    assert.equal(users, undefined, 'no users were updated');
+    expect(updateCalled).toEqual(false);
+    expect(users).toEqual(undefined);
   });
 });

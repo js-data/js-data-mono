@@ -1,4 +1,4 @@
-import { assert, JSData } from '../../_setup';
+import { JSData } from '../../_setup';
 
 describe('Collection#mapCall', () => {
   it('should map and call', () => {
@@ -17,6 +17,6 @@ describe('Collection#mapCall', () => {
       }
     ];
     const collection = new JSData.Collection(data);
-    assert.deepEqual(collection.mapCall('getId'), [1, 2]);
+    expect(collection.mapCall('getId')).toEqual([1, 2]);
   });
 });

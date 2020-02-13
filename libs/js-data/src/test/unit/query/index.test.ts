@@ -1,10 +1,10 @@
-import { assert, JSData } from '../../_setup';
+import { JSData } from '../../_setup';
 
 describe('Query', () => {
   it('should be a constructor function', () => {
-    assert.equal(typeof JSData.Query, 'function', 'should be a function');
+    expect(typeof JSData.Query).toEqual('function');
     const query = new JSData.Query();
-    assert(query instanceof JSData.Query, 'query should be an instance');
+    expect(query instanceof JSData.Query).toBeTruthy();
   });
 
   it('can make a subclass', () => {
@@ -30,9 +30,9 @@ describe('Query', () => {
 
     const fooQ = new FooQuery('test');
     const barQ = new BarQuery('test');
-    assert.equal(fooQ.foo(), 'foo');
-    assert.equal(fooQ.collection, 'test');
-    assert.equal(barQ.bar(), 'bar');
-    assert.equal(barQ.collection, 'test');
+    expect(fooQ.foo()).toEqual('foo');
+    expect(fooQ.collection).toEqual('test');
+    expect(barQ.bar()).toEqual('bar');
+    expect(barQ.collection).toEqual('test');
   });
 });

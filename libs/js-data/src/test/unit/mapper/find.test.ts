@@ -1,11 +1,11 @@
-import { assert, JSData, objectsEqual } from '../../_setup';
+import { JSData } from '../../_setup';
 
 describe('Mapper#find', () => {
   it('should be an instance method', () => {
     const Mapper = JSData.Mapper;
     const mapper = new Mapper({name: 'foo'});
-    assert.equal(typeof mapper.find, 'function');
-    assert.strictEqual(mapper.find, Mapper.prototype.find);
+    expect(typeof mapper.find).toEqual('function');
+    expect(mapper.find).toBe(Mapper.prototype.find);
   });
   it('should find', async () => {
     const id = 1;
@@ -19,17 +19,17 @@ describe('Mapper#find', () => {
       find(mapper, _id, Opts) {
         findCalled = true;
         return new Promise((resolve, reject) => {
-          assert.strictEqual(mapper, User, 'should pass in the Model');
-          assert.deepEqual(_id, id, 'should pass in the id');
-          assert.equal(Opts.raw, false, 'Opts are provided');
+          expect(mapper).toBe(User);
+          expect(_id).toEqual(id);
+          expect(Opts.raw).toEqual(false);
           resolve(props);
         });
       }
     });
     const user = await User.find(id);
-    assert(findCalled, 'Adapter#find should have been called');
-    objectsEqual(user, props, 'user should have been found');
-    assert(user instanceof User.recordClass, 'user is a record');
+    expect(findCalled).toBeTruthy();
+    expect(user).toEqual(props);
+    expect(user instanceof User.recordClass).toBeTruthy();
   });
   it('should return raw', async () => {
     const id = 1;
@@ -44,9 +44,9 @@ describe('Mapper#find', () => {
       find(mapper, _id, Opts) {
         findCalled = true;
         return new Promise((resolve, reject) => {
-          assert.strictEqual(mapper, User, 'should pass in the Model');
-          assert.deepEqual(_id, id, 'should pass in the id');
-          assert.equal(Opts.raw, true, 'Opts are provided');
+          expect(mapper).toBe(User);
+          expect(_id).toEqual(id);
+          expect(Opts.raw).toEqual(true);
           resolve({
             data: props,
             found: 1
@@ -55,10 +55,10 @@ describe('Mapper#find', () => {
       }
     });
     const data = await User.find(id);
-    assert(findCalled, 'Adapter#find should have been called');
-    objectsEqual(data.data, props, 'user should have been found');
-    assert(data.data instanceof User.recordClass, 'user is a record');
-    assert.equal(data.adapter, 'mock', 'should have adapter name in response');
-    assert.equal(data.found, 1, 'should have other metadata in response');
+    expect(findCalled).toBeTruthy();
+    expect(data.data).toEqual(props);
+    expect(data.data instanceof User.recordClass).toBeTruthy();
+    expect(data.adapter).toEqual('mock');
+    expect(data.found).toEqual(1);
   });
 });
