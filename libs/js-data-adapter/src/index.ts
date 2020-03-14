@@ -621,7 +621,7 @@ export abstract class Adapter extends Component {
       });
   }
 
-  abstract _count(mapper: any, query: any, opts: any): any;
+  abstract _count(mapper: Mapper, query: any, opts: any): any;
 
   /**
    * Create a new record. Called by `Mapper#create`.
