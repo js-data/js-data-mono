@@ -551,7 +551,7 @@ export class HttpAdapter extends Adapter {
    * @param {object} config.params Querystring for the request.
    * @param {string} config.url Url for the request.
    */
-  fetch(config: {data?: any, method: string, headers?: any, params?: any, url: string}) {
+  fetch(config: { data?: any, method: string, headers?: any, params?: any, url: string }) {
     const requestConfig: any = {
       method: config.method,
       // turn the plain headers object into the Fetch Headers object

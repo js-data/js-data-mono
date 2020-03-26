@@ -3,7 +3,7 @@ import { DataStore, Mapper } from '@js-data/js-data';
 import { HttpAdapter } from '@js-data/js-data-http';
 
 describe('find', () => {
-  it('should find', function () {
+  it('should find', () => {
     setTimeout(() => {
       requests[0].respond(200, {'Content-Type': 'application/json'}, JSON.stringify(p1))
     }, 30);

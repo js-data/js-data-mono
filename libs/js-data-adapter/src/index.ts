@@ -552,7 +552,7 @@ export abstract class Adapter extends Component {
    * @property {string} opts.op `afterFind`
    * @param {Object|Response} response The found record or {@link Response}, depending on the value of `opts.raw`.
    */
-  afterFind(mapper, id, opts, response) {
+  afterFind(mapper: Mapper, id, opts, response) {
     return noop2.call(this, mapper, id, opts);
   }
 
@@ -572,7 +572,7 @@ export abstract class Adapter extends Component {
    * @param {Object} opts The `opts` argument passed to <a href="#find__anchor">find</a>.
    * @property {string} opts.op `beforeFind`
    */
-  beforeFind(mapper, id, opts) {
+  beforeFind(mapper: Mapper, id, opts) {
     return noop.call(this, mapper, id, opts);
   }
 
@@ -595,7 +595,7 @@ export abstract class Adapter extends Component {
    * response object.
    * @return {Promise}
    */
-  count(mapper, query: any = {}, opts: any = {}) {
+  count(mapper: Mapper, query: any = {}, opts: any = {}) {
     let op;
 
     // beforeCount lifecycle hook
@@ -635,7 +635,7 @@ export abstract class Adapter extends Component {
    * response object.
    * @return {Promise}
    */
-  create(mapper, props = {}, opts: any = {}) {
+  create(mapper: Mapper, props = {}, opts: any = {}) {
     let op;
 
     // beforeCreate lifecycle hook
@@ -664,7 +664,7 @@ export abstract class Adapter extends Component {
       });
   }
 
-  abstract _create(mapper: any, props: any, opts: any): any;
+  abstract _create(mapper: Mapper, props: any, opts: any): any;
 
   /**
    * Create multiple records in a single batch. Called by `Mapper#createMany`.
@@ -678,7 +678,7 @@ export abstract class Adapter extends Component {
    * response object.
    * @return {Promise}
    */
-  createMany(mapper, props: any = {}, opts: any = {}) {
+  createMany(mapper: Mapper, props: any = {}, opts: any = {}) {
     let op;
 
     // beforeCreateMany lifecycle hook
@@ -723,7 +723,7 @@ export abstract class Adapter extends Component {
    * response object.
    * @return {Promise}
    */
-  destroy(mapper, id, opts: any = {}) {
+  destroy(mapper: Mapper, id, opts: any = {}) {
     let op;
 
     // beforeDestroy lifecycle hook
@@ -748,7 +748,7 @@ export abstract class Adapter extends Component {
       });
   }
 
-  abstract _destroy(mapper: any, id: any, opts: any): any;
+  abstract _destroy(mapper: Mapper, id: any, opts: any): any;
 
   /**
    * Destroy the records that match the selection query. Called by
@@ -769,7 +769,7 @@ export abstract class Adapter extends Component {
    * response object.
    * @return {Promise}
    */
-  destroyAll(mapper, query: any = {}, opts: any = {}) {
+  destroyAll(mapper: Mapper, query: any = {}, opts: any = {}) {
     let op;
 
     // beforeDestroyAll lifecycle hook
@@ -794,7 +794,7 @@ export abstract class Adapter extends Component {
       });
   }
 
-  abstract _destroyAll(mapper: any, query: any, opts: any): any;
+  abstract _destroyAll(mapper: Mapper, query: any, opts: any): any;
 
   /**
    * Load a belongsTo relationship.
@@ -805,7 +805,7 @@ export abstract class Adapter extends Component {
    * @method
    * @return {Promise}
    */
-  loadBelongsTo(mapper, def, records, __opts) {
+  loadBelongsTo(mapper: Mapper, def, records, __opts) {
     const relationDef = def.getRelation();
 
     if (utils.isObject(records) && !utils.isArray(records)) {
@@ -858,7 +858,7 @@ export abstract class Adapter extends Component {
    * @param {string[]} [opts.with=[]] Relations to eager load.
    * @return {Promise}
    */
-  find(mapper, id, opts: any = {}) {
+  find(mapper: Mapper, id, opts: any = {}) {
     let op;
     opts.with = opts.with || [];
 
@@ -885,7 +885,7 @@ export abstract class Adapter extends Component {
       });
   }
 
-  abstract _find(mapper: any, id: any, opts: any): any;
+  abstract _find(mapper: Mapper, id: any, opts: any): any;
 
   /**
    * Retrieve the records that match the selection query.
@@ -906,7 +906,7 @@ export abstract class Adapter extends Component {
    * @param {string[]} [opts.with=[]] Relations to eager load.
    * @return {Promise}
    */
-  findAll(mapper, query, opts: any = {}) {
+  findAll(mapper: Mapper, query, opts: any = {}) {
     let op;
     opts.with = opts.with || [];
 
@@ -944,9 +944,9 @@ export abstract class Adapter extends Component {
       });
   }
 
-  abstract _findAll(mapper: any, query: any, opts: any): any;
+  abstract _findAll(mapper: Mapper, query: any, opts: any): any;
 
-  loadRelationsFor(mapper, results, opts) {
+  loadRelationsFor(mapper: Mapper, results, opts) {
     const [records] = results;
     const tasks = [];
 
@@ -1003,7 +1003,7 @@ export abstract class Adapter extends Component {
    * @method
    * @return {Promise}
    */
-  loadHasMany(mapper, def, records, __opts) {
+  loadHasMany(mapper: Mapper, def, records, __opts) {
     let singular = false;
 
     if (utils.isObject(records) && !utils.isArray(records)) {
@@ -1044,7 +1044,7 @@ export abstract class Adapter extends Component {
     });
   }
 
-  loadHasManyLocalKeys(mapper, def, records, __opts) {
+  loadHasManyLocalKeys(mapper: Mapper, def, records, __opts) {
     let record;
     const relatedMapper = def.getRelation();
 
@@ -1103,7 +1103,7 @@ export abstract class Adapter extends Component {
     }
   }
 
-  loadHasManyForeignKeys(mapper, def, records, __opts) {
+  loadHasManyForeignKeys(mapper: Mapper, def, records, __opts) {
     const relatedMapper = def.getRelation();
     const idAttribute = mapper.idAttribute;
     let record;
@@ -1165,7 +1165,7 @@ export abstract class Adapter extends Component {
    * @method
    * @return {Promise}
    */
-  loadHasOne(mapper, def, records, __opts) {
+  loadHasOne(mapper: Mapper, def, records, __opts) {
     if (utils.isObject(records) && !utils.isArray(records)) {
       records = [records];
     }
@@ -1191,7 +1191,7 @@ export abstract class Adapter extends Component {
    * @method
    * @return {*}
    */
-  makeHasManyForeignKey(mapper, def, record) {
+  makeHasManyForeignKey(mapper: Mapper, def, record) {
     return def.getForeignKey(record);
   }
 
@@ -1204,7 +1204,7 @@ export abstract class Adapter extends Component {
    * @method
    * @return {*}
    */
-  makeHasManyLocalKeys(mapper, def, record) {
+  makeHasManyLocalKeys(mapper: Mapper, def, record) {
     let localKeys = [];
     let itemKeys = utils.get(record, def.localKeys) || [];
     itemKeys = utils.isArray(itemKeys) ? itemKeys : Object.keys(itemKeys);
@@ -1221,7 +1221,7 @@ export abstract class Adapter extends Component {
    * @method
    * @return {*}
    */
-  makeHasManyForeignKeys(mapper, def, record) {
+  makeHasManyForeignKeys(mapper: Mapper, def, record) {
     return utils.get(record, mapper.idAttribute);
   }
 
@@ -1234,7 +1234,7 @@ export abstract class Adapter extends Component {
    * @method
    * @return {*}
    */
-  makeBelongsToForeignKey(mapper, def, record) {
+  makeBelongsToForeignKey(mapper: Mapper, def, record) {
     return def.getForeignKey(record);
   }
 
@@ -1258,7 +1258,7 @@ export abstract class Adapter extends Component {
    * response object.
    * @return {Promise}
    */
-  sum(mapper, field, query: any = {}, opts: any = {}) {
+  sum(mapper: Mapper, field, query: any = {}, opts: any = {}) {
     let op;
     if (!utils.isString(field)) {
       throw new Error('field must be a string!');
@@ -1313,7 +1313,7 @@ export abstract class Adapter extends Component {
    * response object.
    * @return {Promise}
    */
-  update(mapper, id, props: any = {}, opts: any = {}) {
+  update(mapper: Mapper, id, props: any = {}, opts: any = {}) {
     let op;
 
     // beforeUpdate lifecycle hook
@@ -1361,7 +1361,7 @@ export abstract class Adapter extends Component {
    * response object.
    * @return {Promise}
    */
-  updateAll(mapper, props: any = {}, query: any = {}, opts: any = {}) {
+  updateAll(mapper: Mapper, props: any = {}, query: any = {}, opts: any = {}) {
     let op;
 
     // beforeUpdateAll lifecycle hook
@@ -1403,7 +1403,7 @@ export abstract class Adapter extends Component {
    * response object.
    * @return {Promise}
    */
-  updateMany(mapper, records = [], opts: any = {}) {
+  updateMany(mapper: Mapper, records = [], opts: any = {}) {
     let op;
     const idAttribute = mapper.idAttribute;
 
