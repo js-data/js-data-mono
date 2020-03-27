@@ -133,6 +133,11 @@ const DEFAULTS = {
   useFetch: false
 };
 
+export interface HttpConfig {
+  params?;
+  headers?: {[name: string]: string};
+}
+
 /**
  * HttpAdapter class.
  *
@@ -167,6 +172,10 @@ const DEFAULTS = {
  */
 export class HttpAdapter extends Adapter {
   http: any;
+
+  httpConfig: HttpConfig;
+
+  useFetch: boolean;
 
   /**
    * Create a subclass of this HttpAdapter:
@@ -770,7 +779,7 @@ export class HttpAdapter extends Adapter {
       config.url += suffix;
     }
 
-    const logResponse = (data) => {
+    const logResponse = data => {
       const str = `${start.toUTCString()} - ${config.method.toUpperCase()} ${config.url} - ${data.status} ${(new Date().getTime() - start.getTime())}ms`;
       if (data.status >= 200 && data.status < 300) {
         if (this.log) {

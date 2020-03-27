@@ -1,17 +1,16 @@
-import { DataStore, Mapper, version } from '@js-data/js-data';
+import { DataStore, Mapper } from '@js-data/js-data';
 import { TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { AngularAdapterService } from '../lib/angular-adapter.service';
 
-export let store, adapter: AngularAdapterService, User, Post, p1, p2, p3, p4, p5, requests, httpTestingController: HttpTestingController;
+export let store, adapter: AngularAdapterService, User, Post, p1, p2, p3, p4, p5, requests,
+  httpTestingController: HttpTestingController;
+
+export function objectsEqual(a, b, m) {
+  expect(JSON.parse(JSON.stringify(a))).toEqual(JSON.parse(JSON.stringify(b)));
+}
 
 beforeAll(() => {
-  // TestBed.configureTestingModule({
-  //   imports: [HttpClientTestingModule],
-  //   providers: [DataStore]
-  // });
-  // adapter = TestBed.inject(AngularAdapterService);
-
   User = new Mapper({
     name: 'user'
   });
@@ -20,10 +19,6 @@ beforeAll(() => {
     endpoint: 'posts',
     basePath: 'api'
   });
-
-  // User.registerAdapter('http', adapter, {default: true});
-  // Post.registerAdapter('http', adapter, {default: true});
-  // console.log('Testing against js-data ' + version);
 });
 
 beforeEach(() => {
@@ -39,6 +34,7 @@ beforeEach(() => {
   });
   adapter = TestBed.inject(AngularAdapterService);
 
+  User.registerAdapter('http', adapter, {default: true});
   Post.registerAdapter('http', adapter, {default: true});
 
   httpTestingController = TestBed.inject(HttpTestingController);
