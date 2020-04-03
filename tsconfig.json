@@ -1,0 +1,11 @@
+{
+  "extends": "./tsconfig.build.json",
+  "compilerOptions": {
+    "baseUrl": "./packages",
+    "paths": {
+      "@js-data/js-data": ["js-data/lib"],
+      "@js-data/js-data-adapter": ["js-data-adapter/lib"],
+      "@js-data/*": ["*/lib"]
+    }
+  }
+}

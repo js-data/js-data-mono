@@ -5,20 +5,35 @@
   "author": "Cory <coryrobinson42@gmail.com>",
   "homepage": "https://github.com/js-data/js-data-mono#readme",
   "license": "ISC",
-  "main": "lib/js-data.js",
+  "main": "dist/js-data.js",
+  "types": "dist/index.d.ts",
   "directories": {
     "lib": "lib",
     "test": "__tests__"
   },
   "files": [
-    "lib"
+    "dist"
   ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/js-data/js-data-mono.git"
   },
   "scripts": {
-    "test": "echo \"Error: run tests from root\" && exit 1"
+    "banner": "node scripts/banner.js",
+    "build": "npm run lint && npm run bundle && npm run min && npm run banner",
+    "bundle:es5": "rollup src/index.ts -c -o dist/js-data.js -m dist/js-data.js.map -f umd",
+    "bundle:next": "rollup src/index.ts -c -o dist/js-data.es2015.js -m dist/js-data.es2015.js.map -f es",
+    "bundle": "npm run bundle:es5 && npm run bundle:next && repo-tools write-version dist/js-data.js dist/js-data.es2015.js",
+    "cover": "nyc npm run mocha && nyc report --reporter=html",
+    "doc": "typedoc --out doc src",
+    "gzip": "echo gzipped size: $(cat dist/js-data.min.js | gzip -f9 | wc -c)kb",
+    "lint": "eslint --fix 'src/**/*.ts' 'test/**/*.ts' && standard --fix 'scripts/*.js' '*.config.js'",
+    "min": "uglifyjs -o dist/js-data.min.js --source-map url=js-data.min.map -v -m -c --keep-fnames --screw-ie8 -- dist/js-data.js",
+    "mocha": "mocha --recursive -t 20000 -R dot -r ts-node/register './**/*.test.ts'",
+    "precommit": "lint-staged && npm run lint",
+    "prepush": "npm test",
+    "release": "npm test && npm run doc && repo-tools changelog && repo-tools authors",
+    "test": "npm run build && npm run cover"
   },
   "bugs": {
     "url": "https://github.com/js-data/js-data-mono/issues"

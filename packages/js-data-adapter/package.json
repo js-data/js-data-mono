@@ -18,7 +18,10 @@
     "url": "git+https://github.com/js-data/js-data-mono.git"
   },
   "scripts": {
-    "test": "echo \"Error: run tests from root\" && exit 1"
+    "build": "npm run clean && npm run compile",
+    "clean": "rm -rf ./dist",
+    "compile": "tsc -p tsconfig.build.json",
+    "prepublishOnly": "npm run build"
   },
   "bugs": {
     "url": "https://github.com/js-data/js-data-mono/issues"
