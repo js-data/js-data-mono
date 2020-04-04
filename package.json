@@ -6,6 +6,8 @@
     "postinstall": "npm run bootstrap",
     "clean": "lerna run clean",
     "build": "lerna run build",
+    "bundle:es5": "lerna run bundle:es5",
+    "bundle:next": "lerna run bundle:next",
     "test": "lerna run test",
     "pub": "lerna publish"
   },
