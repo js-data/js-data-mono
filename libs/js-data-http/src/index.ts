@@ -1,5 +1,4 @@
 import { utils } from '@js-data/js-data';
-import axios, { AxiosStatic } from 'axios';
 import { Adapter, noop, noop2 } from '@js-data/js-data-adapter';
 
 let hasFetch = false;
@@ -94,7 +93,7 @@ export interface HttpAdapterOpts {
    * @since 3.0.0
    * @see http://www.js-data.io/docs/js-data-http#using-a-custom-http-library
    */
-  http?: AxiosStatic
+  http?: any
 
   /**
    * Default configuration options to be mixed into the `config` argument passed
@@ -126,8 +125,8 @@ export interface HttpAdapterOpts {
 const DEFAULTS = {
   basePath: '',
   forceTrailingSlash: false,
-  hasFetch: hasFetch,
-  http: axios,
+  hasFetch,
+  http: null,
   httpConfig: {},
   suffix: '',
   useFetch: false
@@ -1194,32 +1193,3 @@ export function addActions(opts: any = {}) {
  * otherwise `false` if the current version is not beta.
  */
 export const version = '<%= version %>';
-
-/**
- * Registered as `js-data-http` in NPM and Bower. The build of `js-data-http`
- * that works on Node.js is registered in NPM as `js-data-http-node`. The build
- * of `js-data-http` that does not bundle `axios` is registered in NPM and Bower
- * as `js-data-fetch`.
- *
- * @example <caption>Script tag</caption>
- * var HttpAdapter = window.JSDataHttp.HttpAdapter;
- * var httpAdapter = new HttpAdapter();
- *
- * @example <caption>CommonJS</caption>
- * var HttpAdapter = require('js-data-Http').HttpAdapter;
- * var httpAdapter = new HttpAdapter();
- *
- * @example <caption>ES2015 Modules</caption>
- * import { HttpAdapter } from 'js-data-Http';
- * const httpAdapter = new HttpAdapter();
- *
- * @example <caption>AMD</caption>
- * define('myApp', ['js-data-Http'], function (JSDataHttp) {
- *   var HttpAdapter = JSDataHttp.HttpAdapter;
- *   var httpAdapter = new HttpAdapter();
- *
- *   // ...
- * });
- *
- * @module js-data-http
- */

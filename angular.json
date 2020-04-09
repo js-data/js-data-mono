@@ -354,6 +354,138 @@
           "styleext": "scss"
         }
       }
+    },
+    "js-data-fetch": {
+      "projectType": "library",
+      "root": "libs/js-data-fetch",
+      "sourceRoot": "libs/js-data-fetch/src",
+      "prefix": "js-data",
+      "architect": {
+        "build": {
+          "builder": "@nrwl/angular:package",
+          "options": {
+            "tsConfig": "libs/js-data-fetch/tsconfig.lib.json",
+            "project": "libs/js-data-fetch/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "libs/js-data-fetch/tsconfig.lib.prod.json"
+            }
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "libs/js-data-fetch/tsconfig.lib.json",
+              "libs/js-data-fetch/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**", "!libs/js-data-fetch/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/js-data-fetch/jest.config.js",
+            "tsConfig": "libs/js-data-fetch/tsconfig.spec.json",
+            "passWithNoTests": true,
+            "setupFile": "libs/js-data-fetch/src/test-setup.ts"
+          }
+        }
+      },
+      "schematics": {
+        "@nrwl/angular:component": {
+          "styleext": "scss"
+        }
+      }
+    },
+    "js-data-http-axios": {
+      "projectType": "library",
+      "root": "libs/js-data-http-axios",
+      "sourceRoot": "libs/js-data-http-axios/src",
+      "prefix": "js-data",
+      "architect": {
+        "build": {
+          "builder": "@nrwl/angular:package",
+          "options": {
+            "tsConfig": "libs/js-data-http-axios/tsconfig.lib.json",
+            "project": "libs/js-data-http-axios/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "libs/js-data-http-axios/tsconfig.lib.prod.json"
+            }
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "libs/js-data-http-axios/tsconfig.lib.json",
+              "libs/js-data-http-axios/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**", "!libs/js-data-http-axios/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/js-data-http-axios/jest.config.js",
+            "tsConfig": "libs/js-data-http-axios/tsconfig.spec.json",
+            "passWithNoTests": true,
+            "setupFile": "libs/js-data-http-axios/src/test-setup.ts"
+          }
+        }
+      },
+      "schematics": {
+        "@nrwl/angular:component": {
+          "styleext": "scss"
+        }
+      }
+    },
+    "js-data-http-node": {
+      "projectType": "library",
+      "root": "libs/js-data-http-node",
+      "sourceRoot": "libs/js-data-http-node/src",
+      "prefix": "js-data",
+      "architect": {
+        "build": {
+          "builder": "@nrwl/angular:package",
+          "options": {
+            "tsConfig": "libs/js-data-http-node/tsconfig.lib.json",
+            "project": "libs/js-data-http-node/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "libs/js-data-http-node/tsconfig.lib.prod.json"
+            }
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "libs/js-data-http-node/tsconfig.lib.json",
+              "libs/js-data-http-node/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**", "!libs/js-data-http-node/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/js-data-http-node/jest.config.js",
+            "tsConfig": "libs/js-data-http-node/tsconfig.spec.json",
+            "passWithNoTests": true,
+            "setupFile": "libs/js-data-http-node/src/test-setup.ts"
+          }
+        }
+      },
+      "schematics": {
+        "@nrwl/angular:component": {
+          "styleext": "scss"
+        }
+      }
     }
   },
   "cli": {

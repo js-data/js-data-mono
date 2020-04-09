@@ -35,6 +35,15 @@
     },
     "js-data-angularx": {
       "tags": []
+    },
+    "js-data-fetch": {
+      "tags": []
+    },
+    "js-data-http-axios": {
+      "tags": []
+    },
+    "js-data-http-node": {
+      "tags": []
     }
   }
 }
