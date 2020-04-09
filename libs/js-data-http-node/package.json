@@ -1,9 +1,7 @@
 {
   "name": "@js-data/js-data-http-node",
-  "version": "0.0.1",
+  "version": "4.0.0",
   "peerDependencies": {
-    "@angular/common": "^9.0.6",
-    "@angular/core": "^9.0.6",
     "tslib": "^1.10.0"
   }
 }
