@@ -486,6 +486,46 @@
           "styleext": "scss"
         }
       }
+    },
+    "js-data-mongodb": {
+      "projectType": "library",
+      "root": "libs/js-data-mongodb",
+      "sourceRoot": "libs/js-data-mongodb/src",
+      "prefix": "js-data",
+      "architect": {
+        "build": {
+          "builder": "@nrwl/angular:package",
+          "options": {
+            "tsConfig": "libs/js-data-mongodb/tsconfig.lib.json",
+            "project": "libs/js-data-mongodb/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "libs/js-data-mongodb/tsconfig.lib.prod.json"
+            }
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "libs/js-data-mongodb/tsconfig.lib.json",
+              "libs/js-data-mongodb/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**", "!libs/js-data-mongodb/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/js-data-mongodb/jest.config.js",
+            "tsConfig": "libs/js-data-mongodb/tsconfig.spec.json",
+            "passWithNoTests": true,
+            "setupFile": "libs/js-data-mongodb/src/test-setup.ts"
+          }
+        }
+      },
+      "schematics": {}
     }
   },
   "cli": {

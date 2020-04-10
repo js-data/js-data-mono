@@ -137,17 +137,17 @@ const SIMPLESTORE_DEFAULTS = {
  */
 export default class SimpleStore extends Container {
 
-  constructor(opts: SimpleStoreOpts = {}) {
-    super({...SIMPLESTORE_DEFAULTS, ...opts});
-    this.collectionClass = this.collectionClass || Collection;
-  }
-
   collectionClass: typeof Collection;
   _collections: { [name: string]: Collection } = {};
   _completedQueries: any = {};
   _pendingQueries: any = {};
   usePendingFind: boolean;
   usePendingFindAll: boolean;
+
+  constructor(opts: SimpleStoreOpts = {}) {
+    super({...SIMPLESTORE_DEFAULTS, ...opts});
+    this.collectionClass = this.collectionClass || Collection;
+  }
 
   /**
    * Retrieve a cached `find` result, if any. This method is called during

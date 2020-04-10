@@ -50,64 +50,64 @@ export const proxiedMapperMethods = [
  */
 export class Container extends Component {
   mapperDefaults: any;
-  mapperClass: typeof Mapper;
+
+  /**
+   * The adapters registered with this Container, which are also shared by all
+   * Mappers in this Container.
+   *
+   * @name Container#_adapters
+   * @see Container#registerAdapter
+   * @since 3.0.0
+   * @type {Object}
+   */
   _adapters: any;
+
+  /**
+   * The the mappers in this container
+   *
+   * @name Container#_mappers
+   * @see Mapper
+   * @since 3.0.0
+   * @type {Object}
+   */
   _mappers: { [name: string]: Mapper };
+
+  /**
+   * Constructor function to use in {@link Container#defineMapper} to create new
+   * {@link Mapper} instances. {@link Container#mapperClass} should extend
+   * {@link Mapper}. By default {@link Mapper} is used to instantiate Mappers.
+   *
+   * @example <caption>Container#mapperClass</caption>
+   * // import { Container, Mapper } from 'js-data';
+   * const JSData = require('js-data');
+   * const { Container, Mapper } = JSData;
+   * console.log('Using JSData v' + JSData.version.full);
+   *
+   * class MyMapperClass extends Mapper {
+   *   foo () { return 'bar' }
+   * }
+   * const store = new Container({
+   *   mapperClass: MyMapperClass
+   * });
+   * store.defineMapper('user');
+   * console.log(store.getMapper('user').foo());
+   *
+   * @name Container#mapperClass
+   * @see Mapper
+   * @since 3.0.0
+   */
+  mapperClass: typeof Mapper;
 
   constructor(opts = {}) {
     super();
 
     Object.defineProperties(this, {
-      /**
-       * The adapters registered with this Container, which are also shared by all
-       * Mappers in this Container.
-       *
-       * @name Container#_adapters
-       * @see Container#registerAdapter
-       * @since 3.0.0
-       * @type {Object}
-       */
       _adapters: {
         value: {}
       },
-
-      /**
-       * The the mappers in this container
-       *
-       * @name Container#_mappers
-       * @see Mapper
-       * @since 3.0.0
-       * @type {Object}
-       */
       _mappers: {
         value: {}
       },
-
-      /**
-       * Constructor function to use in {@link Container#defineMapper} to create new
-       * {@link Mapper} instances. {@link Container#mapperClass} should extend
-       * {@link Mapper}. By default {@link Mapper} is used to instantiate Mappers.
-       *
-       * @example <caption>Container#mapperClass</caption>
-       * // import { Container, Mapper } from 'js-data';
-       * const JSData = require('js-data');
-       * const { Container, Mapper } = JSData;
-       * console.log('Using JSData v' + JSData.version.full);
-       *
-       * class MyMapperClass extends Mapper {
-       *   foo () { return 'bar' }
-       * }
-       * const store = new Container({
-       *   mapperClass: MyMapperClass
-       * });
-       * store.defineMapper('user');
-       * console.log(store.getMapper('user').foo());
-       *
-       * @name Container#mapperClass
-       * @see Mapper
-       * @since 3.0.0
-       * @type {Constructor}
-       */
       mapperClass: {
         value: undefined,
         writable: true

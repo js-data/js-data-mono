@@ -1,0 +1,9 @@
+{
+  "name": "@js-data/js-data-mongodb",
+  "version": "0.0.1",
+  "peerDependencies": {
+    "@types/mongodb": "^3.5.5",
+    "mongodb": "^3.5.5",
+    "tslib": "^1.10.0"
+  }
+}
