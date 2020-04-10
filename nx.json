@@ -47,6 +47,9 @@
     },
     "js-data-mongodb": {
       "tags": []
+    },
+    "js-data-localstorage": {
+      "tags": []
     }
   }
 }

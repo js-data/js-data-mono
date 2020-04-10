@@ -24,7 +24,10 @@
       "@js-data/js-data-fetch": ["libs/js-data-fetch/src/index.ts"],
       "@js-data/js-data-http-axios": ["libs/js-data-http-axios/src/index.ts"],
       "@js-data/js-data-http-node": ["libs/js-data-http-node/src/index.ts"],
-      "@js-data/js-data-mongodb": ["libs/js-data-mongodb/src/index.ts"]
+      "@js-data/js-data-mongodb": ["libs/js-data-mongodb/src/index.ts"],
+      "@js-data/js-data-localstorage": [
+        "libs/js-data-localstorage/src/index.ts"
+      ]
     }
   },
   "exclude": ["node_modules", "tmp"]

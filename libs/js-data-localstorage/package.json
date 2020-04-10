@@ -1,0 +1,7 @@
+{
+  "name": "@js-data/js-data-localstorage",
+  "version": "0.0.1",
+  "peerDependencies": {
+    "tslib": "^1.10.0"
+  }
+}

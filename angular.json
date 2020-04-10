@@ -526,6 +526,46 @@
         }
       },
       "schematics": {}
+    },
+    "js-data-localstorage": {
+      "projectType": "library",
+      "root": "libs/js-data-localstorage",
+      "sourceRoot": "libs/js-data-localstorage/src",
+      "prefix": "js-data",
+      "architect": {
+        "build": {
+          "builder": "@nrwl/angular:package",
+          "options": {
+            "tsConfig": "libs/js-data-localstorage/tsconfig.lib.json",
+            "project": "libs/js-data-localstorage/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "libs/js-data-localstorage/tsconfig.lib.prod.json"
+            }
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "libs/js-data-localstorage/tsconfig.lib.json",
+              "libs/js-data-localstorage/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**", "!libs/js-data-localstorage/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/js-data-localstorage/jest.config.js",
+            "tsConfig": "libs/js-data-localstorage/tsconfig.spec.json",
+            "passWithNoTests": true,
+            "setupFile": "libs/js-data-localstorage/src/test-setup.ts"
+          }
+        }
+      },
+      "schematics": {}
     }
   },
   "cli": {
