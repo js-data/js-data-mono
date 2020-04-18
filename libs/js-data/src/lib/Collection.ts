@@ -79,9 +79,7 @@ const COLLECTION_DEFAULTS: CollectionOpts = {
  * An ordered set of {@link Record} instances.
  *
  * @example <caption>Collection#constructor</caption>
- * // import { Collection, Record } from 'js-data';
- * const JSData = require('js-data');
- * const {Collection, Record} = JSData;
+ * import { Collection, Record } from 'js-data';
  * console.log('Using JSData v' + JSData.version.full);
  *
  * const user1 = new Record({ id: 1 });

@@ -24,15 +24,132 @@ function escape(pattern) {
   return pattern.replace(escapeRegExp, '\\$1');
 }
 
+/**
+ * Selection query as defined by JSData's [Query Syntax][querysyntax].
+ *
+ * [querysyntax]: http://www.js-data.io/v3.0/docs/query-syntax
+ *
+ * @example <caption>Empty "findAll" query</caption>
+ * const JSData = require('js-data');
+ * const { DataStore } = JSData;
+ * console.log('Using JSData v' + JSData.version.full);
+ *
+ * const store = new DataStore();
+ * store.defineMapper('post')
+ * store.findAll('post').then((posts) => {
+ *   console.log(posts); // [...]
+ * });
+ *
+ * @example <caption>Empty "filter" query</caption>
+ * const JSData = require('js-data');
+ * const { DataStore } = JSData;
+ * console.log('Using JSData v' + JSData.version.full);
+ *
+ * const store = new DataStore();
+ * store.defineMapper('post');
+ * const posts = store.filter('post');
+ * console.log(posts); // [...]
+ *
+ * @example <caption>Complex "filter" query</caption>
+ * const JSData = require('js-data');
+ * const { DataStore } = JSData;
+ * console.log('Using JSData v' + JSData.version.full);
+ *
+ * const store = new DataStore();
+ * const PAGE_SIZE = 2;
+ * let currentPage = 3;
+ *
+ * store.defineMapper('post');
+ * const posts = [
+ *   { author: 'John', age: 30, status: 'published', id: 1 },
+ *   { author: 'Sally', age: 31, status: 'published', id: 2 },
+ *   { author: 'Mike', age: 32, status: 'draft', id: 3 },
+ *   { author: 'Adam', age: 33, status: 'deleted', id: 4 },
+ *   { author: 'Adam', age: 33, status: 'published', id: 5 }
+ *   { author: 'Peter', age: 25, status: 'deleted', id: 6 },
+ *   { author: 'Sally', age: 21, status: 'draft', id: 7 },
+ *   { author: 'Jim', age: 27, status: 'draft', id: 8 },
+ *   { author: 'Jim', age: 27, status: 'published', id: 9 },
+ *   { author: 'Jason', age: 55, status: 'published', id: 10 }
+ * ];
+ * store.add('post', posts);
+ * // Retrieve a filtered page of blog posts
+ * // Would typically replace filter with findAll
+ * const results = store.filter('post', {
+ *   where: {
+ *     status: {
+ *       // WHERE status = 'published'
+ *       '==': 'published'
+ *     },
+ *     author: {
+ *       // AND author IN ('bob', 'alice')
+ *       'in': ['bob', 'alice'],
+ *       // OR author IN ('karen')
+ *       '|in': ['karen']
+ *     }
+ *   },
+ *   orderBy: [
+ *     // ORDER BY date_published DESC,
+ *     ['date_published', 'DESC'],
+ *     // ORDER BY title ASC
+ *     ['title', 'ASC']
+ *   ],
+ *   // LIMIT 2
+ *   limit: PAGE_SIZE,
+ *   // SKIP 4
+ *   offset: PAGE_SIZE * (currentPage - 1)
+ * });
+ * console.log(results);
+ *
+ * @namespace query
+ * @property {number} [limit] See {@link query.limit}.
+ * @property {number} [offset] See {@link query.offset}.
+ * @property {string|Array[]} [orderBy] See {@link query.orderBy}.
+ * @property {number} [skip] Alias for {@link query.offset}.
+ * @property {string|Array[]} [sort] Alias for {@link query.orderBy}.
+ * @property {Object} [where] See {@link query.where}.
+ * @property {String} [locale] See {@link query.locale}.
+ * @since 3.0.0
+ * @tutorial ["http://www.js-data.io/v3.0/docs/query-syntax","JSData's Query Syntax"]
+ */
 export interface QueryDefinition {
   [attr: string]: any
 
-  where?: any
-  orderBy?: any
-  sort?: any
-  skip?: number
-  limit?: number
-  offset?: number
+  /**
+   * Filtering criteria. Records that do not meet this criteria will be excluded
+   * from the result.
+   *
+   * @example <caption>Return posts where author is at least 32 years old</caption>
+   * import { DataStore } from '@js-data/js-data';
+   *
+   * const store = new DataStore();
+   * store.defineMapper('post')
+   * const posts = [
+   *   { author: 'John', age: 30, id: 5 },
+   *   { author: 'Sally', age: 31, id: 6 },
+   *   { author: 'Mike', age: 32, id: 7 },
+   *   { author: 'Adam', age: 33, id: 8 },
+   *   { author: 'Adam', age: 33, id: 9 }
+   * ];
+   * store.add('post', posts);
+   * const results = store.filter('post', {
+   *   where: {
+   *     age: {
+   *       '>=': 30
+   *     }
+   *   }
+   * });
+   * console.log(results);
+   *
+   * @see http://www.js-data.io/v3.0/docs/query-syntax
+   * @since 3.0.0
+   */
+  where?: any;
+  orderBy?: string | any[] | any;
+  sort?: string | any[] | any;
+  skip?: number;
+  limit?: number;
+  offset?: number;
 }
 
 /**
@@ -511,9 +628,7 @@ export default class Query extends Component {
    * the provided filter function.
    *
    * @example <caption>Get the draft posts by authors younger than 30</caption>
-   * const JSData = require('js-data');
-   * const { DataStore } = JSData;
-   * console.log('Using JSData v' + JSData.version.full);
+   * import { DataStore } from '@js-data/js-data';
    *
    * const store = new DataStore();
    * store.defineMapper('post')
@@ -561,131 +676,10 @@ export default class Query extends Component {
    * @since 3.0.0
    */
   filter(query: QueryDefinition = {}, thisArg?: Function): Query {
-    /**
-     * Selection query as defined by JSData's [Query Syntax][querysyntax].
-     *
-     * [querysyntax]: http://www.js-data.io/v3.0/docs/query-syntax
-     *
-     * @example <caption>Empty "findAll" query</caption>
-     * const JSData = require('js-data');
-     * const { DataStore } = JSData;
-     * console.log('Using JSData v' + JSData.version.full);
-     *
-     * const store = new DataStore();
-     * store.defineMapper('post')
-     * store.findAll('post').then((posts) => {
-     *   console.log(posts); // [...]
-     * });
-     *
-     * @example <caption>Empty "filter" query</caption>
-     * const JSData = require('js-data');
-     * const { DataStore } = JSData;
-     * console.log('Using JSData v' + JSData.version.full);
-     *
-     * const store = new DataStore();
-     * store.defineMapper('post');
-     * const posts = store.filter('post');
-     * console.log(posts); // [...]
-     *
-     * @example <caption>Complex "filter" query</caption>
-     * const JSData = require('js-data');
-     * const { DataStore } = JSData;
-     * console.log('Using JSData v' + JSData.version.full);
-     *
-     * const store = new DataStore();
-     * const PAGE_SIZE = 2;
-     * let currentPage = 3;
-     *
-     * store.defineMapper('post');
-     * const posts = [
-     *   { author: 'John', age: 30, status: 'published', id: 1 },
-     *   { author: 'Sally', age: 31, status: 'published', id: 2 },
-     *   { author: 'Mike', age: 32, status: 'draft', id: 3 },
-     *   { author: 'Adam', age: 33, status: 'deleted', id: 4 },
-     *   { author: 'Adam', age: 33, status: 'published', id: 5 }
-     *   { author: 'Peter', age: 25, status: 'deleted', id: 6 },
-     *   { author: 'Sally', age: 21, status: 'draft', id: 7 },
-     *   { author: 'Jim', age: 27, status: 'draft', id: 8 },
-     *   { author: 'Jim', age: 27, status: 'published', id: 9 },
-     *   { author: 'Jason', age: 55, status: 'published', id: 10 }
-     * ];
-     * store.add('post', posts);
-     * // Retrieve a filtered page of blog posts
-     * // Would typically replace filter with findAll
-     * const results = store.filter('post', {
-     *   where: {
-     *     status: {
-     *       // WHERE status = 'published'
-     *       '==': 'published'
-     *     },
-     *     author: {
-     *       // AND author IN ('bob', 'alice')
-     *       'in': ['bob', 'alice'],
-     *       // OR author IN ('karen')
-     *       '|in': ['karen']
-     *     }
-     *   },
-     *   orderBy: [
-     *     // ORDER BY date_published DESC,
-     *     ['date_published', 'DESC'],
-     *     // ORDER BY title ASC
-     *     ['title', 'ASC']
-     *   ],
-     *   // LIMIT 2
-     *   limit: PAGE_SIZE,
-     *   // SKIP 4
-     *   offset: PAGE_SIZE * (currentPage - 1)
-     * });
-     * console.log(results);
-     *
-     * @namespace query
-     * @property {number} [limit] See {@link query.limit}.
-     * @property {number} [offset] See {@link query.offset}.
-     * @property {string|Array[]} [orderBy] See {@link query.orderBy}.
-     * @property {number} [skip] Alias for {@link query.offset}.
-     * @property {string|Array[]} [sort] Alias for {@link query.orderBy}.
-     * @property {Object} [where] See {@link query.where}.
-     * @property {String} [locale] See {@link query.locale}.
-     * @since 3.0.0
-     * @tutorial ["http://www.js-data.io/v3.0/docs/query-syntax","JSData's Query Syntax"]
-     */
     this.getData();
     if (utils.isObject(query)) {
       let where = {};
 
-      /**
-       * Filtering criteria. Records that do not meet this criteria will be exluded
-       * from the result.
-       *
-       * @example <caption>Return posts where author is at least 32 years old</caption>
-       * const JSData = require('js-data');
-       * const { DataStore } = JSData;
-       * console.log('Using JSData v' + JSData.version.full);
-       *
-       * const store = new DataStore();
-       * store.defineMapper('post')
-       * const posts = [
-       *   { author: 'John', age: 30, id: 5 },
-       *   { author: 'Sally', age: 31, id: 6 },
-       *   { author: 'Mike', age: 32, id: 7 },
-       *   { author: 'Adam', age: 33, id: 8 },
-       *   { author: 'Adam', age: 33, id: 9 }
-       * ];
-       * store.add('post', posts);
-       * const results = store.filter('post', {
-       *   where: {
-       *     age: {
-       *       '>=': 30
-       *     }
-       *   }
-       * });
-       * console.log(results);
-       *
-       * @name query.where
-       * @type {Object}
-       * @see http://www.js-data.io/v3.0/docs/query-syntax
-       * @since 3.0.0
-       */
       if (utils.isObject(query.where) || utils.isArray(query.where)) {
         where = query.where;
       }

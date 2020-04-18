@@ -666,11 +666,8 @@ http://www.js-data.io/v3.0/docs/errors#${code}`;
    * @since 3.0.0
    */
   forOwn(obj, fn, thisArg?) {
-    const keys = Object.keys(obj);
-    const len = keys.length;
-    let i;
-    for (i = 0; i < len; i++) {
-      if (fn.call(thisArg, obj[keys[i]], keys[i], obj) === false) {
+    for (const key of Object.keys(obj)) {
+      if (fn.call(thisArg, obj[key], key, obj) === false) {
         break;
       }
     }
